@@ -179,13 +179,16 @@ void printExtractionNode(QTextStream& out, ExtractionNode* node, Factory* factor
         : QString();
     out << GREEN << BOLD
         << QString("┌─ [%1] %2  \"%3\"  x%4%5\n")
-               .arg(idx).arg(extractorName).arg(node->name())
-               .arg(node->machineCount(), 0, 'f', 2).arg(limitStr)
+               .arg(idx)
+               .arg(extractorName)
+               .arg(node->name())
+               .arg(node->machineCount(), 0, 'f', 2)
+               .arg(limitStr)
         << RESET;
     static const QMap<NodePurity, QString> purityNames = {
         { NodePurity::Impure, "Impure" },
         { NodePurity::Normal, "Normal" },
-        { NodePurity::Pure,   "Pure"   },
+        { NodePurity::Pure, "Pure" },
     };
     out << GREEN << "│  " << RESET
         << "resource : " << resourceName
@@ -273,12 +276,16 @@ void CliManager::processCommand(const QString& line)
         { "add", [this](const auto& p) { handleAdd(p); } },
         { "rm", [this](const auto& p) { handleRm(p); } },
         { "ls", [this](const auto& p) { handleLs(); } },
-        // { "cd", [this](const auto& p) { handleCd(p); } },
-        // { "cnct", [this](const auto& p) { handleConnect(p); } },
-        // { "limit", [this](const auto& p) { handleLimit(p); } },
-        // { "purity", [this](const auto& p) { handlePurity(p); } },
-        // { "tier", [this](const auto& p) { handleTier(p); } },
+        { "cd", [this](const auto& p) { handleCd(p); } },
+        { "cnct", [this](const auto& p) { handleConnect(p); } },
+        { "discnct", [this](const auto& p) { handleDisconnect(p); } },
+        { "limit", [this](const auto& p) { handleLimit(p); } },
+        { "purity", [this](const auto& p) { handlePurity(p); } },
+        { "tier", [this](const auto& p) { handleTier(p); } },
         // { "solve", [this](const auto&) { handleSolve(); } },
+        { "rename", [this](const auto& p) { handleRename(p); } },
+        // FIX: fix help
+        //
         // { "help", [this](const auto& p) { handleHelp(); } },
         { "exit", [this](const auto&) { emit quitRequested(); } },
         { "quit", [this](const auto&) { emit quitRequested(); } },
@@ -362,7 +369,6 @@ void CliManager::handleAddFact(const QStringList& parts)
     auto flags = parseFlags(parts);
     QString name = flags.value("name");
 
-    // m_out << "Name is: " << name << "\n";
     Factory* node = m_session->createFactory(m_session->activeFactory(), name);
 
     if (!node)
@@ -375,19 +381,19 @@ void CliManager::handleAddFact(const QStringList& parts)
 
 void CliManager::handleRm(const QStringList& args)
 {
-    // bool ok;
-    // int index = args[0].toInt(&ok);
-    // if (!ok)
-    //     return;
-    //
-    // auto factory = SessionManager::get().activeFactory();
-    // auto nodes = factory->nodes();
-    //
-    // if (index >= 0 && index < nodes.size()) {
-    //     AbstractNode* target = nodes.at(index);
-    //     SessionManager::get().deleteNode(target);
-    //     return;
-    // }
+    bool ok;
+    int index = args[0].toInt(&ok);
+    if (!ok)
+        return;
+
+    auto factory = SessionManager::get().activeFactory();
+    auto nodes = factory->subNodes();
+
+    if (index >= 0 && index < nodes.size()) {
+        AbstractNode* target = nodes.at(index);
+        SessionManager::get().deleteNode(target);
+        return;
+    }
 }
 
 void CliManager::handleLs()
@@ -407,6 +413,183 @@ void CliManager::handleLs()
             printFactoryNode(m_out, f, factory);
         m_out << "\n";
     }
+}
+
+void CliManager::handleCd(const QStringList& args)
+{
+    if (args.empty()) {
+        m_session->enterFactory(m_session->rootFactory());
+        return;
+    }
+
+    bool ok;
+    int index = args[0].toInt(&ok);
+    if (!ok) {
+        m_out << "Usage: cd <index>  (or cd with no args to go to root)\n";
+        return;
+    }
+
+    auto* factory = SessionManager::get().activeFactory();
+    auto nodes = factory->subNodes();
+
+    if (index < 0 || index >= nodes.size()) {
+        m_out << "No node at index " << index << "\n";
+        return;
+    }
+
+    auto* target = dynamic_cast<FactoryNode*>(nodes.at(index));
+    if (!target) {
+        m_out << "Node " << index << " is not a factory node\n";
+        return;
+    }
+
+    m_session->enterFactory(&target->factory());
+}
+
+void CliManager::handleConnect(const QStringList& args)
+{
+    if (args.size() != 2) {
+        qWarning() << "2 Arguements Are needed for connection ";
+        return;
+    }
+    if (args[0] == "out" || args[0] == "in" || args[1] == "out" || args[1] == "in") {
+        // FIX: factory port connections
+
+        m_out << "Factory port connections not yet implemented\n";
+        return;
+    }
+
+    QString arg1 = args[0];
+    int xPos1 = arg1.indexOf('x');
+    int sourceNodeIdx = arg1.left(xPos1).toInt();
+    int sourcePortIdx = arg1.mid(xPos1 + 1, arg1.length() - xPos1 - 1).toInt();
+
+    QString arg2 = args[1];
+    int xPos2 = arg2.indexOf('x');
+    int destNodeIdx = arg2.left(xPos2).toInt();
+    int destPortIdx = arg2.mid(xPos2 + 1, arg2.length() - xPos2 - 1).toInt();
+
+    SessionManager::get().connectNode(sourceNodeIdx, sourcePortIdx, destNodeIdx, destPortIdx);
+}
+
+void CliManager::handleDisconnect(const QStringList& args)
+{
+    // FIX: improve boundry check
+    QString arg1 = args[0];
+    int xPos1 = arg1.indexOf('x');
+    int sourceNodeIdx = arg1.left(xPos1).toInt();
+    int sourcePortIdx = arg1.mid(xPos1 + 1, arg1.length() - xPos1 - 1).toInt();
+
+    QString arg2 = args.value(1);
+    int destNodeIdx;
+    int destPortIdx;
+
+    if (!arg2.isEmpty()) {
+        int xPos2 = arg2.indexOf('x');
+        destNodeIdx = arg2.left(xPos2).toInt();
+        destPortIdx = arg2.mid(xPos2 + 1, arg2.length() - xPos2 - 1).toInt();
+    }
+
+    SessionManager::get().disconnectNode(sourceNodeIdx, sourcePortIdx, destNodeIdx, destPortIdx);
+}
+
+void CliManager::handleLimit(const QStringList& args)
+{
+    //FIX: check agian
+    if (args.size() < 2) {
+        m_out << "Usage: limit <nodeIndex> <value>  (use -1 to remove limit)\n";
+        return;
+    }
+    bool okIdx, okVal;
+    int index = args[0].toInt(&okIdx);
+    float value = args[1].toFloat(&okVal);
+    if (!okIdx || !okVal) {
+        m_out << "Usage: limit <nodeIndex> <value>\n";
+        return;
+    }
+    auto* factory = SessionManager::get().activeFactory();
+    if (index < 0 || index >= factory->subNodes().size()) {
+        m_out << "No node at index " << index << "\n";
+        return;
+    }
+    AbstractNode* node = factory->subNodes().at(index);
+    SessionManager::get().setMachineLimit(node, value);
+    m_out << "Limit set to " << value << " on node " << index << "\n";
+}
+
+void CliManager::handlePurity(const QStringList& args)
+{
+    //FIX: check agian
+    if (args.size() < 2) {
+        m_out << "Usage: purity <nodeIndex> <impure|normal|pure>\n";
+        return;
+    }
+    bool ok;
+    int index = args[0].toInt(&ok);
+    if (!ok) {
+        m_out << "Usage: purity <nodeIndex> <impure|normal|pure>\n";
+        return;
+    }
+    QString val = args[1].toLower();
+    NodePurity purity;
+    if (val == "impure")      purity = NodePurity::Impure;
+    else if (val == "normal") purity = NodePurity::Normal;
+    else if (val == "pure")   purity = NodePurity::Pure;
+    else {
+        m_out << "Unknown purity: " << args[1] << ". Expected: impure, normal, pure\n";
+        return;
+    }
+    auto* factory = SessionManager::get().activeFactory();
+    if (index < 0 || index >= factory->subNodes().size()) {
+        m_out << "No node at index " << index << "\n";
+        return;
+    }
+    SessionManager::get().setExtractionPurity(factory->subNodes().at(index), purity);
+    m_out << "Purity set to " << args[1] << " on node " << index << "\n";
+}
+
+void CliManager::handleTier(const QStringList& args)
+{
+    //FIX: check agian
+    if (args.size() < 2) {
+        m_out << "Usage: tier <nodeIndex> <tierIndex>\n";
+        return;
+    }
+    bool okIdx, okTier;
+    int index = args[0].toInt(&okIdx);
+    int tier  = args[1].toInt(&okTier);
+    if (!okIdx || !okTier) {
+        m_out << "Usage: tier <nodeIndex> <tierIndex>\n";
+        return;
+    }
+    auto* factory = SessionManager::get().activeFactory();
+    if (index < 0 || index >= factory->subNodes().size()) {
+        m_out << "No node at index " << index << "\n";
+        return;
+    }
+    SessionManager::get().setExtractionTier(factory->subNodes().at(index), tier);
+    m_out << "Tier set to " << tier << " on node " << index << "\n";
+}
+void CliManager::handleRename(const QStringList& args)
+{
+    if (args.size() != 2){
+        qWarning() << "Rename need 2 arguements: ";
+        return;
+    }
+
+    bool ok = false;
+    int index = args[0].toInt(&ok);
+    if (!ok) {
+        qWarning() << "Invalid index: " << index;
+        return;
+    }
+    QString newName = args[1];
+    if (newName.isEmpty()) {
+        qWarning() << "Invalid Name: " << newName;
+        return;
+    }
+
+    SessionManager::get().renameNode(index, newName);
 }
 
 // -------------------- SLOTS --------------------------

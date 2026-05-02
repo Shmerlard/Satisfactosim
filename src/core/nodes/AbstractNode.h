@@ -32,9 +32,10 @@ public:
 
     const QList<Port*>& inputs() const { return m_inputs; }
     const QList<Port*>& outputs() const { return m_outputs; }
+    void setName(QString name) { m_name = name; }
 
     int index() const;
     int getPortIndex(Port& port) const;
     Port* getPortFromIndex(int index) const;
-    bool connectToPort(Port& src, Port& dst);
+    bool connectToPort(Port& src, Port& dst, QString* err = nullptr);
 };

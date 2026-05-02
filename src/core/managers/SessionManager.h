@@ -1,9 +1,9 @@
 #pragma once
 
+#include "core/nodes/ExtractionNode.h"
 #include "core/nodes/Factory.h"
 #include "core/nodes/FactoryNode.h"
 #include "core/nodes/ProductionNode.h"
-#include "core/nodes/ExtractionNode.h"
 #include "core/types/Types.h"
 // #include "Solver.h"
 // #include "gui/models/SceneModel.h"
@@ -25,6 +25,9 @@ private:
     {
         m_rootFactory = new Factory(nullptr, QString("Main Factory"));
         m_activeFactory = m_rootFactory;
+        ProductionNode* t1 = createProductionNodeByClass("Recipe_IngotIron_C");
+        ProductionNode* t2 = createProductionNodeByClass("Recipe_IronPlate_C");
+
         // m_sceneModel = new SceneModel(this, this);
         // connect(this, &SessionManager::nodeAdded, m_sceneModel, &SceneModel::onNodeAdded);
         // m_sceneModel->loadFromFactory(m_rootFactory);
@@ -56,12 +59,16 @@ public slots:
     Factory* createFactory(Factory* parent = nullptr, QString name = QString());
     void enterFactory(Factory* f);
     //
-    // void connectNode(Port* src, Port* dest);
-    // void connectNode(int srcNode, int srcPort, int dstNode, int dstPort);
-    // void deleteNode(AbstractNode* node);
-    // void setMachineLimit(AbstractNode* node, float limit);
-    // void setExtractionPurity(AbstractNode* node, NodePurity purity);
-    // void setExtractionTier(AbstractNode* node, int tier);
+    void connectNode(Port* src, Port* dest);
+    void connectNode(int srcNode, int srcPort, int dstNode, int dstPort);
+    void disconnectNode(Port* src, Port* dest);
+    void disconnectNode(int srcNode, int srcPort, int dstNode, int dstPort);
+
+    void renameNode(int index, QString name);
+    void deleteNode(AbstractNode* node);
+    void setMachineLimit(AbstractNode* node, float limit);
+    void setExtractionPurity(AbstractNode* node, NodePurity purity);
+    void setExtractionTier(AbstractNode* node, int tier);
     // Solver::Result solve();
 
 public:
@@ -81,5 +88,4 @@ public:
     // SceneModel* activeModel()   const { return m_sceneModel; }
 
     QList<Factory*> getSubFactories() const { return m_activeFactory->subFactories(); };
-
 };

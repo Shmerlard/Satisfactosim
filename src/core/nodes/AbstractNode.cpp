@@ -45,19 +45,32 @@ Port* AbstractNode::getPortFromIndex(int index) const
     return nullptr;
 }
 
-bool AbstractNode::connectToPort(Port& src, Port& dst)
+// FIX: check the validity of err
+bool AbstractNode::connectToPort(Port& src, Port& dst, QString* err)
 {
-    if (&dst.owner == &src.owner)
+    QString _dummy;
+    if (!err) err= &_dummy;
+    if (&dst.owner == &src.owner){
+        *err = "source and destination belong to the same node!";
         return false;
-    if (dst.type == src.type)
+    }
+    if (dst.type == src.type) {
+        *err = "source and destination are the same type!";
         return false;
-    if (dst.connectedTo.contains(&src) || src.connectedTo.contains(&dst))
+    }
+    if (dst.connectedTo.contains(&src) || src.connectedTo.contains(&dst)) {
+        *err = "source and destination are already connected!";
         return false;
-    if (src.item && dst.item && src.item != dst.item)
+    }
+    if (src.item && dst.item && src.item != dst.item) {
+        // FIX: maybe not needed because i might create to empty port that
+        // wasnt initialized yet, like in factory
+        *err = "ERROR";
         return false;
+    }
     // TODO: see what happens when one of them is false
     dst.connectedTo.append(&src);
     src.connectedTo.append(&dst);
-    // call update
+    err->clear();
     return true;
 }

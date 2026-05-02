@@ -22,6 +22,15 @@ private:
     void handleAddFact(const QStringList& parts);
     void handleRm(const QStringList& args);
     void handleLs();
+    void handleCd(const QStringList& args);
+    void handleConnect(const QStringList& args);
+    void handleDisconnect(const QStringList& args);
+    void handleLimit(const QStringList& args);
+    void handlePurity(const QStringList& args);
+    void handleTier(const QStringList& args);
+    // void handleSolve();
+    void handleRename(const QStringList& args);
+    // void handleHelp();
 
 private slots:
     void onInputReady();
@@ -32,7 +41,4 @@ signals:
 public:
     explicit CliManager(QObject* parent = nullptr);
     ~CliManager();
-
-    void start();
-    void run();
 };

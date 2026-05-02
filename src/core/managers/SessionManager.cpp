@@ -52,3 +52,133 @@ void SessionManager::enterFactory(Factory* f)
     emit factoryChanged(f);
     // emit activeFactoryChanged();
 }
+
+// FIX: maybe move this function to be internal
+void SessionManager::connectNode(Port* src, Port* dest)
+{
+    if (!src || !dest)
+        return;
+    int srcIdx = src->owner.getPortIndex(*src);
+    int destIdx = dest->owner.getPortIndex(*dest);
+    QString err;
+    if (src->owner.connectToPort(*src, *dest, &err)) {
+        qDebug() << "Connected:" << src->owner.name() << "[port" << srcIdx << "]"
+                 << "->" << dest->owner.name() << "[port" << destIdx << "]";
+        emit portsConnected(&src->owner, srcIdx, &dest->owner, destIdx);
+        emit nodeConnected();
+        return;
+    }
+    qWarning() << "Connect failed:" << err;
+}
+
+void SessionManager::connectNode(int srcNode, int srcPort, int dstNode, int dstPort)
+{
+    AbstractNode* srcNode_p = m_activeFactory->subNodes().value(srcNode);
+    AbstractNode* dstNode_p = m_activeFactory->subNodes().value(dstNode);
+    if (!srcNode_p || !dstNode_p) {
+        qWarning() << "Invalid Source or Destination Node";
+        return;
+    }
+    Port* srcPort_p = srcNode_p->getPortFromIndex(srcPort);
+    Port* dstPort_p = dstNode_p->getPortFromIndex(dstPort);
+    if (!srcPort_p || !dstPort_p) {
+        qWarning() << "Invalid Source or Destination Port";
+        return;
+    }
+    connectNode(srcPort_p, dstPort_p);
+}
+
+void SessionManager::disconnectNode(Port* src, Port* dest)
+{
+    if (!src) {
+        qWarning() << "No Source Port Found";
+        return;
+    }
+
+    Port* _dest; // for working with implicit dest port
+    if (!dest) {
+        if (src->connectedTo.size() != 1) {
+            qWarning() << "More then one!";
+            return;
+        }
+        _dest = src->connectedTo.value(0);
+    } else {
+        _dest = dest;
+    }
+
+    if (!src->connectedTo.contains(_dest) || !_dest->connectedTo.contains(src)) {
+        qWarning() << "Ports are not connected!";
+        return;
+    }
+
+    // FIX: seperate between them
+    if (!src->connectedTo.removeOne(_dest) || !_dest->connectedTo.removeOne(src)) {
+        qWarning() << "Error removing!";
+        return;
+    }
+    qDebug() << "Disconnected!";
+}
+
+void SessionManager::disconnectNode(int srcNode, int srcPort, int dstNode, int dstPort)
+{
+    // TODO: its basically the same as connect, improve this
+    AbstractNode* srcNode_p = m_activeFactory->subNodes().value(srcNode);
+    AbstractNode* dstNode_p = m_activeFactory->subNodes().value(dstNode);
+    if (!srcNode_p || !dstNode_p) {
+        qWarning() << "Invalid Source or Destination Node";
+        return;
+    }
+    Port* srcPort_p = srcNode_p->getPortFromIndex(srcPort);
+    Port* dstPort_p = dstNode_p->getPortFromIndex(dstPort);
+    if (!srcPort_p || !dstPort_p) {
+        qWarning() << "Invalid Source or Destination Port";
+        return;
+    }
+    disconnectNode(srcPort_p, dstPort_p);
+}
+
+void SessionManager::renameNode(int index, QString name)
+{
+    if (name.isEmpty()) {
+        qWarning() << "Invalid Name: " << name;
+        return;
+    }
+
+    // FIX: boundry check
+    AbstractNode* node = m_activeFactory->subNodes().value(index);
+    if (!node) {
+        qWarning() << "Invalid Index: " << index;
+        return;
+    }
+    node->setName(name);
+    qDebug() << "Node renamed to " << name;
+}
+
+void SessionManager::deleteNode(AbstractNode* node)
+{
+    // FIXME: fix implementation!
+    if (!node)
+        return;
+    if (node->parentFactory())
+        node->parentFactory()->removeNode(*node);
+    emit nodeRemoved(node);
+    delete node;
+}
+
+void SessionManager::setExtractionTier(AbstractNode* node, int tier)
+{
+    if (auto* en = dynamic_cast<ExtractionNode*>(node))
+        en->m_tier = tier;
+}
+
+void SessionManager::setExtractionPurity(AbstractNode* node, NodePurity purity)
+{
+    if (auto* en = dynamic_cast<ExtractionNode*>(node))
+        en->setPurity(purity);
+}
+
+void SessionManager::setMachineLimit(AbstractNode* node, float limit)
+{
+    if (auto* mn = dynamic_cast<MachineNode*>(node))
+        mn->setMachineLimit(limit);
+}
