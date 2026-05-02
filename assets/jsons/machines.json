@@ -1,0 +1,140 @@
+{
+    "ProductionMachines": [
+        {
+            "Class": "Build_ConstructorMk1_C",
+            "DisplayName": "Constructor",
+            "PowerConsumption": "4.000000"
+        },
+        {
+            "Class": "Build_SmelterMk1_C",
+            "DisplayName": "Smelter",
+            "PowerConsumption": "4.000000"
+        },
+        {
+            "Class": "Build_FoundryMk1_C",
+            "DisplayName": "Foundry",
+            "PowerConsumption": "16.000000"
+        },
+        {
+            "Class": "Build_OilRefinery_C",
+            "DisplayName": "Refinery",
+            "PowerConsumption": "30.000000"
+        },
+        {
+            "Class": "Build_Packager_C",
+            "DisplayName": "Packager",
+            "PowerConsumption": "10.000000"
+        },
+        {
+            "Class": "Build_ManufacturerMk1_C",
+            "DisplayName": "Manufacturer",
+            "PowerConsumption": "55.000000"
+        },
+        {
+            "Class": "Build_AssemblerMk1_C",
+            "DisplayName": "Assembler",
+            "PowerConsumption": "15.000000"
+        },
+        {
+            "Class": "Build_Blender_C",
+            "DisplayName": "Blender",
+            "PowerConsumption": "75.000000"
+        },
+        {
+            "Class": "Build_HadronCollider_C",
+            "DisplayName": "Particle Accelerator",
+            "PowerConsumption": "0.000000"
+        },
+        {
+            "Class": "Build_Converter_C",
+            "DisplayName": "Converter",
+            "PowerConsumption": "0.000000"
+        },
+        {
+            "Class": "Build_QuantumEncoder_C",
+            "DisplayName": "Quantum Encoder",
+            "PowerConsumption": "0.000000"
+        }
+    ],
+    "ExtractionMachines": [
+        {
+            "Class": "Build_MinerMk1_C",
+            "DisplayName": "Miner Mk.1",
+            "ExtractorTypeName": "Miner",
+            "ExtractCycleTime": "1.000000",
+            "ItemsPerCycle": "1",
+            "OnlyAllowCertainResources": false,
+            "AllowedResourceForms": [
+                "RF_SOLID"
+            ],
+            "AllowedResources": [],
+            "PowerConsumption": "5.000000",
+            "PowerConsumptionExponent": "1.321929",
+            "ProductionBoostPowerConsumptionExponent": "2.000000"
+        },
+        {
+            "Class": "Build_OilPump_C",
+            "DisplayName": "Oil Extractor",
+            "ExtractorTypeName": "OilPump",
+            "ExtractCycleTime": "1.000000",
+            "ItemsPerCycle": "2000",
+            "OnlyAllowCertainResources": true,
+            "AllowedResourceForms": [
+                "RF_LIQUID"
+            ],
+            "AllowedResources": [
+                "Desc_LiquidOil_C"
+            ],
+            "PowerConsumption": "40.000000",
+            "PowerConsumptionExponent": "1.321929",
+            "ProductionBoostPowerConsumptionExponent": "2.000000"
+        },
+        {
+            "Class": "Build_MinerMk2_C",
+            "DisplayName": "Miner Mk.2",
+            "ExtractorTypeName": "Miner",
+            "ExtractCycleTime": "0.500000",
+            "ItemsPerCycle": "1",
+            "OnlyAllowCertainResources": false,
+            "AllowedResourceForms": [
+                "RF_SOLID"
+            ],
+            "AllowedResources": [],
+            "PowerConsumption": "15.000000",
+            "PowerConsumptionExponent": "1.321929",
+            "ProductionBoostPowerConsumptionExponent": "2.000000"
+        },
+        {
+            "Class": "Build_MinerMk3_C",
+            "DisplayName": "Miner Mk.3",
+            "ExtractorTypeName": "Miner",
+            "ExtractCycleTime": "0.250000",
+            "ItemsPerCycle": "1",
+            "OnlyAllowCertainResources": false,
+            "AllowedResourceForms": [
+                "RF_SOLID"
+            ],
+            "AllowedResources": [],
+            "PowerConsumption": "45.000000",
+            "PowerConsumptionExponent": "1.321929",
+            "ProductionBoostPowerConsumptionExponent": "2.000000"
+        },
+        {
+            "Class": "Build_WaterPump_C",
+            "DisplayName": "Water Extractor",
+            "ExtractorTypeName": "WaterPump",
+            "ExtractCycleTime": "1.000000",
+            "ItemsPerCycle": "2000",
+            "OnlyAllowCertainResources": true,
+            "AllowedResourceForms": [
+                "RF_LIQUID"
+            ],
+            "AllowedResources": [
+                "Desc_Water_C"
+            ],
+            "PowerConsumption": "20.000000",
+            "PowerConsumptionExponent": "1.321929",
+            "ProductionBoostPowerConsumptionExponent": "2.000000"
+        }
+    ]
+}

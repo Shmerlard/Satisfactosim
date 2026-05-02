@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>assets/jsons/items.json</file>
+        <file>assets/jsons/machines.json</file>
+        <file>assets/jsons/recipes.json</file>
+    </qresource>
+</RCC>

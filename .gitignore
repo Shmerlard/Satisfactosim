@@ -1,0 +1,9 @@
+.nix_shell_history
+.clangd
+.direnv/
+build/
+assets/icons
+.cache
+.qmlls.ini
+assets/jsons/Docs.json
+.envrc

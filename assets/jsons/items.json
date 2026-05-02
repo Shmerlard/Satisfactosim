@@ -1,0 +1,1246 @@
+{
+    "Items": [
+        {
+            "Class": "Desc_IronPlate_C",
+            "DisplayName": "Iron Plate",
+            "SinkPoints": "6",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/IronPlate/UI/IconDesc_IronPlates_256.IconDesc_IronPlates_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_IronRod_C",
+            "DisplayName": "Iron Rod",
+            "SinkPoints": "4",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/IronRod/UI/IconDesc_IronRods_256.IconDesc_IronRods_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Cable_C",
+            "DisplayName": "Cable",
+            "SinkPoints": "24",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Cable/UI/IconDesc_Cables_256.IconDesc_Cables_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_IronPlateReinforced_C",
+            "DisplayName": "Reinforced Iron Plate",
+            "SinkPoints": "120",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/IronPlateReinforced/UI/IconDesc_ReinforcedIronPlates_256.IconDesc_ReinforcedIronPlates_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Wire_C",
+            "DisplayName": "Wire",
+            "SinkPoints": "6",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Wire/UI/IconDesc_Wire_256.IconDesc_Wire_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_IronIngot_C",
+            "DisplayName": "Iron Ingot",
+            "SinkPoints": "2",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/IronIngot/UI/IconDesc_IronIngot_256.IconDesc_IronIngot_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SteelIngot_C",
+            "DisplayName": "Steel Ingot",
+            "SinkPoints": "8",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/SteelIngot/UI/IconDesc_SteelIngot_256.IconDesc_SteelIngot_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_HazmatFilter_C",
+            "DisplayName": "Iodine-Infused Filter",
+            "SinkPoints": "2274",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/IodineInfusedFilter/UI/IconDesc_HazmatFilter_256.IconDesc_HazmatFilter_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Filter_C",
+            "DisplayName": "Gas Filter",
+            "SinkPoints": "608",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Filter/UI/IconDesc_GasMaskFilter_256.IconDesc_GasMaskFilter_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_AluminumCasing_C",
+            "DisplayName": "Aluminum Casing",
+            "SinkPoints": "393",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/AluminumCasing/UI/IconDesc_AluminiumCasing_256.IconDesc_AluminiumCasing_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_AluminumIngot_C",
+            "DisplayName": "Aluminum Ingot",
+            "SinkPoints": "131",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/AluminumIngot/UI/IconDesc_AluminiumIngot_256.IconDesc_AluminiumIngot_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_AluminumPlate_C",
+            "DisplayName": "Alclad Aluminum Sheet",
+            "SinkPoints": "266",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/AluminumPlate/UI/IconDesc_AluminiumSheet_256.IconDesc_AluminiumSheet_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_AluminumPlateReinforced_C",
+            "DisplayName": "Heat Sink",
+            "SinkPoints": "2804",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/HeatSink/UI/IconDesc_Heatsink_256.IconDesc_Heatsink_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_AluminumScrap_C",
+            "DisplayName": "Aluminum Scrap",
+            "SinkPoints": "27",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/AluminumScrap/UI/IconDesc_AluminiumScrap_256.IconDesc_AluminiumScrap_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Computer_C",
+            "DisplayName": "Computer",
+            "SinkPoints": "8352",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Computer/UI/IconDesc_Computer_256.IconDesc_Computer_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_CopperIngot_C",
+            "DisplayName": "Copper Ingot",
+            "SinkPoints": "6",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/CopperIngot/UI/IconDesc_CopperIngot_256.IconDesc_CopperIngot_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_CopperSheet_C",
+            "DisplayName": "Copper Sheet",
+            "SinkPoints": "24",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/CopperSheet/UI/IconDesc_CopperSheet_256.IconDesc_CopperSheet_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_ModularFrame_C",
+            "DisplayName": "Modular Frame",
+            "SinkPoints": "408",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/ModularFrame/UI/IconDesc_ModularFrame_256.IconDesc_ModularFrame_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_ModularFrameHeavy_C",
+            "DisplayName": "Heavy Modular Frame",
+            "SinkPoints": "10800",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/ModularFrameHeavy/UI/IconDesc_ModularFrameHeavy_256.IconDesc_ModularFrameHeavy_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Motor_C",
+            "DisplayName": "Motor",
+            "SinkPoints": "1520",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Motor/UI/IconDesc_Engine_256.IconDesc_Engine_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Rotor_C",
+            "DisplayName": "Rotor",
+            "SinkPoints": "140",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Rotor/UI/IconDesc_Rotor_256.IconDesc_Rotor_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SteelPipe_C",
+            "DisplayName": "Steel Pipe",
+            "SinkPoints": "24",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/SteelPipe/UI/IconDesc_SteelPipe_256.IconDesc_SteelPipe_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SteelPlate_C",
+            "DisplayName": "Steel Beam",
+            "SinkPoints": "64",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/SteelPlate/UI/IconDesc_SteelBeam_256.IconDesc_SteelBeam_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SteelPlateReinforced_C",
+            "DisplayName": "Encased Industrial Beam",
+            "SinkPoints": "528",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/SteelPlateReinforced/UI/IconDesc_EncasedSteelBeam_256.IconDesc_EncasedSteelBeam_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Fuel_C",
+            "DisplayName": "Packaged Fuel",
+            "SinkPoints": "270",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Fuel/UI/IconDesc_Fuel_256.IconDesc_Fuel_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_PackagedIonizedFuel_C",
+            "DisplayName": "Packaged Ionized Fuel",
+            "SinkPoints": "5246",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/IonizedFuel/UI/IconDesc_IonizedRocketFuel_256.IconDesc_IonizedRocketFuel_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_PackagedRocketFuel_C",
+            "DisplayName": "Packaged Rocket Fuel",
+            "SinkPoints": "1028",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/RocketFuel/UI/IconDesc_PackagedRocketFuel_256.IconDesc_PackagedRocketFuel_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_TurboFuel_C",
+            "DisplayName": "Packaged Turbofuel",
+            "SinkPoints": "570",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Turbofuel/UI/IconDesc_TurboFuel_256.IconDesc_TurboFuel_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Cement_C",
+            "DisplayName": "Concrete",
+            "SinkPoints": "12",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Cement/UI/IconDesc_Concrete_256.IconDesc_Concrete_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_IronScrew_C",
+            "DisplayName": "Screws",
+            "SinkPoints": "2",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/IronScrew/UI/IconDesc_IronScrews_256.IconDesc_IronScrews_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SpaceElevatorPart_1_C",
+            "DisplayName": "Smart Plating",
+            "SinkPoints": "520",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/SmartPlate/UI/IconDesc_SpelevatorPart_1_256.IconDesc_SpelevatorPart_1_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SpaceElevatorPart_2_C",
+            "DisplayName": "Versatile Framework",
+            "SinkPoints": "1176",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Skeletalframework/UI/IconDesc_SpelevatorPart_2_256.IconDesc_SpelevatorPart_2_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SpaceElevatorPart_3_C",
+            "DisplayName": "Automated Wiring",
+            "SinkPoints": "1440",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/AutomatedWiring/UI/SpelevatorPart_3_256.SpelevatorPart_3_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SpaceElevatorPart_4_C",
+            "DisplayName": "Modular Engine",
+            "SinkPoints": "9960",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/ModularEngine/UI/IconDesc_SpelevatorPart_4_256.IconDesc_SpelevatorPart_4_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SpaceElevatorPart_5_C",
+            "DisplayName": "Adaptive Control Unit",
+            "SinkPoints": "76368",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/ControlSystem/UI/IconDesc_SpelevatorPart_5_256.IconDesc_SpelevatorPart_5_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SpaceElevatorPart_6_C",
+            "DisplayName": "Magnetic Field Generator",
+            "SinkPoints": "11000",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/MagneticFieldGenerator/UI/IconDesc_MagneticFieldGenerator_256.IconDesc_MagneticFieldGenerator_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SpaceElevatorPart_7_C",
+            "DisplayName": "Assembly Director System",
+            "SinkPoints": "500176",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/AssemblyControlUnit/UI/IconDesc_AssemblyDirectorSystem_256.IconDesc_AssemblyDirectorSystem_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SpaceElevatorPart_8_C",
+            "DisplayName": "Thermal Propulsion Rocket",
+            "SinkPoints": "728508",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/ThermalAntimatterPropulsionRocket/UI/IconDesc_ThermalPropulsionRocket_256.IconDesc_ThermalPropulsionRocket_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SpaceElevatorPart_9_C",
+            "DisplayName": "Nuclear Pasta",
+            "SinkPoints": "538976",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/NuclearPasta/UI/IconDesc_NuclearPasta_256.IconDesc_NuclearPasta_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SpaceElevatorPart_11_C",
+            "DisplayName": "Ballistic Warp Drive",
+            "SinkPoints": "2895334",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/BallisticWarpdrive/UI/IconDesc_BallisticWarpDrive_256.IconDesc_BallisticWarpDrive_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SpaceElevatorPart_12_C",
+            "DisplayName": "AI Expansion Server",
+            "SinkPoints": "597652",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/AIExpansion/_UI/IconDesc_AIExpension_256.IconDesc_AIExpension_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SpaceElevatorPart_10_C",
+            "DisplayName": "Biochemical Sculptor",
+            "SinkPoints": "301778",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/BiochemicalSculptor/UI/IconDesc_BiochemicalSculptor_256.IconDesc_BiochemicalSculptor_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Silica_C",
+            "DisplayName": "Silica",
+            "SinkPoints": "20",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Silica/UI/IconDesc_Silica_256.IconDesc_Silica_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_LiquidFuel_C",
+            "DisplayName": "Fuel",
+            "SinkPoints": "75",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Fuel/UI/IconDesc_LiquidFuel_Pipe_256.IconDesc_LiquidFuel_Pipe_256",
+            "Form": "RF_LIQUID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Plastic_C",
+            "DisplayName": "Plastic",
+            "SinkPoints": "75",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Plastic/UI/IconDesc_Plastic_256.IconDesc_Plastic_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_CircuitBoard_C",
+            "DisplayName": "Circuit Board",
+            "SinkPoints": "696",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/CircuitBoard/UI/IconDesc_CircuitBoard_256.IconDesc_CircuitBoard_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Rubber_C",
+            "DisplayName": "Rubber",
+            "SinkPoints": "60",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Rubber/UI/IconDesc_Rubber_256.IconDesc_Rubber_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_PolymerResin_C",
+            "DisplayName": "Polymer Resin",
+            "SinkPoints": "12",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/PolymerResin/UI/IconDesc_PolymerResin_256.IconDesc_PolymerResin_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_HeavyOilResidue_C",
+            "DisplayName": "Heavy Oil Residue",
+            "SinkPoints": "30",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/HeavyOilResidue/UI/IconDesc_LiquidHeavyOilResidue_Pipe_256.IconDesc_LiquidHeavyOilResidue_Pipe_256",
+            "Form": "RF_LIQUID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_PetroleumCoke_C",
+            "DisplayName": "Petroleum Coke",
+            "SinkPoints": "20",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/PetroleumCoke/UI/IconDesc_PetroleumCoke_256.IconDesc_PetroleumCoke_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_HighSpeedWire_C",
+            "DisplayName": "Quickwire",
+            "SinkPoints": "17",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/HighSpeedWire/UI/IconDesc_Quickwire_256.IconDesc_Quickwire_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_HighSpeedConnector_C",
+            "DisplayName": "High-Speed Connector",
+            "SinkPoints": "3776",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/HighSpeedConnector/UI/IconDesc_HighSpeedConnector_256.IconDesc_HighSpeedConnector_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_NuclearWaste_C",
+            "DisplayName": "Uranium Waste",
+            "SinkPoints": "0",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/NuclearWaste/UI/IconDesc_NuclearWaste_256.IconDesc_NuclearWaste_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_PlutoniumWaste_C",
+            "DisplayName": "Plutonium Waste",
+            "SinkPoints": "0",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/NuclearWaste/UI/IconDesc_PlutoniumWaste_256.IconDesc_PlutoniumWaste_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_CoolingSystem_C",
+            "DisplayName": "Cooling System",
+            "SinkPoints": "12006",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/CoolingSystem/UI/IconDesc_CoolingSystem_256.IconDesc_CoolingSystem_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_CrystalOscillator_C",
+            "DisplayName": "Crystal Oscillator",
+            "SinkPoints": "3072",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/CrystalOscillator/UI/IconDesc_CrystalOscillator_256.IconDesc_CrystalOscillator_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_ElectromagneticControlRod_C",
+            "DisplayName": "Electromagnetic Control Rod",
+            "SinkPoints": "2560",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/ElectromagneticControlRod/UI/IconDesc_ElectromagneticControlRod_256.IconDesc_ElectromagneticControlRod_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_ModularFrameFused_C",
+            "DisplayName": "Fused Modular Frame",
+            "SinkPoints": "62840",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/ModularFrameFused/UI/IconDesc_FusedModularFrame_256.IconDesc_FusedModularFrame_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_MotorLightweight_C",
+            "DisplayName": "Turbo Motor",
+            "SinkPoints": "240496",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/TurboMotor/UI/IconDesc_TurboMotor_256.IconDesc_TurboMotor_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_QuartzCrystal_C",
+            "DisplayName": "Quartz Crystal",
+            "SinkPoints": "50",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/QuartzCrystal/UI/IconDesc_QuartzResource_256.IconDesc_QuartzResource_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Stator_C",
+            "DisplayName": "Stator",
+            "SinkPoints": "240",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Stator/UI/IconDesc_Stator_256.IconDesc_Stator_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Crystal_C",
+            "DisplayName": "Blue Power Slug",
+            "SinkPoints": "0",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Environment/Crystal/UI/PowerSlugGreen_256.PowerSlugGreen_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Crystal_mk2_C",
+            "DisplayName": "Yellow Power Slug",
+            "SinkPoints": "0",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Environment/Crystal/UI/PowerSlugYellow_256.PowerSlugYellow_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Crystal_mk3_C",
+            "DisplayName": "Purple Power Slug",
+            "SinkPoints": "0",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Environment/Crystal/UI/PowerSlugPurple_256.PowerSlugPurple_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Battery_C",
+            "DisplayName": "Battery",
+            "SinkPoints": "465",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Battery/UI/IconDesc_Battery_256.IconDesc_Battery_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_GoldIngot_C",
+            "DisplayName": "Caterium Ingot",
+            "SinkPoints": "42",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/GoldIngot/UI/IconDesc_CateriumIngot_256.IconDesc_CateriumIngot_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_CircuitBoardHighSpeed_C",
+            "DisplayName": "AI Limiter",
+            "SinkPoints": "920",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/AIlimiter/UI/IconDesc_AILimiter_256.IconDesc_AILimiter_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_NitricAcid_C",
+            "DisplayName": "Nitric Acid",
+            "SinkPoints": "94",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/NitricAcid/UI/IconDesc_NitricAcid_256.IconDesc_NitricAcid_256",
+            "Form": "RF_LIQUID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SulfuricAcid_C",
+            "DisplayName": "Sulfuric Acid",
+            "SinkPoints": "16",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/SulfuricAcid/UI/IconDesc_LiquidSulfuricAcid_Pipe_256.IconDesc_LiquidSulfuricAcid_Pipe_256",
+            "Form": "RF_LIQUID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Gunpowder_C",
+            "DisplayName": "Black Powder",
+            "SinkPoints": "14",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/GunPowder/UI/IconDesc_Gunpowder_256.IconDesc_Gunpowder_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_PlutoniumCell_C",
+            "DisplayName": "Encased Plutonium Cell",
+            "SinkPoints": "0",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/PlutoniumCell/UI/IconDesc_EncasedPlutoniumCell_256.IconDesc_EncasedPlutoniumCell_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_PlutoniumPellet_C",
+            "DisplayName": "Plutonium Pellet",
+            "SinkPoints": "0",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/PlutoniumPellet/UI/IconDesc_PlutoniumPellet_256.IconDesc_PlutoniumPellet_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_ModularFrameLightweight_C",
+            "DisplayName": "Radio Control Unit",
+            "SinkPoints": "32352",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/RadioControlUnit/UI/IconDesc_RadioControlUnit_256.IconDesc_RadioControlUnit_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_PressureConversionCube_C",
+            "DisplayName": "Pressure Conversion Cube",
+            "SinkPoints": "255088",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/PressureConversionCube/UI/IconDesc_ConversionCube_256.IconDesc_ConversionCube_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_GasTank_C",
+            "DisplayName": "Empty Fluid Tank",
+            "SinkPoints": "170",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/GasTank/UI/IconDesc_PressureTank_256.IconDesc_PressureTank_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_NonFissibleUranium_C",
+            "DisplayName": "Non-Fissile Uranium",
+            "SinkPoints": "0",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Non-FissibleUranium/UI/IconDesc_NonFissileUranium_256.IconDesc_NonFissileUranium_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_ComputerSuper_C",
+            "DisplayName": "Supercomputer",
+            "SinkPoints": "97352",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/ComputerQuantum/UI/IconDesc_QuantumComputer_256.IconDesc_QuantumComputer_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_CopperDust_C",
+            "DisplayName": "Copper Powder",
+            "SinkPoints": "72",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/CopperDust/UI/IconDesc_CopperDust_256.IconDesc_CopperDust_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_TimeCrystal_C",
+            "DisplayName": "Time Crystal",
+            "SinkPoints": "960",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/ExoticMatter/UI/IconDesc_ExoticMatter_256.IconDesc_ExoticMatter_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Diamond_C",
+            "DisplayName": "Diamonds",
+            "SinkPoints": "240",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Diamond/UI/IconDesc_Diamonds_256.IconDesc_Diamonds_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SAMFluctuator_C",
+            "DisplayName": "SAM Fluctuator",
+            "SinkPoints": "1968",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/SAMFluctuator/UI/IconDesc_SamFluctuator_256.IconDesc_SamFluctuator_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SAMIngot_C",
+            "DisplayName": "Reanimated SAM",
+            "SinkPoints": "160",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/ReanimatedSAM/UI/IconDesc_ReanimatedSam_256.IconDesc_ReanimatedSam_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_FicsiteIngot_C",
+            "DisplayName": "Ficsite Ingot",
+            "SinkPoints": "1936",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/FicsiteIngot/UI/IconDesc_FicsiteIngot_256.IconDesc_FicsiteIngot_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_FicsiteMesh_C",
+            "DisplayName": "Ficsite Trigon",
+            "SinkPoints": "1291",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/FicsiteMesh/UI/IconDesc_FicsiteMesh_256.IconDesc_FicsiteMesh_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_DarkEnergy_C",
+            "DisplayName": "Dark Matter Residue",
+            "SinkPoints": "130",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/DarkEnergy/UI/IconDesc_DarkEnergy_256.IconDesc_DarkEnergy_256",
+            "Form": "RF_GAS",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_QuantumEnergy_C",
+            "DisplayName": "Excited Photonic Matter",
+            "SinkPoints": "100",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/QuantumEnergy/IconDesc_QuantumEnergy_256.IconDesc_QuantumEnergy_256",
+            "Form": "RF_GAS",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_DarkMatter_C",
+            "DisplayName": "Dark Matter Crystal",
+            "SinkPoints": "1780",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/TimeCrystal/UI/IconDesc_TimeCrystal_256.IconDesc_TimeCrystal_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_QuantumOscillator_C",
+            "DisplayName": "Superposition Oscillator",
+            "SinkPoints": "37292",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/SuperpositionOscillator/UI/IconDesc_SuperPositionOscillator_256.IconDesc_SuperPositionOscillator_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_TemporalProcessor_C",
+            "DisplayName": "Neural-Quantum Processor",
+            "SinkPoints": "248034",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/TemporalProcessor/UI/IconDesc_TemporalProcessor_256.IconDesc_TemporalProcessor_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_RocketFuel_C",
+            "DisplayName": "Rocket Fuel",
+            "SinkPoints": "289",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/RocketFuel/UI/IconDesc_RocketFuelPipe_256.IconDesc_RocketFuelPipe_256",
+            "Form": "RF_GAS",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_LiquidTurboFuel_C",
+            "DisplayName": "Turbofuel",
+            "SinkPoints": "225",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Turbofuel/UI/IconDesc_LiquidTurboFuel_Pipe_256.IconDesc_LiquidTurboFuel_Pipe_256",
+            "Form": "RF_LIQUID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_CompactedCoal_C",
+            "DisplayName": "Compacted Coal",
+            "SinkPoints": "28",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/CompactedCoal/UI/IconDesc_CompactedCoal_256.IconDesc_CompactedCoal_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_IonizedFuel_C",
+            "DisplayName": "Ionized Fuel",
+            "SinkPoints": "2398",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/IonizedFuel/UI/IconDesc_IonizedFuel_256.IconDesc_IonizedFuel_256",
+            "Form": "RF_GAS",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_UraniumCell_C",
+            "DisplayName": "Encased Uranium Cell",
+            "SinkPoints": "147",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/UraniumCell/UI/IconDesc_NuclearCell_256.IconDesc_NuclearCell_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_AluminaSolution_C",
+            "DisplayName": "Alumina Solution",
+            "SinkPoints": "20",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Alumina/UI/LiquidAlumina_Pipe_256.LiquidAlumina_Pipe_256",
+            "Form": "RF_LIQUID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_FluidCanister_C",
+            "DisplayName": "Empty Canister",
+            "SinkPoints": "60",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/FluidCanister/UI/IconDesc_EmptyCannister_256.IconDesc_EmptyCannister_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_PackagedOil_C",
+            "DisplayName": "Packaged Oil",
+            "SinkPoints": "180",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/CrudeOil/UI/Oil_256.Oil_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_PackagedOilResidue_C",
+            "DisplayName": "Packaged Heavy Oil Residue",
+            "SinkPoints": "180",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/CrudeOil/UI/OilResidue_256.OilResidue_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_PackagedWater_C",
+            "DisplayName": "Packaged Water",
+            "SinkPoints": "130",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/PackagedWater/UI/IconDesc_PackagedWater_256.IconDesc_PackagedWater_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_GunpowderMK2_C",
+            "DisplayName": "Smokeless Powder",
+            "SinkPoints": "58",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/GunPowder/UI/IconDesc_GunpowderMk2_256.IconDesc_GunpowderMk2_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_AlienProtein_C",
+            "DisplayName": "Alien Protein",
+            "SinkPoints": "0",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/AlienProtein/UI/IconDesc_AlienProtein_256.IconDesc_AlienProtein_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_XmasStar_C",
+            "DisplayName": "FICSMAS Wonder Star",
+            "SinkPoints": "6540",
+            "Icon": "Texture2D /Game/FactoryGame/Events/Christmas/Parts/UI/IconDesc_Star_256.IconDesc_Star_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_XmasBallCluster_C",
+            "DisplayName": "FICSMAS Ornament Bundle",
+            "SinkPoints": "100",
+            "Icon": "Texture2D /Game/FactoryGame/Events/Christmas/Parts/UI/IconDesc_Balls_256.IconDesc_Balls_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_XmasBranch_C",
+            "DisplayName": "FICSMAS Tree Branch",
+            "SinkPoints": "2",
+            "Icon": "Texture2D /Game/FactoryGame/Events/Christmas/Parts/UI/IconDesc_Branch_256.IconDesc_Branch_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_XmasWreath_C",
+            "DisplayName": "FICSMAS Wreath",
+            "SinkPoints": "630",
+            "Icon": "Texture2D /Game/FactoryGame/Events/Christmas/Parts/UI/IconDesc_WreathNoBow_256.IconDesc_WreathNoBow_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_XmasDataCartridge4_C",
+            "DisplayName": "FICSMAS Data Cartridge Day 14",
+            "SinkPoints": null,
+            "Icon": "Texture2D /Game/FactoryGame/Events/Christmas/Buildings/UI/IconDesc_FICSMAS_Cartridge_256.IconDesc_FICSMAS_Cartridge_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Gift_C",
+            "DisplayName": "FICSMAS Gift",
+            "SinkPoints": "1",
+            "Icon": "Texture2D /Game/FactoryGame/Events/Christmas/Parts/UI/IconDesc_Gift_256.IconDesc_Gift_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Snow_C",
+            "DisplayName": "FICSMAS Actual Snow",
+            "SinkPoints": "5",
+            "Icon": "Texture2D /Game/FactoryGame/Events/Christmas/Parts/UI/IconDesc_Snow_256.IconDesc_Snow_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_CandyCane_C",
+            "DisplayName": "Candy Cane",
+            "SinkPoints": "6",
+            "Icon": "Texture2D /Game/FactoryGame/Events/Christmas/Parts/UI/IconDesc_CanePart_256.IconDesc_CanePart_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_XmasBow_C",
+            "DisplayName": "FICSMAS Bow",
+            "SinkPoints": "4",
+            "Icon": "Texture2D /Game/FactoryGame/Events/Christmas/Parts/UI/IconDesc_Bow_256.IconDesc_Bow_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_XmasDataCartridge3_C",
+            "DisplayName": "FICSMAS Data Cartridge Day 8",
+            "SinkPoints": null,
+            "Icon": "Texture2D /Game/FactoryGame/Events/Christmas/Buildings/UI/IconDesc_FICSMAS_Cartridge_256.IconDesc_FICSMAS_Cartridge_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_XmasBall1_C",
+            "DisplayName": "Red FICSMAS Ornament",
+            "SinkPoints": "2",
+            "Icon": "Texture2D /Game/FactoryGame/Events/Christmas/Parts/UI/IconDesc_XmasBall_Red_256.IconDesc_XmasBall_Red_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_XmasBall2_C",
+            "DisplayName": "Blue FICSMAS Ornament",
+            "SinkPoints": "1",
+            "Icon": "Texture2D /Game/FactoryGame/Events/Christmas/Parts/UI/IconDesc_XmasBall_Blue_256.IconDesc_XmasBall_Blue_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_XmasBall3_C",
+            "DisplayName": "Copper FICSMAS Ornament",
+            "SinkPoints": "32",
+            "Icon": "Texture2D /Game/FactoryGame/Events/Christmas/Parts/UI/IconDesc_XmasBall_Yellow_256.IconDesc_XmasBall_Yellow_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_XmasBall4_C",
+            "DisplayName": "Iron FICSMAS Ornament",
+            "SinkPoints": "18",
+            "Icon": "Texture2D /Game/FactoryGame/Events/Christmas/Parts/UI/IconDesc_XmasBall_Silver_256.IconDesc_XmasBall_Silver_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_XmasDataCartridge2_C",
+            "DisplayName": "FICSMAS Data Cartridge Day 4",
+            "SinkPoints": null,
+            "Icon": "Texture2D /Game/FactoryGame/Events/Christmas/Buildings/UI/IconDesc_FICSMAS_Cartridge_256.IconDesc_FICSMAS_Cartridge_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_XmasDataCartridge1_C",
+            "DisplayName": "FICSMAS Data Cartridge Day 1",
+            "SinkPoints": null,
+            "Icon": "Texture2D /Game/FactoryGame/Events/Christmas/Buildings/UI/IconDesc_FICSMAS_Cartridge_256.IconDesc_FICSMAS_Cartridge_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_WAT2_C",
+            "DisplayName": "Mercer Sphere",
+            "SinkPoints": "0",
+            "Icon": "Texture2D /Game/FactoryGame/Prototype/WAT/UI/Wat_2_256.Wat_2_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SingularityCell_C",
+            "DisplayName": "Singularity Cell",
+            "SinkPoints": "114675",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/SingularityCell/UI/IconDesc_SingularityCell_256.IconDesc_SingularityCell_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_AlienDNACapsule_C",
+            "DisplayName": "Alien DNA Capsule",
+            "SinkPoints": "0",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/AlienDNACapsule/UI/IconDesc_AlienDNA_256.IconDesc_AlienDNA_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Ficsonium_C",
+            "DisplayName": "Ficsonium",
+            "SinkPoints": "0",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Ficsonium/UI/IconDesc_FicsoniumCell_256.IconDesc_FicsoniumCell_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_DissolvedSilica_C",
+            "DisplayName": "Dissolved Silica",
+            "SinkPoints": "0",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/DissolvedSilica/UI/IconDesc_DissolvedSilica_256.IconDesc_DissolvedSilica_256",
+            "Form": "RF_LIQUID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Biofuel_C",
+            "DisplayName": "Solid Biofuel",
+            "SinkPoints": "48",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/SolidBiofuel/UI/IconDesc_SolidBiofuel_256.IconDesc_SolidBiofuel_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Wood_C",
+            "DisplayName": "Wood",
+            "SinkPoints": "30",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/GenericBiomass/UI/IconDesc_Wood_256.IconDesc_Wood_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Leaves_C",
+            "DisplayName": "Leaves",
+            "SinkPoints": "3",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/GenericBiomass/IconDesc_Leaves_256.IconDesc_Leaves_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_PackagedBiofuel_C",
+            "DisplayName": "Packaged Liquid Biofuel",
+            "SinkPoints": "370",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Turbofuel/UI/IconDesc_LiquidBiofuel_256.IconDesc_LiquidBiofuel_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_GenericBiomass_C",
+            "DisplayName": "Biomass",
+            "SinkPoints": "12",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/GenericBiomass/UI/IconDesc_Biomass_Final_256.IconDesc_Biomass_Final_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_HogParts_C",
+            "DisplayName": "Hog Remains",
+            "SinkPoints": "0",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/AnimalParts/UI/IconDesc_HogPart_256.IconDesc_HogPart_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SpitterParts_C",
+            "DisplayName": "Spitter Remains",
+            "SinkPoints": "0",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/AnimalParts/UI/IconDesc_SpitterPart_256.IconDesc_SpitterPart_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_PackagedNitricAcid_C",
+            "DisplayName": "Packaged Nitric Acid",
+            "SinkPoints": "412",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/NitricAcid/UI/IconDesc_PackagedNitricAcid_256.IconDesc_PackagedNitricAcid_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_PackagedNitrogenGas_C",
+            "DisplayName": "Packaged Nitrogen Gas",
+            "SinkPoints": "312",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/PackagedNitrogen/UI/IconDesc_PackagedNitrogen_256.IconDesc_PackagedNitrogen_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_PackagedAlumina_C",
+            "DisplayName": "Packaged Alumina Solution",
+            "SinkPoints": "160",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/Alumina/UI/IconDesc_PackagedAluminaSolution_256.IconDesc_PackagedAluminaSolution_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_LiquidBiofuel_C",
+            "DisplayName": "Liquid Biofuel",
+            "SinkPoints": "261",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/BioFuel/UI/IconDesc_LiquidBiofuel_Pipe_256.IconDesc_LiquidBiofuel_Pipe_256",
+            "Form": "RF_LIQUID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Fabric_C",
+            "DisplayName": "Fabric",
+            "SinkPoints": "140",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/GenericBiomass/UI/IconDesc_Fabric_256.IconDesc_Fabric_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Mycelia_C",
+            "DisplayName": "Mycelia",
+            "SinkPoints": "10",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/GenericBiomass/UI/IconDesc_Mycelia_256.IconDesc_Mycelia_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_StingerParts_C",
+            "DisplayName": "Stinger Remains",
+            "SinkPoints": "0",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Environment/AnimalParts/UI/IconDesc_StingerPart_256.IconDesc_StingerPart_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_HatcherParts_C",
+            "DisplayName": "Hatcher Remains",
+            "SinkPoints": "0",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Environment/AnimalParts/UI/IconDesc_HatcherPart_256.IconDesc_HatcherPart_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_PackagedSulfuricAcid_C",
+            "DisplayName": "Packaged Sulfuric Acid",
+            "SinkPoints": "152",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/SulfuricAcid/UI/IconDesc_PckagedSulphuricAcid_256.IconDesc_PckagedSulphuricAcid_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_NuclearFuelRod_C",
+            "DisplayName": "Uranium Fuel Rod",
+            "SinkPoints": "43468",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/NuclearFuelRod/UI/IconDesc_NuclearFuelRod_256.IconDesc_NuclearFuelRod_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_PlutoniumFuelRod_C",
+            "DisplayName": "Plutonium Fuel Rod",
+            "SinkPoints": "153184",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/PlutoniumFuelRods/UI/IconDesc_PlutoniumFuelRod_256.IconDesc_PlutoniumFuelRod_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_FicsoniumFuelRod_C",
+            "DisplayName": "Ficsonium Fuel Rod",
+            "SinkPoints": "0",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/FicsoniumFuelRod/UI/IconDesc_FicsoniumFuelRod_256.IconDesc_FicsoniumFuelRod_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_AlienPowerFuel_C",
+            "DisplayName": "Alien Power Matrix",
+            "SinkPoints": "210",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/AlienPowerMatrix/UI/IconDesc_AlienPowerMatrix_256.IconDesc_AlienPowerMatrix_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        }
+    ],
+    "Resources": [
+        {
+            "Class": "Desc_OreIron_C",
+            "DisplayName": "Iron Ore",
+            "SinkPoints": "1",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/Nodes/UI/IconDesc_iron_new_256.IconDesc_iron_new_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Coal_C",
+            "DisplayName": "Coal",
+            "SinkPoints": "3",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/Coal/UI/IconDesc_CoalOre_256.IconDesc_CoalOre_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_OreCopper_C",
+            "DisplayName": "Copper Ore",
+            "SinkPoints": "3",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/Nodes/UI/IconDesc_copper_new_256.IconDesc_copper_new_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Stone_C",
+            "DisplayName": "Limestone",
+            "SinkPoints": "2",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/Stone/UI/Stone_256.Stone_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_RawQuartz_C",
+            "DisplayName": "Raw Quartz",
+            "SinkPoints": "15",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/QuartzCrystal/UI/IconDesc_QuartzCrystal_256.IconDesc_QuartzCrystal_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_LiquidOil_C",
+            "DisplayName": "Crude Oil",
+            "SinkPoints": "30",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/CrudeOil/UI/LiquidOil_Pipe_512.LiquidOil_Pipe_512",
+            "Form": "RF_LIQUID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Water_C",
+            "DisplayName": "Water",
+            "SinkPoints": "5",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/Water/UI/LiquidWater_Pipe_256.LiquidWater_Pipe_256",
+            "Form": "RF_LIQUID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SAM_C",
+            "DisplayName": "SAM",
+            "SinkPoints": "20",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/SAM/UI/IconDesc_SameOre_256.IconDesc_SameOre_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_NitrogenGas_C",
+            "DisplayName": "Nitrogen Gas",
+            "SinkPoints": "10",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/PackagedNitrogen/UI/IconDesc_NitrogenGas_256.IconDesc_NitrogenGas_256",
+            "Form": "RF_GAS",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_OreBauxite_C",
+            "DisplayName": "Bauxite",
+            "SinkPoints": "8",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/Nodes/UI/IconDesc_Bauxite_256.IconDesc_Bauxite_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_OreGold_C",
+            "DisplayName": "Caterium Ore",
+            "SinkPoints": "7",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/Nodes/UI/IconDesc_CateriumOre_256.IconDesc_CateriumOre_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Sulfur_C",
+            "DisplayName": "Sulfur",
+            "SinkPoints": "11",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/Sulfur/UI/Sulfur_256.Sulfur_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_OreUranium_C",
+            "DisplayName": "Uranium",
+            "SinkPoints": "35",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/OreUranium/UI/IconDesc_UraniumOre_256.IconDesc_UraniumOre_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        }
+    ]
+}
