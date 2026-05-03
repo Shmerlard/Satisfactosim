@@ -95,6 +95,11 @@ QString ProductionNode::getMachineName() const
     return machine() ? machine()->machineName : "No Machine";
 }
 
+QString ProductionNode::machineName() const 
+{
+    return machine() ? machine()->machineName : "No Machine";
+}
+
 QString ProductionNode::getMachineIcon() const
 {
     return machine() ? machine()->iconPath : "";

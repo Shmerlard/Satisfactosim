@@ -25,7 +25,8 @@ public:
 
     float portRate(const Port* port) const override;
     QJsonObject getJsonNode() const override;
-    QString getMachineName() const;
+    QString getMachineName() const; // FIX: redundent
+    QString machineName() const override;
     QString getMachineIcon() const;
     int hierarchyLevel() const override { return 3; }
 };

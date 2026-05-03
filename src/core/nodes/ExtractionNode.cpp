@@ -76,6 +76,11 @@ QString ExtractionNode::getExtractorName() const
     return extractor() ? extractor()->machineName : "No Machine";
 }
 
+QString ExtractionNode::machineName() const
+{
+    return extractor() ? extractor()->machineName : "No Machine";
+}
+
 QString ExtractionNode::getMachineIcon() const
 {
     return extractor() ? extractor()->iconPath : "";

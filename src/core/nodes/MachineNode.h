@@ -26,5 +26,6 @@ public:
     float machineCount() const { return m_machineCount; }
     float machineLimit() const { return m_machineLimit; }
     void setMachineLimit(float limit) { m_machineLimit = limit; }
+    virtual QString machineName() const = 0;
     QJsonObject getJsonNode() const override;
 };
