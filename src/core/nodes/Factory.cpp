@@ -33,5 +33,6 @@ void Factory::addNode(AbstractNode& node)
 void Factory::removeNode(AbstractNode& node)
 {
     // FIX: check why & fixes it
+    // TODO: if node is a FactoryNode, its factory() is never removed from m_subFactories — dangling pointer
     m_subNodes.removeAll(&node);
 }

@@ -22,14 +22,17 @@ private:
     void parseMachines();
     void parseRecipes();
     void parseExtractionRecipes();
-    void connectRecipes();
+    // void connectRecipes();
 
     QMap<QString, Item*> m_items; // (itemClass, Item*)
     QMap<QString, Machine*> m_machines;
+    // TODO: typo in member name — "m_productioMachines" should be "m_productionMachines"
+    QMap<QString, ProductionMachine*> m_productioMachines;
+
     QMap<QString, Recipe*> m_recipes;
     QMap<QString, ExtractionRecipe*> m_extractionRecipes;
-    QMap<QString, Item*> m_resources;
-    QMap<QString, Machine*> m_extractors;
+    QMap<QString, Resource*> m_resources;
+    QMap<QString, ExtractionMachine*> m_extractors;
     QMap<QString, MachineFamily*> m_machineFamilies;
 
 public:
@@ -50,12 +53,17 @@ public:
     void operator=(const GameLibrary&) = delete;
 
     void loadData();
+    // TODO: returns const Recipe* but m_recipes only ever stores ProductionRecipe* — could return const ProductionRecipe* to avoid casts at call sites
     const Recipe* getRecipeByClass(const QString& name) const;
     // const Recipe* getRecipeByName(const QString& name) const;
-    const ExtractionRecipe* getExtRecipeByResource(const Item* resource);
+    // const ProductionRecipe* getProductionRecipe(const Item* resource);
+    // const ProductionRecipe* getProductionRecipe(const QString name);
+    const ExtractionRecipe* getExtRecipeByResource(const Resource* resource);
+    // TODO: takes QString by value — should be const QString&
     const ExtractionRecipe* getExtRecipeByResource(const QString name);
     const Machine* getMachine(const QString& name) const;
 
+    // TODO: all three return by value — copies the entire map on every call, should return const QMap<...>&
     const QMap<QString, Item*> Items() const;
     const QMap<QString, Machine*> Machines() const;
     const QMap<QString, Recipe*> Recipes() const;

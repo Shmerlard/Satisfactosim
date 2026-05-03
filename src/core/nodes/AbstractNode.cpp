@@ -65,6 +65,7 @@ bool AbstractNode::connectToPort(Port& src, Port& dst, QString* err)
     if (src.item && dst.item && src.item != dst.item) {
         // FIX: maybe not needed because i might create to empty port that
         // wasnt initialized yet, like in factory
+        // TODO: error message is "ERROR" — replace with a descriptive message
         *err = "ERROR";
         return false;
     }

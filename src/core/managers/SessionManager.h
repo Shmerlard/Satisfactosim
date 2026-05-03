@@ -52,6 +52,7 @@ public slots:
     // void load(const QString& path);
 
     ProductionNode* createProductionNode(const Recipe& recipe, Factory* factory = nullptr, QString name = QString());
+    // ProductionNode* createProductionNode(const QString& recipe, Factory* factory = nullptr, QString name = QString());
     ProductionNode* createProductionNodeByClass(const QString& rClass, Factory* factory = nullptr, QString name = QString());
     ExtractionNode* createExtractionNode(const ExtractionRecipe* recipe, int tier = 1, Factory* factory = nullptr, QString name = QString());
     ExtractionNode* createExtractionNodeByName(QString resourceName, int tier = 1, Factory* factory = nullptr, QString name = QString());

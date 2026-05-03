@@ -4,6 +4,7 @@
 #include "Factory.h"
 
 struct Machine;
+struct Recipe;
 // class Solver;
 
 class MachineNode : public AbstractNode {
@@ -16,16 +17,20 @@ protected:
         float machineCount = 1,
         float machineLimit = -1);
 
-    virtual void buildPortsFromRecipe() = 0;
-    virtual void clearPorts() = 0; // FIX: move to abstract node
-    Machine* m_machine;
-    float m_machineCount;
+    const Machine* m_machine = nullptr;
+    const Recipe* m_recipe = nullptr;
+    float m_machineCount = -1;
     float m_machineLimit = -1;
 
+    virtual void buildPortsFromRecipe() = 0;
+    virtual void clearPorts() = 0; // FIX: move to abstract node
+    // virtual void setRecipe(const Recipe* recipe) = 0;
+    virtual const Recipe* recipe() const  { return m_recipe; }
+
 public:
+    virtual QString machineName() const = 0;
     float machineCount() const { return m_machineCount; }
     float machineLimit() const { return m_machineLimit; }
     void setMachineLimit(float limit) { m_machineLimit = limit; }
-    virtual QString machineName() const = 0;
     QJsonObject getJsonNode() const override;
 };

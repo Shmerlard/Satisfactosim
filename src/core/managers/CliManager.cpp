@@ -130,13 +130,13 @@ void printProductionNode(QTextStream& out, ProductionNode* node, Factory* factor
     QString recipeName = "none";
     QString machineName = "";
     QString cycleInfo = "";
-    if (const Recipe* r = node->currentRecipe()) {
+    if (const ProductionRecipe* r = node->recipe()) {
         recipeName = r->recipeClass;
         if (r->producedIn)
             machineName = r->producedIn->machineName;
         cycleInfo = QString("  (%1s, %2MW)")
                         .arg(r->recipeTime, 0, 'f', 1)
-                        .arg(r->producedIn ? r->producedIn->powerConsumption : 0.f, 0, 'f', 0);
+                        .arg(r->producedIn ? r->producedIn->basePowerConsumption : 0.f, 0, 'f', 0);
     }
 
     QString limitStr = (node->machineLimit() >= 0)
@@ -172,7 +172,7 @@ void printExtractionNode(QTextStream& out, ExtractionNode* node, Factory* factor
     int idx = factory->subNodes().indexOf(node);
 
     QString extractorName = node->getExtractorName();
-    QString resourceName = node->currentRecipe() ? node->currentRecipe()->resource->itemName : "none";
+    QString resourceName = node->recipe() ? node->recipe()->resource->itemName : "none";
 
     QString limitStr = (node->machineLimit() >= 0)
         ? QString("  [limit: %1]").arg(node->machineLimit(), 0, 'f', 2)
@@ -226,6 +226,12 @@ void printFactoryNode(QTextStream& out, FactoryNode* node, Factory* factory)
     out << YELLOW << "└" << QString("─").repeated(50) << RESET << "\n";
 }
 
+// void printMachineNode(QTextStream& out, MachineNode* node, Factory* factory)
+// {
+//     int idx = factory->subNodes().indexOf(node);
+//
+//     QString machineName = node->machineName();
+// }
 } // namespace
 
 CliManager::CliManager(QObject* parent)
@@ -359,7 +365,7 @@ void CliManager::handleAddExtractor(const QStringList& parts)
     if (!node)
         m_out << "Unknown recipe class: " << klass << "\n";
     else
-        m_out << "Added production node"
+        m_out << "Added Extraction node"
               << (name.isEmpty() ? "" : " \"" + name + "\"")
               << " (" << klass << ")\n";
 }
@@ -381,6 +387,10 @@ void CliManager::handleAddFact(const QStringList& parts)
 
 void CliManager::handleRm(const QStringList& args)
 {
+    if (args.size() == 0) {
+        m_out << "Usage: rm <idx>";
+        return;
+    }
     bool ok;
     int index = args[0].toInt(&ok);
     if (!ok)
@@ -449,7 +459,7 @@ void CliManager::handleCd(const QStringList& args)
 void CliManager::handleConnect(const QStringList& args)
 {
     if (args.size() != 2) {
-        qWarning() << "2 Arguements Are needed for connection ";
+        m_out << "2 Arguements Are needed for connection ";
         return;
     }
     if (args[0] == "out" || args[0] == "in" || args[1] == "out" || args[1] == "in") {
@@ -461,11 +471,17 @@ void CliManager::handleConnect(const QStringList& args)
 
     QString arg1 = args[0];
     int xPos1 = arg1.indexOf('x');
+    if (xPos1 == -1) {
+        m_out << "Error parsing first index" << arg1;
+    }
     int sourceNodeIdx = arg1.left(xPos1).toInt();
     int sourcePortIdx = arg1.mid(xPos1 + 1, arg1.length() - xPos1 - 1).toInt();
 
     QString arg2 = args[1];
     int xPos2 = arg2.indexOf('x');
+    if (xPos2 == -1) {
+        m_out << "Error parsing second index" << arg2;
+    }
     int destNodeIdx = arg2.left(xPos2).toInt();
     int destPortIdx = arg2.mid(xPos2 + 1, arg2.length() - xPos2 - 1).toInt();
 
@@ -474,15 +490,21 @@ void CliManager::handleConnect(const QStringList& args)
 
 void CliManager::handleDisconnect(const QStringList& args)
 {
-    // FIX: improve boundry check
-    QString arg1 = args[0];
+    if (args.size() == 0) {
+        m_out << "Usage: disconnect <idx>";
+        return;
+    }
+    QString arg1 = args.value(0);
     int xPos1 = arg1.indexOf('x');
+    if (xPos1 == -1) {
+        m_out << "Error parsing second index" << arg1;
+    }
     int sourceNodeIdx = arg1.left(xPos1).toInt();
     int sourcePortIdx = arg1.mid(xPos1 + 1, arg1.length() - xPos1 - 1).toInt();
 
     QString arg2 = args.value(1);
-    int destNodeIdx;
-    int destPortIdx;
+    int destNodeIdx = -1;
+    int destPortIdx = -1;
 
     if (!arg2.isEmpty()) {
         int xPos2 = arg2.indexOf('x');
@@ -495,7 +517,7 @@ void CliManager::handleDisconnect(const QStringList& args)
 
 void CliManager::handleLimit(const QStringList& args)
 {
-    //FIX: check agian
+    // FIX: check agian
     if (args.size() < 2) {
         m_out << "Usage: limit <nodeIndex> <value>  (use -1 to remove limit)\n";
         return;
@@ -519,7 +541,7 @@ void CliManager::handleLimit(const QStringList& args)
 
 void CliManager::handlePurity(const QStringList& args)
 {
-    //FIX: check agian
+    // FIX: check agian
     if (args.size() < 2) {
         m_out << "Usage: purity <nodeIndex> <impure|normal|pure>\n";
         return;
@@ -532,9 +554,12 @@ void CliManager::handlePurity(const QStringList& args)
     }
     QString val = args[1].toLower();
     NodePurity purity;
-    if (val == "impure")      purity = NodePurity::Impure;
-    else if (val == "normal") purity = NodePurity::Normal;
-    else if (val == "pure")   purity = NodePurity::Pure;
+    if (val == "impure")
+        purity = NodePurity::Impure;
+    else if (val == "normal")
+        purity = NodePurity::Normal;
+    else if (val == "pure")
+        purity = NodePurity::Pure;
     else {
         m_out << "Unknown purity: " << args[1] << ". Expected: impure, normal, pure\n";
         return;
@@ -550,14 +575,14 @@ void CliManager::handlePurity(const QStringList& args)
 
 void CliManager::handleTier(const QStringList& args)
 {
-    //FIX: check agian
+    // FIX: check agian
     if (args.size() < 2) {
         m_out << "Usage: tier <nodeIndex> <tierIndex>\n";
         return;
     }
     bool okIdx, okTier;
     int index = args[0].toInt(&okIdx);
-    int tier  = args[1].toInt(&okTier);
+    int tier = args[1].toInt(&okTier);
     if (!okIdx || !okTier) {
         m_out << "Usage: tier <nodeIndex> <tierIndex>\n";
         return;
@@ -572,20 +597,20 @@ void CliManager::handleTier(const QStringList& args)
 }
 void CliManager::handleRename(const QStringList& args)
 {
-    if (args.size() != 2){
-        qWarning() << "Rename need 2 arguements: ";
+    if (args.size() != 2) {
+        m_out << "Rename need 2 arguements: ";
         return;
     }
 
     bool ok = false;
     int index = args[0].toInt(&ok);
     if (!ok) {
-        qWarning() << "Invalid index: " << index;
+        m_out << "Invalid index: " << args[0];
         return;
     }
     QString newName = args[1];
     if (newName.isEmpty()) {
-        qWarning() << "Invalid Name: " << newName;
+        m_out << "Invalid Name: " << newName;
         return;
     }
 

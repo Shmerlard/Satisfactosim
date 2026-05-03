@@ -1,7 +1,5 @@
 #pragma once
-// #include "core/nodes/ProductionNode.h"
 
-enum class NodePurity { Impure, Normal, Pure };
 #include <QList>
 #include <QMap>
 #include <QObject>
@@ -10,57 +8,90 @@ enum class NodePurity { Impure, Normal, Pure };
 struct Machine;
 struct Recipe;
 struct ExtractionRecipe;
+struct ProductionRecipe;
+struct MachineFamily;
 
+enum class NodePurity { Impure, Normal, Pure };
+enum class Form { Solid, Liquid, Gas };
+
+// ------------------- ITEMS    --------------------
 struct Item {
     QString itemClass;
     QString itemName;
+    QString iconPath; // FIX: may not be needed
     float sinkPoints;
-    QString form;
+    float energy;
+    // QString form;
+    Form form;
     QList<Recipe*> producedBy;
     QList<Recipe*> usedIn;
-    QString iconPath; // FIX: may not be needed
-    bool isResource;
-    QList<ExtractionRecipe*> extractedBy;
+    virtual ~Item() = 0;
+};
+inline Item::~Item() = default;
+
+struct Resource : Item {
+    // QList<ExtractionRecipe*> extractedBy;
 };
 
-struct ExtractorSettings {
-    QString extractorType; // ["Miner", "Waterpipe"...]
-    int tier;               // only applies to miner
-    float extractCycleTime;
-    int itemsPerCycle;
-    QList<Item*> allowedResources;
-    QList<ExtractionRecipe*> extractionRecipes;
+struct Component : Item {
 };
 
+// struct Equipment : Item {
+//
+// };
+
+// ------------------- MACHINES --------------------
 struct Machine {
     QString machineClass;
     QString machineName;
-    float powerConsumption;
-    QList<Recipe*> recipes;
+    float basePowerConsumption;                 // TODO: may be a problem when talking about variable power consumption
     QString iconPath;
-    bool isExtractor;
-    ExtractorSettings* extractorSettings = nullptr;
+
+    virtual ~Machine() = 0;
+};
+inline Machine::~Machine() = default;
+
+struct ProductionMachine : Machine {
+    QList<ProductionRecipe*> recipes;
 };
 
-struct Recipe {
-    QString recipeClass;
-    QString recipeName;
-    bool isAlternate = false;
-    Machine* producedIn;
-    float recipeTime;
+struct ExtractionMachine : Machine {
+    MachineFamily* type;
+    int tier;
+    float extractCycleTime;
+    int itemsPerCycle;
+};
 
-    QMap<Item*, float> inputs;
-    QMap<Item*, float> outputs;
+struct PowerGenMachine : Machine {
+    // FIX: list of accepted fuels
+    // power generation
 };
 
 struct MachineFamily {
     QString familyName;
-    QList<Machine*> tiers;
+    QList<ExtractionMachine*> tiers;
+    QList<Resource*> allowedResources;
+    QList<ExtractionRecipe*> extractionRecipes;
 };
 
-struct ExtractionRecipe {
+// ------------------- RECIPES --------------------
+struct Recipe {
     QString recipeClass;
     QString recipeName;
+
+    QMap<Item*, float> outputs;
+    virtual ~Recipe() = 0;
+};
+inline Recipe::~Recipe() = default; // TODO: make sure it works
+
+struct ProductionRecipe : Recipe {
+    bool isAlternate = false;
+    float recipeTime;
+    Machine* producedIn;
+    QMap<Item*, float> inputs;
+};
+
+struct ExtractionRecipe : Recipe {
     MachineFamily* family;
-    Item* resource;
+    Resource* resource;
 };

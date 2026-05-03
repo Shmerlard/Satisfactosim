@@ -1,5 +1,5 @@
 {
-    "Items": [
+    "Components": [
         {
             "Class": "Desc_IronPlate_C",
             "DisplayName": "Iron Plate",
@@ -1144,7 +1144,7 @@
             "SinkPoints": "1",
             "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/Nodes/UI/IconDesc_iron_new_256.IconDesc_iron_new_256",
             "Form": "RF_SOLID",
-            "isResource": false
+            "isResource": true
         },
         {
             "Class": "Desc_Coal_C",
@@ -1152,7 +1152,7 @@
             "SinkPoints": "3",
             "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/Coal/UI/IconDesc_CoalOre_256.IconDesc_CoalOre_256",
             "Form": "RF_SOLID",
-            "isResource": false
+            "isResource": true
         },
         {
             "Class": "Desc_OreCopper_C",
@@ -1160,7 +1160,7 @@
             "SinkPoints": "3",
             "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/Nodes/UI/IconDesc_copper_new_256.IconDesc_copper_new_256",
             "Form": "RF_SOLID",
-            "isResource": false
+            "isResource": true
         },
         {
             "Class": "Desc_Stone_C",
@@ -1168,7 +1168,7 @@
             "SinkPoints": "2",
             "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/Stone/UI/Stone_256.Stone_256",
             "Form": "RF_SOLID",
-            "isResource": false
+            "isResource": true
         },
         {
             "Class": "Desc_RawQuartz_C",
@@ -1176,7 +1176,7 @@
             "SinkPoints": "15",
             "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/QuartzCrystal/UI/IconDesc_QuartzCrystal_256.IconDesc_QuartzCrystal_256",
             "Form": "RF_SOLID",
-            "isResource": false
+            "isResource": true
         },
         {
             "Class": "Desc_LiquidOil_C",
@@ -1184,7 +1184,7 @@
             "SinkPoints": "30",
             "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/CrudeOil/UI/LiquidOil_Pipe_512.LiquidOil_Pipe_512",
             "Form": "RF_LIQUID",
-            "isResource": false
+            "isResource": true
         },
         {
             "Class": "Desc_Water_C",
@@ -1192,7 +1192,7 @@
             "SinkPoints": "5",
             "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/Water/UI/LiquidWater_Pipe_256.LiquidWater_Pipe_256",
             "Form": "RF_LIQUID",
-            "isResource": false
+            "isResource": true
         },
         {
             "Class": "Desc_SAM_C",
@@ -1200,7 +1200,7 @@
             "SinkPoints": "20",
             "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/SAM/UI/IconDesc_SameOre_256.IconDesc_SameOre_256",
             "Form": "RF_SOLID",
-            "isResource": false
+            "isResource": true
         },
         {
             "Class": "Desc_NitrogenGas_C",
@@ -1208,7 +1208,7 @@
             "SinkPoints": "10",
             "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/PackagedNitrogen/UI/IconDesc_NitrogenGas_256.IconDesc_NitrogenGas_256",
             "Form": "RF_GAS",
-            "isResource": false
+            "isResource": true
         },
         {
             "Class": "Desc_OreBauxite_C",
@@ -1216,7 +1216,7 @@
             "SinkPoints": "8",
             "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/Nodes/UI/IconDesc_Bauxite_256.IconDesc_Bauxite_256",
             "Form": "RF_SOLID",
-            "isResource": false
+            "isResource": true
         },
         {
             "Class": "Desc_OreGold_C",
@@ -1224,7 +1224,7 @@
             "SinkPoints": "7",
             "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/Nodes/UI/IconDesc_CateriumOre_256.IconDesc_CateriumOre_256",
             "Form": "RF_SOLID",
-            "isResource": false
+            "isResource": true
         },
         {
             "Class": "Desc_Sulfur_C",
@@ -1232,7 +1232,7 @@
             "SinkPoints": "11",
             "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/Sulfur/UI/Sulfur_256.Sulfur_256",
             "Form": "RF_SOLID",
-            "isResource": false
+            "isResource": true
         },
         {
             "Class": "Desc_OreUranium_C",
@@ -1240,7 +1240,7 @@
             "SinkPoints": "35",
             "Icon": "Texture2D /Game/FactoryGame/Resource/RawResources/OreUranium/UI/IconDesc_UraniumOre_256.IconDesc_UraniumOre_256",
             "Form": "RF_SOLID",
-            "isResource": false
+            "isResource": true
         }
     ]
 }

@@ -82,28 +82,33 @@ def process_recipe(recipe):
     return None
 
 
-def process_machine(machine):
+def process_machine(machine, machineType: str):
     return {
         "Class": machine.get("ClassName"),
         "DisplayName": machine.get("mDisplayName"),
         "PowerConsumption": machine.get("mPowerConsumption"),
+        "_MachineType:": machineType
     }
 
 
-def process_extractors(extractor):
+def process_extractors(extractor, machineType: str):
+    displayName = extractor.get("mDisplayName")
+    extTypeName = extractor.get("mExtractorTypeName")
+    if (extTypeName == "None"):
+        extTypeName = displayName.replace(" ", "_")
     return {
         "Class": extractor.get("ClassName"),
-        "DisplayName": extractor.get("mDisplayName"),
-        "ExtractorTypeName": extractor.get("mExtractorTypeName"),
+        "DisplayName": displayName,
+        "ExtractorTypeName": extTypeName,
         "ExtractCycleTime": extractor.get("mExtractCycleTime"),
         "ItemsPerCycle": extractor.get("mItemsPerCycle"),
         "OnlyAllowCertainResources": extractor.get("mOnlyAllowCertainResources") == "True",
         "AllowedResourceForms": parse_enum_list(extractor.get("mAllowedResourceForms")),
-        # "AllowedResources": extractor.get("mAllowedResources"),
         "AllowedResources": parse_class_list(extractor.get("mAllowedResources")),
         "PowerConsumption": extractor.get("mPowerConsumption"),
         "PowerConsumptionExponent": extractor.get("mPowerConsumptionExponent"),
         "ProductionBoostPowerConsumptionExponent": extractor.get("mProductionBoostPowerConsumptionExponent"),
+        "_MachineType": machineType
     }
 
 
@@ -120,8 +125,9 @@ def find_classes(data, class_name):
 
 
 def main():
-    dir = Path(__file__).parent
-    docs = dir / "Docs.json"
+    scripts_dir = Path(__file__).parent
+    json_dir = scripts_dir.parent / "jsons"
+    docs = json_dir / "Docs.json"
     with open(docs, 'r', encoding="utf-16") as f:
         data = json.load(f)
 
@@ -129,15 +135,14 @@ def main():
     raw_items = find_classes(data, "FGItemDescriptor")
     items = [process_item(item) for item in raw_items]
     raw_resources = find_classes(data, "FGResourceDescriptor")
-    resources = [process_item(item) for item in raw_resources]
+    resources = [process_item(item, is_resource=True) for item in raw_resources]
 
-    # items.extend(resources)
     all_items = {
-        "Items": items,
+        "Components": items,
         "Resources": resources
     }
 
-    with open(dir / "items.json", 'w', encoding="utf-8") as f:
+    with open(json_dir / "items.json", 'w', encoding="utf-8") as f:
         json.dump(all_items, f, indent=4)
     print(f"Extracted {len(items)} items to items.json")
 
@@ -145,7 +150,7 @@ def main():
     raw_recipes = find_classes(data, "FGRecipe")
     recipes = [r for recipe in raw_recipes if (r := process_recipe(recipe)) is not None]
 
-    with open(dir / "recipes.json", 'w', encoding="utf-8") as f:
+    with open(json_dir / "recipes.json", 'w', encoding="utf-8") as f:
         json.dump(recipes, f, indent=4)
     print(f"Extracted {len(recipes)} recipes to recipes.json")
 
@@ -154,15 +159,14 @@ def main():
                                 ["FGBuildableManufacturer", "FGBuildableManufacturerVariablePower"])
     raw_extractors = find_classes(data,
                                  [ "FGBuildableResourceExtractor", "FGBuildableWaterPump"])
-    machines = [process_machine(machine) for machine in raw_machines]
-    extractors = [process_extractors(extractor) for extractor in raw_extractors]
-    # all_machines = machines + extractors
+    machines = [process_machine(machine, "Production") for machine in raw_machines]
+    extractors = [process_extractors(extractor, "Extraction") for extractor in raw_extractors]
     all_machines = {
         "ProductionMachines": machines,
         "ExtractionMachines": extractors
     }
 
-    with open(dir / "machines.json", 'w', encoding="utf-8") as f:
+    with open(json_dir / "machines.json", 'w', encoding="utf-8") as f:
         json.dump(all_machines, f, indent=4)
     print(f"Extracted {len(machines) + len(extractors)} machines to machines.json")
 

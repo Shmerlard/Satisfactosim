@@ -11,6 +11,7 @@ MachineNode::MachineNode(
     , m_machineCount(machineCount)
     , m_machineLimit(machineLimit)
 {
+    // TODO: m_machine and m_recipe are never initialized here — both are garbage pointers until set by subclass
 }
 
 

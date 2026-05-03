@@ -4,13 +4,21 @@
 
 ProductionNode* SessionManager::createProductionNode(const Recipe& recipe, Factory* factory, QString name)
 {
+    // TODO: signature takes const Recipe& but ProductionNode constructor expects const ProductionRecipe& — type mismatch, won't compile
     Factory* f = factory ? factory : m_activeFactory;
     ProductionNode* node = new ProductionNode(*f, recipe, name);
     emit nodeAdded(node);
     return node;
 }
+
+// ProductionNode* SessionManager::createProductionNode(const QString& recipe, Factory* factory, QString name)
+// {
+//
+// }
+
 ProductionNode* SessionManager::createProductionNodeByClass(const QString& rClass, Factory* factory, QString name)
 {
+    // TODO: getRecipeByClass returns const Recipe*, but createProductionNode needs const ProductionRecipe& — needs a cast or a typed getProductionRecipeByClass
     const Recipe* r = GameLibrary::get().getRecipeByClass(rClass);
     if (!r)
         return nullptr;
@@ -111,7 +119,7 @@ void SessionManager::disconnectNode(Port* src, Port* dest)
         return;
     }
 
-    // FIX: seperate between them
+    // TODO: && short-circuits — if first removeOne succeeds but second fails, src is modified but _dest is not, leaving a half-disconnected state
     if (!src->connectedTo.removeOne(_dest) || !_dest->connectedTo.removeOne(src)) {
         qWarning() << "Error removing!";
         return;
@@ -121,14 +129,24 @@ void SessionManager::disconnectNode(Port* src, Port* dest)
 
 void SessionManager::disconnectNode(int srcNode, int srcPort, int dstNode, int dstPort)
 {
-    // TODO: its basically the same as connect, improve this
     AbstractNode* srcNode_p = m_activeFactory->subNodes().value(srcNode);
-    AbstractNode* dstNode_p = m_activeFactory->subNodes().value(dstNode);
-    if (!srcNode_p || !dstNode_p) {
-        qWarning() << "Invalid Source or Destination Node";
+    if (!srcNode_p) {
+        qWarning() << "Invalid Source Node";
         return;
     }
     Port* srcPort_p = srcNode_p->getPortFromIndex(srcPort);
+
+    if (dstNode == -1 || dstPort == -1) {
+        // if (srcPort_p && srcPort_p->connectedTo.size() == 1) {
+        disconnectNode(srcPort_p, nullptr);
+        return;
+        // }
+    }
+    AbstractNode* dstNode_p = m_activeFactory->subNodes().value(dstNode);
+    if (!dstNode_p) {
+        qWarning() << "Invalid Source or Destination Node";
+        return;
+    }
     Port* dstPort_p = dstNode_p->getPortFromIndex(dstPort);
     if (!srcPort_p || !dstPort_p) {
         qWarning() << "Invalid Source or Destination Port";
