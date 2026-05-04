@@ -21,7 +21,6 @@ struct Item {
     QString iconPath; // FIX: may not be needed
     float sinkPoints;
     float energy;
-    // QString form;
     Form form;
     QList<Recipe*> producedBy;
     QList<Recipe*> usedIn;
@@ -44,7 +43,7 @@ struct Component : Item {
 struct Machine {
     QString machineClass;
     QString machineName;
-    float basePowerConsumption;                 // TODO: may be a problem when talking about variable power consumption
+    float basePowerConsumption;
     QString iconPath;
 
     virtual ~Machine() = 0;
@@ -82,7 +81,7 @@ struct Recipe {
     QMap<Item*, float> outputs;
     virtual ~Recipe() = 0;
 };
-inline Recipe::~Recipe() = default; // TODO: make sure it works
+inline Recipe::~Recipe() = default;
 
 struct ProductionRecipe : Recipe {
     bool isAlternate = false;

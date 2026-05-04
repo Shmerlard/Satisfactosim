@@ -32,7 +32,16 @@ void Factory::addNode(AbstractNode& node)
 
 void Factory::removeNode(AbstractNode& node)
 {
-    // FIX: check why & fixes it
-    // TODO: if node is a FactoryNode, its factory() is never removed from m_subFactories — dangling pointer
+    // if (m_subFactories.contains(node))
+    //     m_subFactories.removeAll(&node);
+    if (auto* p = dynamic_cast<FactoryNode*>(&node)) {
+        m_subFactories.removeAll(&p->factory());
+    }
     m_subNodes.removeAll(&node);
+}
+
+Factory::~Factory()
+{
+    qDeleteAll(m_subNodes);
+    qDeleteAll(m_subFactories);
 }

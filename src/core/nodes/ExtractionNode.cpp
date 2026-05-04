@@ -16,30 +16,30 @@ ExtractionNode::ExtractionNode(
 
     buildPortsFromRecipe();
 }
+
 void ExtractionNode::buildPortsFromRecipe()
 {
-    if (!m_recipe)
+    if (!recipe())
         return;
 
     Port* out = new Port(*this, recipe()->resource, PortType::Output);
     m_outputs.append(out);
 }
 
-void ExtractionNode::clearPorts()
-{
-    for (Port* port : m_outputs) {
-        for (Port* peer : port->connectedTo) {
-            peer->connectedTo.removeAll(port);
-        }
-    }
-    qDeleteAll(m_outputs);
-    m_outputs.clear();
-}
+// void ExtractionNode::deletePorts()
+// {
+//     for (Port* port : m_outputs) {
+//         for (Port* peer : port->connectedTo) {
+//             peer->connectedTo.removeAll(port);
+//         }
+//     }
+//     qDeleteAll(m_outputs);
+//     m_outputs.clear();
+// }
 
 const Machine* ExtractionNode::extractor() const
 {
-    // TODO: mixes m_recipe and recipe() checks inconsistently — use recipe() throughout
-    if (!m_recipe || !recipe()->family || recipe()->family->tiers.isEmpty())
+    if (!recipe() || !recipe()->family || recipe()->family->tiers.isEmpty())
         return nullptr;
     int tier = qBound(0, m_tier, recipe()->family->tiers.size() - 1);
     return recipe()->family->tiers[tier];
@@ -53,9 +53,16 @@ QJsonObject ExtractionNode::getJsonNode() const
         { NodePurity::Pure, "pure" },
     };
     QJsonObject obj = MachineNode::getJsonNode();
+    if (!recipe()) {
+        qWarning() << "No Recipe Found!";
+        return QJsonObject();
+    }
+    if (!recipe()->resource) {
+        qWarning() << "ERROR: Recipe has no resource!";
+        return QJsonObject();
+    }
     obj["type"] = "extraction";
-    // TODO: no null check on recipe()->resource — crashes if resource is null
-    obj["resource"] = recipe() ? recipe()->resource->itemClass : "";
+    obj["resource"] = recipe()->resource->itemClass;
     obj["tier"] = m_tier;
     obj["purity"] = purityNames.value(m_purity, "normal");
     return obj;
@@ -96,7 +103,7 @@ QString ExtractionNode::getMachineIcon() const
     return extractor() ? extractor()->iconPath : "";
 }
 
-const ExtractionRecipe* ExtractionNode::recipe() const 
+const ExtractionRecipe* ExtractionNode::recipe() const
 {
     return static_cast<const ExtractionRecipe*>(m_recipe);
 }

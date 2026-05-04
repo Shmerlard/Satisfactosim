@@ -30,6 +30,10 @@ public:
     virtual float portRate(const Port* port) const = 0;
     virtual QJsonObject getJsonNode() const = 0;
 
+    void deletePorts();
+    void disconnectPort(Port* port);
+    void disconnectAllPorts();
+
     const QList<Port*>& inputs() const { return m_inputs; }
     const QList<Port*>& outputs() const { return m_outputs; }
     void setName(QString name) { m_name = name; }

@@ -48,8 +48,8 @@ signals:
 public slots:
     // void goParentFactory();
     // void goToRoot();
-    // void save(const QString& path);
-    // void load(const QString& path);
+    void save(const QString& path);
+    void load(const QString& path);
 
     ProductionNode* createProductionNode(const Recipe& recipe, Factory* factory = nullptr, QString name = QString());
     // ProductionNode* createProductionNode(const QString& recipe, Factory* factory = nullptr, QString name = QString());

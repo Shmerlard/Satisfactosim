@@ -23,8 +23,6 @@ protected:
     float m_machineLimit = -1;
 
     virtual void buildPortsFromRecipe() = 0;
-    virtual void clearPorts() = 0; // FIX: move to abstract node
-    // virtual void setRecipe(const Recipe* recipe) = 0;
     virtual const Recipe* recipe() const  { return m_recipe; }
 
 public:

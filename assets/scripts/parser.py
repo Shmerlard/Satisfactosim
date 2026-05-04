@@ -158,7 +158,7 @@ def main():
     raw_machines = find_classes(data,
                                 ["FGBuildableManufacturer", "FGBuildableManufacturerVariablePower"])
     raw_extractors = find_classes(data,
-                                 [ "FGBuildableResourceExtractor", "FGBuildableWaterPump"])
+                                  ["FGBuildableResourceExtractor", "FGBuildableWaterPump"])
     machines = [process_machine(machine, "Production") for machine in raw_machines]
     extractors = [process_extractors(extractor, "Extraction") for extractor in raw_extractors]
     all_machines = {

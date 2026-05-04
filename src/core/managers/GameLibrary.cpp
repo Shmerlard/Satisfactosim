@@ -15,16 +15,11 @@ Form formFromString(const QString& str)
     return Form::Solid;
 }
 
-Item* itemFromJsonObject(const QJsonValue& value)
+Component* componentFromJsonObject(const QJsonValue& value)
 {
 
     QJsonObject obj = value.toObject();
-    bool isResource = obj["isResource"].toBool();
-    Item* i = nullptr;
-    if (isResource)
-        i = new Resource();
-    else
-        i = new Component();
+    Component* i = new Component;
 
     i->itemClass = obj["Class"].toString();
     i->itemName = obj["DisplayName"].toString();
@@ -36,26 +31,25 @@ Item* itemFromJsonObject(const QJsonValue& value)
     return i;
 }
 
-// ProductionMachine* machineFromJsonObject(const QJsonValue& value)
-// {
-//     QJsonObject obj = value.toObject();
-//     Item* m = nullptr;
-//
-//     m->machineClass = obj["Class"].toString();
-//     m->machineName = obj["DisplayName"].toString();
-//     m->basePowerConsumption = obj["PowerConsumption"].toString().toDouble();
-//     m->iconPath = QString("assets/icons/machines/%1.png").arg(m->machineName);
-//
-//     return m;
-// }
+// FIX: its the same as above, Maybe add a template
+Resource* resourceFromJsonObject(const QJsonValue& value)
+{
 
-/**
- * initializes the machine object from json
- * also initializes the family (name only)
- */
+    QJsonObject obj = value.toObject();
+    Resource* i = new Resource;
+
+    i->itemClass = obj["Class"].toString();
+    i->itemName = obj["DisplayName"].toString();
+    i->sinkPoints = obj["SinkPoints"].toString().toDouble();
+    i->form = formFromString(obj["Form"].toString());
+    i->iconPath = QString("assets/icons/items/%1.png").arg(i->itemClass);
+    // TODO: energy
+
+    return i;
+}
+
 ProductionMachine* productionMachineFromJsonObject(const QJsonValue& value)
 {
-    // FIX: NEEDS A CHECK
     QJsonObject obj = value.toObject();
     ProductionMachine* m = new ProductionMachine();
 
@@ -69,7 +63,6 @@ ProductionMachine* productionMachineFromJsonObject(const QJsonValue& value)
 
 ExtractionMachine* extractionMachineFromJsonObject(const QJsonValue& value, QMap<QString, MachineFamily*>& families)
 {
-    // FIX: NEEDS A CHECK
     QJsonObject obj = value.toObject();
 
     ExtractionMachine* m = new ExtractionMachine();
@@ -90,48 +83,11 @@ ExtractionMachine* extractionMachineFromJsonObject(const QJsonValue& value, QMap
     fam->tiers.append(m);
 
     m->type = fam;
-    // TODO: m->tier is never set — ExtractionMachine::tier stays uninitialized (garbage int)
-    // m->tier =
+    m->tier = fam->tiers.indexOf(m); // FIX: problematic since we assume that they are inserted by order
     m->extractCycleTime = obj["ExtractCycleTime"].toDouble();
     m->itemsPerCycle = obj["ItemsPerCycle"].toInt();
     return m;
 }
-
-// Machine* machineFromJsonObject(const QJsonValue& value, QMap<QString, MachineFamily*>& families)
-// {
-//     // FIX: NEEDS A CHECK
-//     QJsonObject obj = value.toObject();
-//     Machine* m = nullptr;
-//
-//     QString _machineType = obj["_MachineType"].toString();
-//     if (_machineType == "Production")
-//         m = new ProductionMachine();
-//     else if (_machineType == "Extraction")
-//         m = new ProductionMachine();
-//     else {
-//         qWarning() << "Unknown Type: " << _machineType;
-//         return nullptr;
-//     }
-//
-//     m->machineClass = obj["Class"].toString();
-//     m->machineName = obj["DisplayName"].toString();
-//     m->basePowerConsumption = obj["PowerConsumption"].toString().toDouble();
-//     m->iconPath = QString("assets/icons/machines/%1.png").arg(m->machineName);
-//
-//     if (_machineType == "Extraction") {
-//         auto* ext_m = static_cast<ExtractionMachine*>(m);
-//         QString extrTypeName = obj["ExtractorTypeName"].toString();
-//         if (!families.contains(extrTypeName)) {
-//             MachineFamily* newFamily = new MachineFamily();
-//             newFamily->familyName = extrTypeName;
-//
-//             families.insert(extrTypeName, newFamily);
-//         }
-//         MachineFamily* fam = families.value(extrTypeName);
-//         fam->tiers.append(ext_m);
-//     }
-//     return m;
-// }
 
 } // namespace
 
@@ -140,7 +96,6 @@ GameLibrary::~GameLibrary()
     qDeleteAll(m_items);
     qDeleteAll(m_machines);
     qDeleteAll(m_recipes);
-    qDeleteAll(m_extractionRecipes);
     qDeleteAll(m_machineFamilies);
 }
 
@@ -149,7 +104,6 @@ void GameLibrary::loadData()
     parseItems();
     parseMachines();
     parseRecipes();
-    // connectRecipes();
 
     parseExtractionRecipes();
 
@@ -169,12 +123,11 @@ void GameLibrary::parseItems()
     QJsonObject root = doc.object();
 
     for (const QJsonValue& value : root["Components"].toArray()) {
-        Item* i = itemFromJsonObject(value);
+        Item* i = componentFromJsonObject(value);
         m_items.insert(i->itemClass, i);
     }
     for (const QJsonValue& value : root["Resources"].toArray()) {
-        // TODO: static_cast is unsafe here — itemFromJsonObject reads "isResource" from JSON, but items in the "Resources" array may not have that field set, causing it to create a Component* that gets cast to Resource* (UB). Pass isResource as a parameter instead.
-    auto* i = static_cast<Resource*>(itemFromJsonObject(value)); // TODO: is static_cast correct
+        auto* i = resourceFromJsonObject(value);
         m_items.insert(i->itemClass, i);
         m_resources.insert(i->itemClass, i);
     }
@@ -191,34 +144,32 @@ void GameLibrary::parseMachines()
 
     for (const QJsonValue& value : root["ProductionMachines"].toArray()) {
         ProductionMachine* m = productionMachineFromJsonObject(value);
-        m_productioMachines.insert(m->machineClass, m);
+        m_productionMachines.insert(m->machineClass, m);
         m_machines.insert(m->machineClass, m);
     }
 
     for (const QJsonValue& value : root["ExtractionMachines"].toArray()) {
         QJsonObject obj = value.toObject();
         ExtractionMachine* m = extractionMachineFromJsonObject(value, m_machineFamilies);
-        // TODO: extractorType is computed but never used — extractionMachineFromJsonObject already handles this internally
-        QString extractorType = obj["ExtractorTypeName"].toString() == "None"
-            ? obj["Class"].toString()
-            : obj["ExtractorTypeName"].toString();
 
-        if (obj["OnlyAllowCertainResources"].toBool()) {
-            QJsonArray allowedResources = obj["AllowedResources"].toArray();
-            for (const QJsonValue& res : allowedResources) {
-                QString resClass = res.toString();
-                Resource* resItem = m_resources.value(resClass);
-                if (resItem) {
-                    m->type->allowedResources.append(resItem);
+        if (m->type->tiers.size() == 1) {
+            if (obj["OnlyAllowCertainResources"].toBool()) {
+                QJsonArray allowedResources = obj["AllowedResources"].toArray();
+                for (const QJsonValue& res : allowedResources) {
+                    QString resClass = res.toString();
+                    Resource* resItem = m_resources.value(resClass);
+                    if (resItem) {
+                        m->type->allowedResources.append(resItem);
+                    }
                 }
-            }
-        } else {
-            QJsonArray allowedFormsArr = obj["AllowedResourceForms"].toArray();
-            for (const QJsonValue& formVal : allowedFormsArr) {
-                Form form = formFromString(formVal.toString());
-                for (Resource* resource : m_resources) {
-                    if (resource && resource->form == form) {
-                        m->type->allowedResources.append(resource);
+            } else {
+                QJsonArray allowedFormsArr = obj["AllowedResourceForms"].toArray();
+                for (const QJsonValue& formVal : allowedFormsArr) {
+                    Form form = formFromString(formVal.toString());
+                    for (Resource* resource : m_resources) {
+                        if (resource && resource->form == form) {
+                            m->type->allowedResources.append(resource);
+                        }
                     }
                 }
             }
@@ -245,13 +196,11 @@ void GameLibrary::parseRecipes()
         r->recipeClass = obj["Class"].toString();
         r->recipeName = obj["DisplayName"].toString();
         r->isAlternate = obj["Alternate"].toBool();
-        // TODO: verify JSON field name — "ManufactoringDuration" may be a typo of "ManufacturingDuration"
         r->recipeTime = obj["ManufactoringDuration"].toString().toDouble();
 
         m_recipes.insert(r->recipeClass, r);
 
-        /////
-        ProductionMachine* machine = m_productioMachines.value(obj["ProducedIn"].toString());
+        ProductionMachine* machine = m_productionMachines.value(obj["ProducedIn"].toString());
         if (machine) {
             r->producedIn = machine;
             machine->recipes.append(r);
@@ -294,68 +243,13 @@ void GameLibrary::parseRecipes()
     }
 }
 
-// void GameLibrary::connectRecipes()
-// {
-//     QFile recipesFile(":/assets/jsons/recipes.json");
-//     if (!recipesFile.open(QIODevice::ReadOnly))
-//         return;
-//     QJsonDocument doc = QJsonDocument::fromJson(recipesFile.readAll());
-//     QJsonArray rootArray = doc.array();
-//
-//     for (const QJsonValue& value : rootArray) {
-//         QJsonObject obj = value.toObject();
-//         QString recipeClass = obj["Class"].toString();
-//         Recipe* r = m_recipes.value(recipeClass);
-//
-//         if (!r)
-//             continue;
-//
-//         QString machineClass = obj["ProducedIn"].toString();
-//         Machine* machine = m_machines.value(machineClass);
-//
-//         if (machine) {
-//             r->producedIn = machine;
-//             machine->recipes.append(r);
-//         } else {
-//             qWarning() << "WARN: no machine found in recipe: " << r->recipeClass;
-//         }
-//
-//         QJsonArray ingArr = obj["Ingredients"].toArray();
-//         for (const QJsonValue& ing : ingArr) {
-//             QJsonObject ingObj = ing.toObject();
-//             QString ingClass = ingObj["Item"].toString();
-//             Item* item = m_items.value(ingClass);
-//             float ingAmount = ingObj["Amount"].toDouble();
-//
-//             if (item) {
-//                 if (item->form == "RF_LIQUID" || item->form == "RF_GAS")
-//                     ingAmount /= 1000;
-//                 r->inputs.insert(item, ingAmount);
-//                 item->usedIn.append(r);
-//             }
-//         }
-//         QJsonArray prodArr = obj["Product"].toArray();
-//         for (const QJsonValue& prod : prodArr) {
-//             QJsonObject prodObj = prod.toObject();
-//             QString prodClass = prodObj["Item"].toString();
-//             Item* item = m_items.value(prodClass);
-//             float prodAmount = prodObj["Amount"].toDouble();
-//             if (item) {
-//                 if (item->form == "RF_LIQUID" || item->form == "RF_GAS")
-//                     prodAmount /= 1000;
-//
-//                 r->outputs.insert(item, prodAmount);
-//                 item->producedBy.append(r);
-//             }
-//         }
-//     }
-// }
-
 void GameLibrary::parseExtractionRecipes()
 {
     for (MachineFamily* family : m_machineFamilies) {
-        // TODO: family->allowedResources is populated in parseMachines — if a family has no allowed resources, no extraction recipes are created and the family is effectively broken silently
-        // ExtractorSettings* es = family->tiers.first()->extractorSettings;
+        if (family->allowedResources.size() == 0) {
+            qWarning() << "ERROR: NO ALLOWED RESOURCES FOUND FOR " << family->familyName;
+            continue;
+        }
         for (Resource* allowedResource : family->allowedResources) {
             ExtractionRecipe* r = new ExtractionRecipe();
             r->recipeClass = family->familyName + "_" + allowedResource->itemClass;
@@ -363,6 +257,7 @@ void GameLibrary::parseExtractionRecipes()
             r->family = family;
             r->resource = allowedResource;
             m_extractionRecipes.insert(r->recipeClass, r);
+            m_recipes.insert(r->recipeClass, r);
             allowedResource->producedBy.append(r);
         }
     }
@@ -383,22 +278,9 @@ const Recipe* GameLibrary::getRecipeByClass(const QString& name) const
     return m_recipes.value(name, nullptr);
 }
 
-// const ProductionRecipe* GameLibrary::getProductionRecipe(const Item* resource)
-// {
-//     
-// }
-// const ProductionRecipe* GameLibrary::getProductionRecipe(const QString name)
-// {
-// }
-const ExtractionRecipe* GameLibrary::getExtRecipeByResource(const Resource* resource)
+const ExtractionRecipe* GameLibrary::getExtRecipeByResource(const Resource* resource) const
 {
-    // if (resource->producedBy.count() > 1)
-    //     qDebug() << "MORE THAN 1 RECIPES FOUND FOR " << resource->itemClass;
-    // if (resource->producedBy.count() == 0) {
-    //     qDebug() << "No extractors found for " << resource->itemClass;
-    //     return nullptr;
-    // }
-    for (auto* recipe : resource->producedBy ) {
+    for (auto* recipe : resource->producedBy) {
         if (auto* p = dynamic_cast<ExtractionRecipe*>(recipe))
             return p;
     }
@@ -406,22 +288,25 @@ const ExtractionRecipe* GameLibrary::getExtRecipeByResource(const Resource* reso
     return nullptr;
 }
 
-const ExtractionRecipe* GameLibrary::getExtRecipeByResource(const QString name)
+const ExtractionRecipe* GameLibrary::getExtRecipeByResource(const QString& name) const
 {
     const Resource* resource = m_resources.value(name);
     if (resource)
         return getExtRecipeByResource(resource);
     return nullptr;
 }
-const QMap<QString, Item*> GameLibrary::Items() const
+
+const QMap<QString, Item*>& GameLibrary::Items() const
 {
     return m_items;
 }
-const QMap<QString, Machine*> GameLibrary::Machines() const
+
+const QMap<QString, Machine*>& GameLibrary::Machines() const
 {
     return m_machines;
 }
-const QMap<QString, Recipe*> GameLibrary::Recipes() const
+
+const QMap<QString, Recipe*>& GameLibrary::Recipes() const
 {
     return m_recipes;
 }

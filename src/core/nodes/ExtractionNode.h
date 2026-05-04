@@ -13,10 +13,9 @@ private:
         int tier = 0,
         QString name = QString());
 
-    int m_tier;
+    int m_tier = 0;
     NodePurity m_purity = NodePurity::Normal;
 
-    void clearPorts() override;
     void buildPortsFromRecipe() override;
 
 public:

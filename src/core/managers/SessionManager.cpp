@@ -4,7 +4,6 @@
 
 ProductionNode* SessionManager::createProductionNode(const Recipe& recipe, Factory* factory, QString name)
 {
-    // TODO: signature takes const Recipe& but ProductionNode constructor expects const ProductionRecipe& — type mismatch, won't compile
     Factory* f = factory ? factory : m_activeFactory;
     ProductionNode* node = new ProductionNode(*f, recipe, name);
     emit nodeAdded(node);
@@ -18,7 +17,6 @@ ProductionNode* SessionManager::createProductionNode(const Recipe& recipe, Facto
 
 ProductionNode* SessionManager::createProductionNodeByClass(const QString& rClass, Factory* factory, QString name)
 {
-    // TODO: getRecipeByClass returns const Recipe*, but createProductionNode needs const ProductionRecipe& — needs a cast or a typed getProductionRecipeByClass
     const Recipe* r = GameLibrary::get().getRecipeByClass(rClass);
     if (!r)
         return nullptr;

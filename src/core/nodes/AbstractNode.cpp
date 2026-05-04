@@ -1,6 +1,7 @@
 #include "AbstractNode.h"
 #include "Factory.h"
 
+
 AbstractNode::AbstractNode(
     Factory& parentFactory,
     QString name)
@@ -45,7 +46,6 @@ Port* AbstractNode::getPortFromIndex(int index) const
     return nullptr;
 }
 
-// FIX: check the validity of err
 bool AbstractNode::connectToPort(Port& src, Port& dst, QString* err)
 {
     QString _dummy;
@@ -63,15 +63,43 @@ bool AbstractNode::connectToPort(Port& src, Port& dst, QString* err)
         return false;
     }
     if (src.item && dst.item && src.item != dst.item) {
-        // FIX: maybe not needed because i might create to empty port that
-        // wasnt initialized yet, like in factory
-        // TODO: error message is "ERROR" — replace with a descriptive message
-        *err = "ERROR";
+        *err = "cannot connect two different items ports";
         return false;
     }
-    // TODO: see what happens when one of them is false
+
     dst.connectedTo.append(&src);
     src.connectedTo.append(&dst);
     err->clear();
     return true;
 }
+
+void AbstractNode::deletePorts() {
+    disconnectAllPorts();
+    qDeleteAll(m_inputs);
+    qDeleteAll(m_outputs);
+    m_outputs.clear();
+    m_inputs.clear();
+}
+
+void AbstractNode::disconnectPort(Port* port) {
+    if (&port->owner != this) {
+        qWarning() << "port owner doesnt match!";
+        return;
+    }
+    port->amount = 0;
+    for (auto* con : port->connectedTo) {
+        con->connectedTo.removeAll(port);
+    }
+    port->connectedTo.clear();
+}
+
+void AbstractNode::disconnectAllPorts()
+{
+    for (auto* port : inputs()) {
+        disconnectPort(port);
+    }
+    for (auto* port : outputs()) {
+        disconnectPort(port);
+    }
+}
+

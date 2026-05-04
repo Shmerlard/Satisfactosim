@@ -17,8 +17,6 @@ private:
     FactoryNode* m_node;
     QList<AbstractNode*> m_subNodes;
     QList<Factory*> m_subFactories;
-    // QList<Port*> m_inputs;
-    // QList<Port*> m_outputs;
 
 public:
     explicit Factory(Factory* parent, QString name);
@@ -34,6 +32,4 @@ public:
     void addNode(AbstractNode& node);
     void removeNode(AbstractNode& node);
 
-    // const QList<Port*>& inputs() const { return m_inputs; }
-    // const QList<Port*>& outputs() const { return m_outputs; }
 };
