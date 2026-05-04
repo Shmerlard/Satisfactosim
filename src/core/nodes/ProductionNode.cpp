@@ -38,12 +38,13 @@ void ProductionNode::buildPortsFromRecipe()
 
     auto inIt = recipe()->inputs.constBegin();
     while (inIt != recipe()->inputs.constEnd()) {
-        m_inputs.append(new Port(*this, inIt.key(), PortType::Input));
+        m_inputs.push_back(std::make_unique<Port>(*this, inIt.key(), PortType::Input));
         ++inIt;
     }
     auto outIt = recipe()->outputs.constBegin();
     while (outIt != recipe()->outputs.constEnd()) {
-        m_outputs.append(new Port(*this, outIt.key(), PortType::Output));
+        // m_outputs.append(new Port(*this, outIt.key(), PortType::Output));
+        m_outputs.push_back(std::make_unique<Port>(*this, outIt.key(), PortType::Output));
         ++outIt;
     }
 }

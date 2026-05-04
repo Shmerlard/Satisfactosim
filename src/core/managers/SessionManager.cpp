@@ -1,19 +1,57 @@
 #include "SessionManager.h"
 #include "GameLibrary.h"
 #include "core/nodes/ProductionNode.h"
+#include <QJsonArray>
+
+namespace {
+QJsonObject serializeFactory(const Factory& factory)
+{
+    QJsonObject obj;
+    obj["name"] = factory.name();
+
+    QJsonArray nodesArray;
+    for (AbstractNode* node : factory.subNodes())
+        nodesArray.append(node->getJsonNode());
+    obj["nodes"] = nodesArray;
+
+    QJsonObject connections;
+    for (AbstractNode* node : factory.subNodes()) {
+        int nodeIdx = node->index();
+        auto collect = [&](const std::vector<std::unique_ptr<Port>>& ports) {
+            for (const auto& port : ports) {
+                int portIdx = node->getPortIndex(*port);
+                for (Port* peer : port->connectedTo) {
+                    int peerNodeIdx = peer->owner.index();
+                    if (nodeIdx  < peerNodeIdx) {
+                        QJsonObject conn;
+                        conn["srcNode"] = nodeIdx;
+                        conn["srcPort"] = portIdx;
+                        conn["dstPort"] = peerNodeIdx;
+                        // conn["kkj"]
+
+                    }
+                }
+
+            }
+
+        };
+        collect(node->inputs());
+        collect(node->outputs());
+    }
+}
+} // namespace
+
+void SessionManager::save(const QString& path)
+{
+}
 
 ProductionNode* SessionManager::createProductionNode(const Recipe& recipe, Factory* factory, QString name)
 {
     Factory* f = factory ? factory : m_activeFactory;
     ProductionNode* node = new ProductionNode(*f, recipe, name);
-    emit nodeAdded(node);
+    emit nodeAdded(*node);
     return node;
 }
-
-// ProductionNode* SessionManager::createProductionNode(const QString& recipe, Factory* factory, QString name)
-// {
-//
-// }
 
 ProductionNode* SessionManager::createProductionNodeByClass(const QString& rClass, Factory* factory, QString name)
 {
@@ -30,7 +68,7 @@ ExtractionNode* SessionManager::createExtractionNode(const ExtractionRecipe* rec
     if (!recipe)
         return nullptr;
     ExtractionNode* node = new ExtractionNode(*f, *recipe, tier, name);
-    emit nodeAdded(node);
+    emit nodeAdded(*node);
     return node;
 }
 
@@ -47,7 +85,7 @@ Factory* SessionManager::createFactory(Factory* parent, QString name)
     Factory* p = parent ? parent : m_activeFactory;
     Factory* factory = new Factory(p, name);
     FactoryNode* node = new FactoryNode(*p, *factory, name);
-    emit nodeAdded(node);
+    emit nodeAdded(*node);
     return factory;
 }
 void SessionManager::enterFactory(Factory* f)
@@ -97,32 +135,26 @@ void SessionManager::connectNode(int srcNode, int srcPort, int dstNode, int dstP
 void SessionManager::disconnectNode(Port* src, Port* dest)
 {
     if (!src) {
-        qWarning() << "No Source Port Found";
+        emit operationFailed("No Source Port Found");
         return;
     }
 
-    Port* _dest; // for working with implicit dest port
     if (!dest) {
-        if (src->connectedTo.size() != 1) {
-            qWarning() << "More then one!";
+        if (src->connectedTo.empty()) {
+            emit operationFailed("Port is not Connected!\n");
             return;
         }
-        _dest = src->connectedTo.value(0);
-    } else {
-        _dest = dest;
-    }
-
-    if (!src->connectedTo.contains(_dest) || !_dest->connectedTo.contains(src)) {
-        qWarning() << "Ports are not connected!";
+        src->disconnect();
+        emit nodeDisconnected();
         return;
     }
 
-    // TODO: && short-circuits — if first removeOne succeeds but second fails, src is modified but _dest is not, leaving a half-disconnected state
-    if (!src->connectedTo.removeOne(_dest) || !_dest->connectedTo.removeOne(src)) {
-        qWarning() << "Error removing!";
+    if (!src->connectedTo.contains(dest)) {
+        emit operationFailed("Ports are not connected!");
         return;
     }
-    qDebug() << "Disconnected!";
+    src->disconnect(*dest);
+    emit nodeDisconnected();
 }
 
 void SessionManager::disconnectNode(int srcNode, int srcPort, int dstNode, int dstPort)

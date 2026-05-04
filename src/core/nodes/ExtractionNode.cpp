@@ -21,9 +21,11 @@ void ExtractionNode::buildPortsFromRecipe()
 {
     if (!recipe())
         return;
+//
+    // Port* out = new Port(*this, recipe()->resource, PortType::Output);
 
-    Port* out = new Port(*this, recipe()->resource, PortType::Output);
-    m_outputs.append(out);
+    // m_outputs.append(std::make_unique<Port>(*this, recipe()->resource, PortType::Output));
+    m_outputs.push_back(std::make_unique<Port>(*this, recipe()->resource, PortType::Output));
 }
 
 // void ExtractionNode::deletePorts()

@@ -155,14 +155,14 @@ void printProductionNode(QTextStream& out, ProductionNode* node, Factory* factor
 
     // inputs
     int portIdx = 0;
-    for (Port* p : node->inputs()) {
+    for (auto& p : node->inputs()) {
         out << CYAN << "│  " << RESET;
-        printPort(out, p, portIdx++);
+        printPort(out, p.get(), portIdx++);
     }
     // outputs (portIdx continues from inputs count — matches getPortFromIndex)
-    for (Port* p : node->outputs()) {
+    for (auto& p : node->outputs()) {
         out << CYAN << "│  " << RESET;
-        printPort(out, p, portIdx++);
+        printPort(out, p.get(), portIdx++);
     }
     out << CYAN << "└" << QString("─").repeated(50) << RESET << "\n";
 }
@@ -196,9 +196,9 @@ void printExtractionNode(QTextStream& out, ExtractionNode* node, Factory* factor
         << "\n";
 
     int portIdx = 0;
-    for (Port* p : node->outputs()) {
+    for (auto& p : node->outputs()) {
         out << GREEN << "│  " << RESET;
-        printPort(out, p, portIdx++);
+        printPort(out, p.get(), portIdx++);
     }
     out << GREEN << "└" << QString("─").repeated(50) << RESET << "\n";
 }
@@ -215,13 +215,13 @@ void printFactoryNode(QTextStream& out, FactoryNode* node, Factory* factory)
         << RESET;
 
     int portIdx = 0;
-    for (Port* p : node->inputs()) {
+    for (auto& p : node->inputs()) {
         out << YELLOW << "│  " << RESET;
-        printPort(out, p, portIdx++);
+        printPort(out, p.get(), portIdx++);
     }
-    for (Port* p : node->outputs()) {
+    for (auto& p : node->outputs()) {
         out << YELLOW << "│  " << RESET;
-        printPort(out, p, portIdx++);
+        printPort(out, p.get(), portIdx++);
     }
     out << YELLOW << "└" << QString("─").repeated(50) << RESET << "\n";
 }
@@ -241,6 +241,19 @@ CliManager::CliManager(QObject* parent)
 {
     m_notifier = new QSocketNotifier(0, QSocketNotifier::Read, this);
     connect(m_notifier, &QSocketNotifier::activated, this, &CliManager::onInputReady);
+
+    connect(m_session, &SessionManager::operationFailed,
+            this, [this](const QString msg){
+            m_out << "Error: " << msg << "\n"; });
+    // connect(m_session, &SessionManager::nodeAdded,
+    //         this, [this](AbstractNode& node){
+    //         m_out << "Added node! " << node.name() << "\n"; });
+    // connect(m_session, &SessionManager::nodeDisconnected,
+    //         this, [this](){
+    //         m_out << "Disconnected!\n"; });
+    // connect(m_session, &SessionManager::nodeDisconnected,
+    //         this, [this](){
+    //         m_out << "Disconnected!\n"; });
 
     m_out << "\n=== Factory CLI Console Initialized ===" << Qt::endl;
     m_out << "Type 'help' for a list of commands." << Qt::endl;
@@ -498,6 +511,7 @@ void CliManager::handleDisconnect(const QStringList& args)
     int xPos1 = arg1.indexOf('x');
     if (xPos1 == -1) {
         m_out << "Error parsing second index" << arg1;
+        return;
     }
     int sourceNodeIdx = arg1.left(xPos1).toInt();
     int sourcePortIdx = arg1.mid(xPos1 + 1, arg1.length() - xPos1 - 1).toInt();

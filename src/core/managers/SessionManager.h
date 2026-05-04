@@ -37,8 +37,10 @@ private:
     // SceneModel* m_sceneModel = nullptr;
 
 signals:
-    void nodeAdded(AbstractNode* node);
+    void operationFailed(const QString& reason);
+    void nodeAdded(AbstractNode& node);
     void nodeConnected();
+    void nodeDisconnected();
     void portsConnected(AbstractNode* srcNode, int srcPortIdx, AbstractNode* dstNode, int dstPortIdx);
     void nodeRemoved(AbstractNode* node);
     void factoryChanged(Factory* factory);
@@ -72,6 +74,11 @@ public slots:
     void setExtractionTier(AbstractNode* node, int tier);
     // Solver::Result solve();
 
+    Factory* rootFactory() const { return m_rootFactory; }
+    Factory* activeFactory() const { return m_activeFactory; }
+    // SceneModel* activeModel()   const { return m_sceneModel; }
+
+    QList<Factory*> getSubFactories() const { return m_activeFactory->subFactories(); };
 public:
     static SessionManager& get()
     {
@@ -84,9 +91,4 @@ public:
         return &get();
     }
 
-    Factory* rootFactory() const { return m_rootFactory; }
-    Factory* activeFactory() const { return m_activeFactory; }
-    // SceneModel* activeModel()   const { return m_sceneModel; }
-
-    QList<Factory*> getSubFactories() const { return m_activeFactory->subFactories(); };
 };

@@ -2,7 +2,7 @@
 
 #include "Port.h"
 #include <QJsonObject>
-#include <QList>
+// #include <QList>
 #include <QObject>
 #include <QUuid>
 
@@ -16,8 +16,10 @@ protected:
     Factory* m_parentFactory;
     QUuid m_id;
     QString m_name;
-    QList<Port*> m_inputs;
-    QList<Port*> m_outputs;
+    // QList<Port*> m_inputs;
+    // QList<Port*> m_outputs;
+    std::vector<std::unique_ptr<Port>> m_inputs;
+    std::vector<std::unique_ptr<Port>> m_outputs;
 
 public:
     virtual ~AbstractNode() = default; // FIXME: may need improvement
@@ -31,11 +33,13 @@ public:
     virtual QJsonObject getJsonNode() const = 0;
 
     void deletePorts();
-    void disconnectPort(Port* port);
+    // void disconnectPort(Port* port)
     void disconnectAllPorts();
 
-    const QList<Port*>& inputs() const { return m_inputs; }
-    const QList<Port*>& outputs() const { return m_outputs; }
+    // const QList<std::unique_ptr<Port>>& inputs() const { return m_inputs; }
+    // const QList<std::unique_ptr<Port>>& outputs() const { return m_outputs; }
+    const std::vector<std::unique_ptr<Port>>& inputs() const { return m_inputs; }
+    const std::vector<std::unique_ptr<Port>>& outputs() const { return m_outputs; }
     void setName(QString name) { m_name = name; }
 
     int index() const;
