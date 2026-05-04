@@ -6,8 +6,9 @@ MachineNode::MachineNode(
     Factory& parentFactory,
     QString name,
     float machineCount,
-    float machineLimit)
-    : AbstractNode(parentFactory, name)
+    float machineLimit,
+    QUuid id)
+    : AbstractNode(parentFactory, name, id)
     , m_machineCount(machineCount)
     , m_machineLimit(machineLimit)
 {

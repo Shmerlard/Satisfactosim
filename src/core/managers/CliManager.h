@@ -30,6 +30,7 @@ private:
     void handleTier(const QStringList& args);
     // void handleSolve();
     void handleRename(const QStringList& args);
+    void handleSave(const QStringList& args);
     // void handleHelp();
 
 private slots:

@@ -11,7 +11,8 @@ private:
         Factory& parentFactory,
         const ExtractionRecipe& recipe,
         int tier = 0,
-        QString name = QString());
+        QString name = QString(),
+        QUuid id = QUuid());
 
     int m_tier = 0;
     NodePurity m_purity = NodePurity::Normal;

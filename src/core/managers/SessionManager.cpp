@@ -1,12 +1,15 @@
 #include "SessionManager.h"
 #include "GameLibrary.h"
 #include "core/nodes/ProductionNode.h"
+#include <QDir>
 #include <QJsonArray>
+#include <QJsonDocument>
 
 namespace {
 QJsonObject serializeFactory(const Factory& factory)
 {
     QJsonObject obj;
+    obj["id"] = factory.id().toString();
     obj["name"] = factory.name();
 
     QJsonArray nodesArray;
@@ -14,34 +17,42 @@ QJsonObject serializeFactory(const Factory& factory)
         nodesArray.append(node->getJsonNode());
     obj["nodes"] = nodesArray;
 
-    QJsonObject connections;
+    QJsonArray connections;
     for (AbstractNode* node : factory.subNodes()) {
-        int nodeIdx = node->index();
-        auto collect = [&](const std::vector<std::unique_ptr<Port>>& ports) {
-            for (const auto& port : ports) {
-                int portIdx = node->getPortIndex(*port);
-                for (Port* peer : port->connectedTo) {
-                    int peerNodeIdx = peer->owner.index();
-                    if (nodeIdx  < peerNodeIdx) {
-                        QJsonObject conn;
-                        conn["srcNode"] = nodeIdx;
-                        conn["srcPort"] = portIdx;
-                        conn["dstPort"] = peerNodeIdx;
-                        // conn["kkj"]
-
-                    }
-                }
-
+        for (const auto& port : node->outputs()) {
+            for (Port* peer : port->connectedTo) {
+                QJsonObject conn;
+                conn["from"] = QJsonArray { node->id().toString(), node->getPortIndex(*port) };
+                conn["to"] = QJsonArray { peer->owner.id().toString(), peer->owner.getPortIndex(*peer) };
+                connections.append(conn);
             }
-
-        };
-        collect(node->inputs());
-        collect(node->outputs());
+        }
     }
+    obj["connections"] = connections;
+    QJsonArray subFactories;
+    for (Factory* subFactory : factory.subFactories())
+        subFactories.append(serializeFactory(*subFactory));
+    obj["sub_factories"] = subFactories;
+
+    return obj;
 }
 } // namespace
 
 void SessionManager::save(const QString& path)
+{
+    QJsonObject root;
+    root["metadata"] = QJsonObject { { "version", 1 } };
+    root["root_factory"] = serializeFactory(*m_rootFactory);
+
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly)) {
+        emit operationFailed("Could not open file " + path);
+        return;
+    }
+    file.write(QJsonDocument(root).toJson());
+}
+
+void SessionManager::load(const QString& path)
 {
 }
 
@@ -49,7 +60,7 @@ ProductionNode* SessionManager::createProductionNode(const Recipe& recipe, Facto
 {
     Factory* f = factory ? factory : m_activeFactory;
     ProductionNode* node = new ProductionNode(*f, recipe, name);
-    emit nodeAdded(*node);
+    emit nodeAdded(node);
     return node;
 }
 
@@ -68,7 +79,7 @@ ExtractionNode* SessionManager::createExtractionNode(const ExtractionRecipe* rec
     if (!recipe)
         return nullptr;
     ExtractionNode* node = new ExtractionNode(*f, *recipe, tier, name);
-    emit nodeAdded(*node);
+    emit nodeAdded(node);
     return node;
 }
 
@@ -85,7 +96,7 @@ Factory* SessionManager::createFactory(Factory* parent, QString name)
     Factory* p = parent ? parent : m_activeFactory;
     Factory* factory = new Factory(p, name);
     FactoryNode* node = new FactoryNode(*p, *factory, name);
-    emit nodeAdded(*node);
+    emit nodeAdded(node);
     return factory;
 }
 void SessionManager::enterFactory(Factory* f)

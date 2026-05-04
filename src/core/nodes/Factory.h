@@ -3,6 +3,7 @@
 #include "Port.h"
 #include <QList>
 #include <QString>
+#include <QUuid>
 
 class AbstractNode;
 class FactoryNode;
@@ -12,6 +13,7 @@ private:
     // friend class SessionManager;
     friend class FactoryNode;
 
+    QUuid m_id;
     QString m_name;
     Factory* m_parent;
     FactoryNode* m_node;
@@ -19,7 +21,8 @@ private:
     QList<Factory*> m_subFactories;
 
 public:
-    explicit Factory(Factory* parent, QString name);
+    explicit Factory(Factory* parent, QString name, QUuid id = QUuid());
+    QUuid id() const { return m_id; }
     ~Factory(); // FIXME: will need work
 
     QString name() const { return m_name; }

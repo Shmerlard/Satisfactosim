@@ -4,9 +4,10 @@
 
 AbstractNode::AbstractNode(
     Factory& parentFactory,
-    QString name)
+    QString name,
+    QUuid id)
     : m_parentFactory(&parentFactory)
-    , m_id(QUuid::createUuid())
+    , m_id(id.isNull() ? QUuid::createUuid() : id)
     , m_name(name)
 {
 }

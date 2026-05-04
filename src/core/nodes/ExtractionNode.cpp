@@ -7,8 +7,9 @@ ExtractionNode::ExtractionNode(
     Factory& parentFactory,
     const ExtractionRecipe& recipe,
     int tier,
-    QString name)
-    : MachineNode(parentFactory, name)
+    QString name,
+    QUuid id)
+    : MachineNode(parentFactory, name, 1, -1, id)
     , m_tier(tier)
 {
     m_recipe = &recipe;

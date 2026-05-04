@@ -12,7 +12,8 @@ class AbstractNode {
 protected:
     explicit AbstractNode(
         Factory& parentFactory,
-        QString name = QString());
+        QString name = QString(),
+        QUuid id = QUuid());
     Factory* m_parentFactory;
     QUuid m_id;
     QString m_name;

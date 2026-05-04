@@ -1,8 +1,9 @@
 #include "Factory.h"
 #include "FactoryNode.h"
 
-Factory::Factory(Factory* parent, QString name)
-    : m_parent(parent)
+Factory::Factory(Factory* parent, QString name, QUuid id)
+    : m_id(id.isNull() ? QUuid::createUuid() : id)
+    , m_parent(parent)
     , m_name(name)
 // , m_subNodes(QList<AbstractNode*>())
 {

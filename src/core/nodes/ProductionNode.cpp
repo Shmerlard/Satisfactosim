@@ -6,8 +6,9 @@
 ProductionNode::ProductionNode(
     Factory& parentFactory,
     const Recipe& recipe,
-    QString name)
-    : MachineNode(parentFactory, name)
+    QString name,
+    QUuid id)
+    : MachineNode(parentFactory, name, 1, -1, id)
 {
     m_recipe = &recipe;
     m_parentFactory->addNode(*this);

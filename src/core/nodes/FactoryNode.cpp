@@ -20,7 +20,6 @@ QJsonObject FactoryNode::getJsonNode() const
     obj["id"]        = m_id.toString();
     obj["type"]      = "factory";
     obj["name"]      = m_name;
-    // obj["factoryId"] = m_factory.node()->id().toString();
-    obj["factoryId"] = this->id().toString();
+    obj["factoryId"] = m_factory.id().toString();
     return obj;
 }

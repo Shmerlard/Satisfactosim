@@ -38,7 +38,7 @@ private:
 
 signals:
     void operationFailed(const QString& reason);
-    void nodeAdded(AbstractNode& node);
+    void nodeAdded(AbstractNode* node);
     void nodeConnected();
     void nodeDisconnected();
     void portsConnected(AbstractNode* srcNode, int srcPortIdx, AbstractNode* dstNode, int dstPortIdx);

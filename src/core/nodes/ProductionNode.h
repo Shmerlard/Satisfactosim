@@ -10,7 +10,8 @@ private:
     explicit ProductionNode(
             Factory& parentFactory,
             const Recipe& recipe,
-            QString name = QString());
+            QString name = QString(),
+            QUuid id = QUuid());
 
 
     void buildPortsFromRecipe() override;

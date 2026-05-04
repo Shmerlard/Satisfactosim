@@ -1,4 +1,5 @@
 #include "CliManager.h"
+#include <QDir>
 #include <QMap>
 #include <QString>
 // #include <format>
@@ -303,6 +304,7 @@ void CliManager::processCommand(const QString& line)
         { "tier", [this](const auto& p) { handleTier(p); } },
         // { "solve", [this](const auto&) { handleSolve(); } },
         { "rename", [this](const auto& p) { handleRename(p); } },
+        { "save",   [this](const auto& p) { handleSave(p); } },
         // FIX: fix help
         //
         // { "help", [this](const auto& p) { handleHelp(); } },
@@ -629,6 +631,22 @@ void CliManager::handleRename(const QStringList& args)
     }
 
     SessionManager::get().renameNode(index, newName);
+}
+
+void CliManager::handleSave(const QStringList& args)
+{
+    if (args.isEmpty()) {
+        m_out << "Usage: save <path|name>  (name saves to current directory)\n";
+        return;
+    }
+    QString path = args[0];
+    if (!path.contains('/') && !path.contains('\\')) {
+        if (!path.endsWith(".json"))
+            path += ".json";
+        path = QDir::currentPath() + "/" + path;
+    }
+    m_session->save(path);
+    m_out << "Saved to " << path << "\n";
 }
 
 // -------------------- SLOTS --------------------------

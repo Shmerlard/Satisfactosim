@@ -15,7 +15,8 @@ protected:
         Factory& parentFactory,
         QString name = QString(),
         float machineCount = 1,
-        float machineLimit = -1);
+        float machineLimit = -1,
+        QUuid id = QUuid());
 
     const Machine* m_machine = nullptr;
     const Recipe* m_recipe = nullptr;
