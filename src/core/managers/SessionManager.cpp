@@ -13,12 +13,12 @@ QJsonObject serializeFactory(const Factory& factory)
     obj["name"] = factory.name();
 
     QJsonArray nodesArray;
-    for (AbstractNode* node : factory.subNodes())
+    for (const auto& node : factory.subNodes())
         nodesArray.append(node->getJsonNode());
     obj["nodes"] = nodesArray;
 
     QJsonArray connections;
-    for (AbstractNode* node : factory.subNodes()) {
+    for (const auto& node : factory.subNodes()) {
         for (const auto& port : node->outputs()) {
             for (Port* peer : port->connectedTo) {
                 QJsonObject conn;
@@ -30,7 +30,7 @@ QJsonObject serializeFactory(const Factory& factory)
     }
     obj["connections"] = connections;
     QJsonArray subFactories;
-    for (Factory* subFactory : factory.subFactories())
+    for (const auto& subFactory: factory.subFactories())
         subFactories.append(serializeFactory(*subFactory));
     obj["sub_factories"] = subFactories;
 
@@ -117,7 +117,7 @@ void SessionManager::load(const QString& path)
 ProductionNode* SessionManager::createProductionNode(const Recipe& recipe, Factory* factory, QString name)
 {
     Factory* f = factory ? factory : m_activeFactory;
-    ProductionNode* node = new ProductionNode(*f, recipe, name);
+    ProductionNode* node = f->createProductionNode(recipe, name);
     emit nodeAdded(node);
     return node;
 }
@@ -128,7 +128,8 @@ ProductionNode* SessionManager::createProductionNodeByClass(const QString& rClas
     if (!r)
         return nullptr;
 
-    return createProductionNode(*r, factory, name);
+    Factory* f = factory ? factory : m_activeFactory;
+    return f->createProductionNode(*r, name);
 }
 
 ExtractionNode* SessionManager::createExtractionNode(const ExtractionRecipe* recipe, int tier, Factory* factory, QString name)
@@ -136,7 +137,7 @@ ExtractionNode* SessionManager::createExtractionNode(const ExtractionRecipe* rec
     Factory* f = factory ? factory : m_activeFactory;
     if (!recipe)
         return nullptr;
-    ExtractionNode* node = new ExtractionNode(*f, *recipe, tier, name);
+    ExtractionNode* node = f->createExtractionNode(*recipe, tier, name);
     emit nodeAdded(node);
     return node;
 }
@@ -211,8 +212,8 @@ void SessionManager::connectNode(Port* src, Port* dest)
 
 void SessionManager::connectNode(int srcNode, int srcPort, int dstNode, int dstPort)
 {
-    AbstractNode* srcNode_p = m_activeFactory->subNodes().value(srcNode);
-    AbstractNode* dstNode_p = m_activeFactory->subNodes().value(dstNode);
+    AbstractNode* srcNode_p = m_activeFactory->subNodes().at(srcNode).get();
+    AbstractNode* dstNode_p = m_activeFactory->subNodes().at(srcNode).get();
     if (!srcNode_p || !dstNode_p) {
         qWarning() << "Invalid Source or Destination Node";
         return;
@@ -253,7 +254,7 @@ void SessionManager::disconnectNode(Port* src, Port* dest)
 
 void SessionManager::disconnectNode(int srcNode, int srcPort, int dstNode, int dstPort)
 {
-    AbstractNode* srcNode_p = m_activeFactory->subNodes().value(srcNode);
+    AbstractNode* srcNode_p = m_activeFactory->subNodes().at(srcNode).get();
     if (!srcNode_p) {
         qWarning() << "Invalid Source Node";
         return;
@@ -266,7 +267,7 @@ void SessionManager::disconnectNode(int srcNode, int srcPort, int dstNode, int d
         return;
         // }
     }
-    AbstractNode* dstNode_p = m_activeFactory->subNodes().value(dstNode);
+    AbstractNode* dstNode_p = m_activeFactory->subNodes().at(dstNode).get();
     if (!dstNode_p) {
         qWarning() << "Invalid Source or Destination Node";
         return;
@@ -287,7 +288,7 @@ void SessionManager::renameNode(int index, QString name)
     }
 
     // FIX: boundry check
-    AbstractNode* node = m_activeFactory->subNodes().value(index);
+    AbstractNode* node = m_activeFactory->subNodes().at(index).get();
     if (!node) {
         qWarning() << "Invalid Index: " << index;
         return;

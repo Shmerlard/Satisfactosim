@@ -12,7 +12,7 @@ ProductionNode::ProductionNode(
 {
     m_type = NodeType::Production;
     m_recipe = &recipe;
-    m_parentFactory->addNode(*this);
+    // m_parentFactory->addNode(*this);
     buildPortsFromRecipe();
 }
 

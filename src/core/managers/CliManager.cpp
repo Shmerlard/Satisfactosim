@@ -127,7 +127,13 @@ void printPort(QTextStream& out, Port* port, int portGlobalIdx)
 
 void printProductionNode(QTextStream& out, ProductionNode* node, Factory* factory)
 {
-    int idx = factory->subNodes().indexOf(node);
+    // int idx = factory->subNodes().indexOf(node);
+    int idx = 0;
+    for (const auto& n : factory->subNodes()) {
+        if (n.get() == node)
+            break;
+        idx++;
+    }
 
     QString recipeName = "none";
     QString machineName = "";
@@ -171,7 +177,13 @@ void printProductionNode(QTextStream& out, ProductionNode* node, Factory* factor
 
 void printExtractionNode(QTextStream& out, ExtractionNode* node, Factory* factory)
 {
-    int idx = factory->subNodes().indexOf(node);
+    // int idx = factory->subNodes().indexOf(node);
+    int idx = 0;
+    for (const auto& n : factory->subNodes()) {
+        if (n.get() == node)
+            break;
+        idx++;
+    }
 
     QString extractorName = node->getExtractorName();
     QString resourceName = node->recipe() ? node->recipe()->resource->itemName : "none";
@@ -207,13 +219,19 @@ void printExtractionNode(QTextStream& out, ExtractionNode* node, Factory* factor
 
 void printFactoryNode(QTextStream& out, FactoryNode* node, Factory* factory)
 {
-    int idx = factory->subNodes().indexOf(node);
+    int idx = 0;
+    for (const auto& n : factory->subNodes()) {
+        if (n.get() == node)
+            break;
+        idx++;
+    }
+    // TODO: add index of node method inside factry
 
     out << YELLOW << BOLD
         << QString("┌─ [%1] Factory  \"%2\"  (%3 nodes inside)\n")
                .arg(idx)
                .arg(node->name())
-               .arg(node->factory().subNodes().count())
+               .arg(node->factory().subNodes().size())
         << RESET;
 
     int portIdx = 0;
@@ -245,8 +263,7 @@ CliManager::CliManager(QObject* parent)
     connect(m_notifier, &QSocketNotifier::activated, this, &CliManager::onInputReady);
 
     connect(m_session, &SessionManager::operationFailed,
-            this, [this](const QString msg){
-            m_out << "Error: " << msg << "\n"; });
+        this, [this](const QString msg) { m_out << "Error: " << msg << "\n"; });
     // connect(m_session, &SessionManager::nodeAdded,
     //         this, [this](AbstractNode& node){
     //         m_out << "Added node! " << node.name() << "\n"; });
@@ -305,7 +322,7 @@ void CliManager::processCommand(const QString& line)
         { "tier", [this](const auto& p) { handleTier(p); } },
         // { "solve", [this](const auto&) { handleSolve(); } },
         { "rename", [this](const auto& p) { handleRename(p); } },
-        { "save",   [this](const auto& p) { handleSave(p); } },
+        { "save", [this](const auto& p) { handleSave(p); } },
         // FIX: fix help
         //
         // { "help", [this](const auto& p) { handleHelp(); } },
@@ -432,10 +449,10 @@ void CliManager::handleRm(const QStringList& args)
         return;
 
     auto factory = SessionManager::get().activeFactory();
-    auto nodes = factory->subNodes();
+    auto& nodes = factory->subNodes();
 
     if (index >= 0 && index < nodes.size()) {
-        AbstractNode* target = nodes.at(index);
+        AbstractNode* target = nodes.at(index).get();
         SessionManager::get().deleteNode(target);
         return;
     }
@@ -444,18 +461,33 @@ void CliManager::handleRm(const QStringList& args)
 void CliManager::handleLs()
 {
     auto* factory = SessionManager::get().activeFactory();
-    if (!factory || factory->subNodes().isEmpty()) {
+    if (!factory || factory->subNodes().empty()) {
         m_out << DIM << "(empty factory)\n"
               << RESET;
         return;
     }
-    for (AbstractNode* node : factory->subNodes()) {
-        if (auto* p = dynamic_cast<ProductionNode*>(node))
+    for (const auto& node : factory->subNodes()) {
+        switch (node.get()->type()) {
+        case NodeType::Extraction: {
+            auto* p = static_cast<ExtractionNode*>(node.get());
+            printExtractionNode(m_out, p, factory);
+            break;
+        }
+        case NodeType::Production: {
+            auto* p = static_cast<ProductionNode*>(node.get());
             printProductionNode(m_out, p, factory);
-        else if (auto* e = dynamic_cast<ExtractionNode*>(node))
-            printExtractionNode(m_out, e, factory);
-        else if (auto* f = dynamic_cast<FactoryNode*>(node))
-            printFactoryNode(m_out, f, factory);
+            break;
+        }
+        case NodeType::Factory: {
+            auto* p = static_cast<FactoryNode*>(node.get());
+            printFactoryNode(m_out, p, factory);
+            break;
+        }
+        default: {
+            m_out << "WARNING: UNHANDLED PRINT";
+            break;
+        }
+        }
         m_out << "\n";
     }
 }
@@ -475,20 +507,21 @@ void CliManager::handleCd(const QStringList& args)
     }
 
     auto* factory = SessionManager::get().activeFactory();
-    auto nodes = factory->subNodes();
+    auto& nodes = factory->subNodes();
 
     if (index < 0 || index >= nodes.size()) {
         m_out << "No node at index " << index << "\n";
         return;
     }
 
-    auto* target = dynamic_cast<FactoryNode*>(nodes.at(index));
-    if (!target) {
+    
+    auto* target = nodes.at(index).get();
+    if (target->type() != NodeType::Factory) {
         m_out << "Node " << index << " is not a factory node\n";
         return;
     }
 
-    m_session->enterFactory(&target->factory());
+    m_session->enterFactory(target->parentFactory());
 }
 
 void CliManager::handleConnect(const QStringList& args)
@@ -570,7 +603,7 @@ void CliManager::handleLimit(const QStringList& args)
         m_out << "No node at index " << index << "\n";
         return;
     }
-    AbstractNode* node = factory->subNodes().at(index);
+    AbstractNode* node = factory->subNodes().at(index).get();
     SessionManager::get().setMachineLimit(node, value);
     m_out << "Limit set to " << value << " on node " << index << "\n";
 }
@@ -605,7 +638,7 @@ void CliManager::handlePurity(const QStringList& args)
         m_out << "No node at index " << index << "\n";
         return;
     }
-    SessionManager::get().setExtractionPurity(factory->subNodes().at(index), purity);
+    SessionManager::get().setExtractionPurity(factory->subNodes().at(index).get(), purity);
     m_out << "Purity set to " << args[1] << " on node " << index << "\n";
 }
 
@@ -628,7 +661,7 @@ void CliManager::handleTier(const QStringList& args)
         m_out << "No node at index " << index << "\n";
         return;
     }
-    SessionManager::get().setExtractionTier(factory->subNodes().at(index), tier);
+    SessionManager::get().setExtractionTier(factory->subNodes().at(index).get(), tier);
     m_out << "Tier set to " << tier << " on node " << index << "\n";
 }
 void CliManager::handleRename(const QStringList& args)

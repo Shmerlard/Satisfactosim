@@ -14,7 +14,7 @@ ExtractionNode::ExtractionNode(
 {
     m_type = NodeType::Extraction;
     m_recipe = &recipe;
-    m_parentFactory->addNode(*this);
+    // m_parentFactory->addNode(*this);
 
     buildPortsFromRecipe();
 }

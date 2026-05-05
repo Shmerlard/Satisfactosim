@@ -85,7 +85,7 @@ public slots:
     Factory* activeFactory() const { return m_activeFactory; }
     // SceneModel* activeModel()   const { return m_sceneModel; }
 
-    QList<Factory*> getSubFactories() const { return m_activeFactory->subFactories(); };
+    // QList<Factory*> getSubFactories() const { return m_activeFactory->subFactories(); };
 
 public:
     static SessionManager& get()

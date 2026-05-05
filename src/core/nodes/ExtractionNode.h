@@ -5,6 +5,7 @@
 
 class ExtractionNode : public MachineNode {
     friend class SessionManager;
+    friend class Factory;
 
 private:
     explicit ExtractionNode(

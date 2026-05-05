@@ -9,8 +9,8 @@ FactoryEdgeNode::FactoryEdgeNode(
     : AbstractNode(parentFactory, name, id)
 {
     m_type = NodeType::FactoryEdge;
-    m_parentFactory->addNode(*this);
-    m_parentFactory->
+    // m_parentFactory->addNode(*this);
+    // m_parentFactory->
     buildPort();
     // possibly more
 }

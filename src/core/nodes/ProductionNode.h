@@ -5,6 +5,7 @@
 
 class ProductionNode : public MachineNode {
     friend class SessionManager;
+    friend class Factory;
 
 private:
     explicit ProductionNode(

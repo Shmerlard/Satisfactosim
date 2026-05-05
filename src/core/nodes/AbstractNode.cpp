@@ -1,7 +1,6 @@
 #include "AbstractNode.h"
 #include "Factory.h"
 
-
 AbstractNode::AbstractNode(
     Factory& parentFactory,
     QString name,
@@ -15,7 +14,14 @@ AbstractNode::AbstractNode(
 int AbstractNode::index() const
 {
     // FIX: may need a const_cast
-    return m_parentFactory->subNodes().indexOf(this);
+    // return m_parentFactory->subNodes().indexOf(this);
+    int idx = 0;
+    for (auto& it : m_parentFactory->subNodes()) {
+        if (this == it.get())
+            return idx;
+        idx++;
+    }
+    return -1;
 }
 
 int AbstractNode::getPortIndex(Port& port) const
@@ -59,8 +65,9 @@ Port* AbstractNode::getPortFromIndex(int index) const
 bool AbstractNode::connectToPort(Port& src, Port& dst, QString* err)
 {
     QString _dummy;
-    if (!err) err= &_dummy;
-    if (&dst.owner == &src.owner){
+    if (!err)
+        err = &_dummy;
+    if (&dst.owner == &src.owner) {
         *err = "source and destination belong to the same node!";
         return false;
     }
@@ -81,16 +88,18 @@ bool AbstractNode::connectToPort(Port& src, Port& dst, QString* err)
     return true;
 }
 
-QJsonObject AbstractNode::getJsonNode() const {
-    
+QJsonObject AbstractNode::getJsonNode() const
+{
+
     QJsonObject obj;
-    obj["id"]        = m_id.toString();
-    obj["name"]      = m_name;
-    obj["type"]      = static_cast<uint8_t>(m_type);
+    obj["id"] = m_id.toString();
+    obj["name"] = m_name;
+    obj["type"] = static_cast<uint8_t>(m_type);
     return obj;
 }
 
-void AbstractNode::deletePorts() {
+void AbstractNode::deletePorts()
+{
     // disconnectAllPorts();
     // qDeleteAll(m_inputs);
     // qDeleteAll(m_outputs);
@@ -105,4 +114,3 @@ void AbstractNode::disconnectAllPorts()
     for (auto& port : outputs())
         port->disconnect();
 }
-

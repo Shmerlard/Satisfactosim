@@ -9,7 +9,7 @@ FactoryNode::FactoryNode(
 {
     m_type = NodeType::Factory;
     ownedFactory.m_node = this;
-    parentFactory.addNode(*this);
+    // parentFactory.addNode(*this);
 }
 
 float FactoryNode::portRate(const Port* port) const
