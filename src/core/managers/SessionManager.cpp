@@ -36,6 +36,64 @@ QJsonObject serializeFactory(const Factory& factory)
 
     return obj;
 }
+
+Factory* deserializeFactory(const QJsonObject obj, Factory* parent, QMap<QString, AbstractNode*>& nodeMap)
+{
+    QUuid factoryId = QUuid(obj["id"].toString());
+    QString name = obj["name"].toString();
+
+    Factory* factory = new Factory(parent, name, factoryId);
+
+    QMap<QString, Factory*> subFactoryById;
+    for (const QJsonValue& v : obj["sub_factories"].toArray()) {
+        Factory* sub = deserializeFactory(v.toObject(), factory, nodeMap);
+        subFactoryById[sub->id().toString()] = sub;
+    }
+
+    for (const QJsonValue& v : obj["nodes"].toArray()) {
+        QJsonObject n = v.toObject();
+        QString id = n["id"].toString();
+        NodeType type = static_cast<NodeType>(n["type"].toInt());
+        QString nname = n["name"].toString();
+        QUuid nodeId = QUuid(id);
+        AbstractNode* node = nullptr;
+
+        if (type == NodeType::Production) {
+            float limit = (float)n["machineLimit"].toDouble(-1.0);
+            const QString recipe = n["recipe"].toString();
+            auto* pn = SessionManager::get().createProductionNodeByClass(recipe, factory, nname);
+            pn->setId(nodeId);
+            pn->setMachineLimit(limit);
+            node = pn;
+        } else if (type == NodeType::Extraction) {
+            float limit = (float)n["machineLimit"].toDouble(-1.0);
+            const QString recipe = n["recipe"].toString();
+            int tier = n["tier"].toInt();
+            NodePurity purity = static_cast<NodePurity>(n["purity"].toInt());
+            auto* en = SessionManager::get().createExtractionNodeByClass(recipe, tier, factory, nname);
+            en->setId(nodeId);
+            en->setMachineLimit(limit);
+            node = en;
+        } else if (type == NodeType::Production) {
+            QString factoryId = n["factoryId"].toString();
+            Factory* sub = subFactoryById.value(factoryId);
+            if (!sub) {
+                // ERROR
+                continue;
+            }
+            auto* fn = SessionManager::get().createFactoryNode(*factory, *sub, nname);
+            node = fn;
+
+        } else {
+        }
+
+        if (node)
+            nodeMap[id] = node;
+    }
+
+    return factory;
+}
+
 } // namespace
 
 void SessionManager::save(const QString& path)
@@ -91,6 +149,16 @@ ExtractionNode* SessionManager::createExtractionNodeByName(QString resourceName,
     return createExtractionNode(r, tier, factory, name);
 }
 
+ExtractionNode* SessionManager::createExtractionNodeByClass(QString rClass, int tier, Factory* factory, QString name)
+{
+
+    const Recipe* r = GameLibrary::get().getRecipeByClass(rClass);
+    const ExtractionRecipe* er = dynamic_cast<const ExtractionRecipe*>(r);
+    if (!er)
+        return nullptr;
+    return createExtractionNode(er, tier, factory, name);
+}
+
 Factory* SessionManager::createFactory(Factory* parent, QString name)
 {
     Factory* p = parent ? parent : m_activeFactory;
@@ -99,6 +167,14 @@ Factory* SessionManager::createFactory(Factory* parent, QString name)
     emit nodeAdded(node);
     return factory;
 }
+
+FactoryNode* SessionManager::createFactoryNode(Factory& parent, Factory& owned, QString name)
+{
+    FactoryNode* node = new FactoryNode(parent, owned, name);
+    emit nodeAdded(node);
+    return node;
+}
+
 void SessionManager::enterFactory(Factory* f)
 {
     if (!f)

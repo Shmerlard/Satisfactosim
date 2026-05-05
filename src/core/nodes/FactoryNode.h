@@ -15,7 +15,7 @@ public:
 
     Factory& factory() const { return m_factory; }
 
-    int hierarchyLevel() const override { return 1; }
+    // int hierarchyLevel() const override { return 1; }
     float portRate(const Port* port) const override;
     QJsonObject getJsonNode() const override;
 

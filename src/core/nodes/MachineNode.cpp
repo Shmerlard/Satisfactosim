@@ -18,10 +18,9 @@ MachineNode::MachineNode(
 
 QJsonObject MachineNode::getJsonNode() const
 {
-    QJsonObject obj;
-    obj["id"]           = m_id.toString();
-    obj["name"]         = m_name;
+    QJsonObject obj = AbstractNode::getJsonNode();
     obj["machineLimit"] = m_machineLimit;
+    obj["recipe"] = recipe() ? recipe()->recipeClass : "";
     return obj;
 }
 

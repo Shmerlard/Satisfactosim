@@ -7,6 +7,7 @@
 
 class AbstractNode;
 class FactoryNode;
+class FactoryEdgeNode;
 
 class Factory {
 private:
@@ -17,8 +18,9 @@ private:
     QString m_name;
     Factory* m_parent;
     FactoryNode* m_node;
-    QList<AbstractNode*> m_subNodes;
+    QList<AbstractNode*> m_subNodes; // wouldnt it be unique pointers?
     QList<Factory*> m_subFactories;
+    std::vector<std::unique_ptr<FactoryEdgeNode*>> m_edgeNodes;
 
 public:
     explicit Factory(Factory* parent, QString name, QUuid id = QUuid());

@@ -10,6 +10,7 @@ ProductionNode::ProductionNode(
     QUuid id)
     : MachineNode(parentFactory, name, 1, -1, id)
 {
+    m_type = NodeType::Production;
     m_recipe = &recipe;
     m_parentFactory->addNode(*this);
     buildPortsFromRecipe();
@@ -68,8 +69,8 @@ void ProductionNode::setRecipe(const ProductionRecipe* recipe)
 QJsonObject ProductionNode::getJsonNode() const
 {
     QJsonObject obj = MachineNode::getJsonNode();
-    obj["type"] = "production";
-    obj["recipe"] = recipe() ? recipe()->recipeClass : "";
+    // obj["type"] = "production";
+    // obj["recipe"] = recipe() ? recipe()->recipeClass : "";
     return obj;
 }
 

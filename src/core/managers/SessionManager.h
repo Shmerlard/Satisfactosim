@@ -47,6 +47,9 @@ signals:
     void activeFactoryChanged();
     void solved();
 
+public:
+    FactoryNode* createFactoryNode(Factory& parent, Factory& owned, QString name = QString());
+
 public slots:
     // void goParentFactory();
     // void goToRoot();
@@ -58,6 +61,7 @@ public slots:
     ProductionNode* createProductionNodeByClass(const QString& rClass, Factory* factory = nullptr, QString name = QString());
     ExtractionNode* createExtractionNode(const ExtractionRecipe* recipe, int tier = 1, Factory* factory = nullptr, QString name = QString());
     ExtractionNode* createExtractionNodeByName(QString resourceName, int tier = 1, Factory* factory = nullptr, QString name = QString());
+    ExtractionNode* createExtractionNodeByClass(QString rClass, int tier = 1, Factory* factory = nullptr, QString name = QString());
 
     Factory* createFactory(Factory* parent = nullptr, QString name = QString());
     void enterFactory(Factory* f);
@@ -79,6 +83,7 @@ public slots:
     // SceneModel* activeModel()   const { return m_sceneModel; }
 
     QList<Factory*> getSubFactories() const { return m_activeFactory->subFactories(); };
+
 public:
     static SessionManager& get()
     {
@@ -90,5 +95,4 @@ public:
     {
         return &get();
     }
-
 };

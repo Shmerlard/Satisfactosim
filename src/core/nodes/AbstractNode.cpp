@@ -54,6 +54,8 @@ Port* AbstractNode::getPortFromIndex(int index) const
     return nullptr;
 }
 
+// TODO: look for differences between signals for notifying erros in session
+// and *err
 bool AbstractNode::connectToPort(Port& src, Port& dst, QString* err)
 {
     QString _dummy;
@@ -77,6 +79,15 @@ bool AbstractNode::connectToPort(Port& src, Port& dst, QString* err)
     src.connect(dst);
     err->clear();
     return true;
+}
+
+QJsonObject AbstractNode::getJsonNode() const {
+    
+    QJsonObject obj;
+    obj["id"]        = m_id.toString();
+    obj["name"]      = m_name;
+    obj["type"]      = static_cast<uint8_t>(m_type);
+    return obj;
 }
 
 void AbstractNode::deletePorts() {

@@ -33,5 +33,5 @@ public:
     QString getExtractorName() const; // FIX: remove
     QString machineName() const override;
     QString getMachineIcon() const;
-    int hierarchyLevel() const override { return 2; }
+    // int hierarchyLevel() const override { return 2; }
 };

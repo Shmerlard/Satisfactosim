@@ -14,6 +14,14 @@ struct MachineFamily;
 enum class NodePurity { Impure, Normal, Pure };
 enum class Form { Solid, Liquid, Gas };
 
+inline NodePurity nodePurityFromString(const QString& s, NodePurity fallback = NodePurity::Normal)
+{
+    if (s == "impure") return NodePurity::Impure;
+    if (s == "pure")   return NodePurity::Pure;
+    if (s == "normal") return NodePurity::Normal;
+    return fallback;
+}
+
 // ------------------- ITEMS    --------------------
 struct Item {
     QString itemClass;

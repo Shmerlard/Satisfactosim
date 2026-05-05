@@ -27,5 +27,5 @@ public:
     QJsonObject getJsonNode() const override;
     QString machineName() const override;
     QString getMachineIcon() const;
-    int hierarchyLevel() const override { return 3; }
+    // int hierarchyLevel() const override { return 3; }
 };

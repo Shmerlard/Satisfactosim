@@ -1,4 +1,5 @@
 #include "CliManager.h"
+#include <QCoreApplication>
 #include <QDir>
 #include <QMap>
 #include <QString>
@@ -643,7 +644,7 @@ void CliManager::handleSave(const QStringList& args)
     if (!path.contains('/') && !path.contains('\\')) {
         if (!path.endsWith(".json"))
             path += ".json";
-        path = QDir::currentPath() + "/" + path;
+        path = QCoreApplication::applicationDirPath() + "/" + path;
     }
     m_session->save(path);
     m_out << "Saved to " << path << "\n";

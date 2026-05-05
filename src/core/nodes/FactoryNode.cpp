@@ -1,14 +1,18 @@
 #include "FactoryNode.h"
 
-FactoryNode::FactoryNode(Factory& parentFactory, Factory& ownedFactory, QString name)
+FactoryNode::FactoryNode(
+    Factory& parentFactory,
+    Factory& ownedFactory,
+    QString name)
     : AbstractNode(parentFactory, name)
     , m_factory(ownedFactory)
 {
-        ownedFactory.m_node = this;
-        parentFactory.addNode(*this);
+    m_type = NodeType::Factory;
+    ownedFactory.m_node = this;
+    parentFactory.addNode(*this);
 }
 
-float FactoryNode::portRate(const Port* port) const 
+float FactoryNode::portRate(const Port* port) const
 {
     // FIX: implement
     return 0.f;
@@ -16,10 +20,7 @@ float FactoryNode::portRate(const Port* port) const
 
 QJsonObject FactoryNode::getJsonNode() const
 {
-    QJsonObject obj;
-    obj["id"]        = m_id.toString();
-    obj["type"]      = "factory";
-    obj["name"]      = m_name;
+    QJsonObject obj = AbstractNode::getJsonNode();
     obj["factoryId"] = m_factory.id().toString();
     return obj;
 }

@@ -57,6 +57,7 @@ qt_add_qml_module(FactoryApp
     src/core/nodes/AbstractNode.h           src/core/nodes/AbstractNode.cpp
             src/core/nodes/ExtractionNode.h         src/core/nodes/ExtractionNode.cpp
     src/core/nodes/Factory.h                src/core/nodes/Factory.cpp
+    src/core/nodes/FactoryEdgeNode.h        src/core/nodes/FactoryEdgeNode.cpp
     src/core/nodes/FactoryNode.h            src/core/nodes/FactoryNode.cpp
     src/core/nodes/MachineNode.h            src/core/nodes/MachineNode.cpp
     src/core/nodes/Port.h

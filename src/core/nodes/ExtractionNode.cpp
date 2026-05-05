@@ -12,6 +12,7 @@ ExtractionNode::ExtractionNode(
     : MachineNode(parentFactory, name, 1, -1, id)
     , m_tier(tier)
 {
+    m_type = NodeType::Extraction;
     m_recipe = &recipe;
     m_parentFactory->addNode(*this);
 
@@ -50,24 +51,11 @@ const Machine* ExtractionNode::extractor() const
 
 QJsonObject ExtractionNode::getJsonNode() const
 {
-    static const QMap<NodePurity, QString> purityNames = {
-        { NodePurity::Impure, "impure" },
-        { NodePurity::Normal, "normal" },
-        { NodePurity::Pure, "pure" },
-    };
     QJsonObject obj = MachineNode::getJsonNode();
-    if (!recipe()) {
-        qWarning() << "No Recipe Found!";
-        return QJsonObject();
-    }
-    if (!recipe()->resource) {
-        qWarning() << "ERROR: Recipe has no resource!";
-        return QJsonObject();
-    }
-    obj["type"] = "extraction";
-    obj["resource"] = recipe()->resource->itemClass;
+    // obj["type"] = "extraction";
+    // obj["resource"] = recipe()->resource->itemClass;
     obj["tier"] = m_tier;
-    obj["purity"] = purityNames.value(m_purity, "normal");
+    obj["purity"] = static_cast<int>(m_purity);
     return obj;
 }
 
