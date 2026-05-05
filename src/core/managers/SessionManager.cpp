@@ -184,6 +184,13 @@ void SessionManager::enterFactory(Factory* f)
     // emit activeFactoryChanged();
 }
 
+FactoryEdgeNode* SessionManager::createFactoryEdgeNode(PortType edgeType, Factory* parentFactory, QString name)
+{
+    Factory* factory = parentFactory ? parentFactory : m_activeFactory;
+    FactoryEdgeNode* edge = new FactoryEdgeNode(*factory, edgeType, name);
+    return edge;
+}
+
 // FIX: maybe move this function to be internal
 void SessionManager::connectNode(Port* src, Port* dest)
 {

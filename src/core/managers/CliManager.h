@@ -20,6 +20,7 @@ private:
     void handleAddProd(const QStringList& parts);
     void handleAddExtractor(const QStringList& parts);
     void handleAddFact(const QStringList& parts);
+    void handleAddEdge(const QStringList& parts);
     void handleRm(const QStringList& args);
     void handleLs();
     void handleCd(const QStringList& args);

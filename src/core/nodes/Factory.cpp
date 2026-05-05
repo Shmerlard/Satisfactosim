@@ -1,4 +1,5 @@
 #include "Factory.h"
+#include "FactoryEdgeNode.h"
 #include "FactoryNode.h"
 
 Factory::Factory(Factory* parent, QString name, QUuid id)
@@ -16,12 +17,35 @@ void Factory::addNode(AbstractNode& node)
         return;
 
     int newLevel = node.hierarchyLevel();
-    if (auto* p = dynamic_cast<FactoryNode*>(&node)) {
-        m_subFactories.append(&p->factory());
-        // FIX: maybe the order of the factories should match
-        // the order of factory nodes
-    }
+    NodeType type = node.type();
 
+    switch (type) {
+    case NodeType::Abstract:
+        // ERROR
+        break;
+    case NodeType::FactoryEdge: {
+        auto* p = static_cast<FactoryEdgeNode*>(&node);
+        m_edgeNodes.push_back(p);
+        break;
+    }
+    case NodeType::Factory: {
+        auto* p = static_cast<FactoryNode*>(&node);
+        m_subFactories.append(&p->factory());
+        break;
+    }
+    case NodeType::Extraction:
+        break;
+    case NodeType::Production:
+        break;
+    default:
+        break;
+    }
+    // if (auto* p = dynamic_cast<FactoryNode*>(&node)) {
+    //     m_subFactories.append(&p->factory());
+    //     // FIX: maybe the order of the factories should match
+    //     // the order of factory nodes
+    // }
+    //
     for (int i = 0; i < m_subNodes.size(); ++i) {
         if (m_subNodes[i]->hierarchyLevel() > newLevel) {
             m_subNodes.insert(i, &node);

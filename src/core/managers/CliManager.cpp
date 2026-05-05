@@ -338,6 +338,8 @@ void CliManager::handleAdd(const QStringList& parts)
         handleAddExtractor(rest);
     else if (sub == "fact")
         handleAddFact(rest);
+    else if (sub == "edge")
+        handleAddEdge(rest);
     else
         m_out << "Unknown add subcommand: " << sub << ". Expected 'prod' or 'fact'.\n";
 }
@@ -398,6 +400,23 @@ void CliManager::handleAddFact(const QStringList& parts)
     else
         m_out << "Added factory"
               << (name.isEmpty() ? "" : " \"" + name + "\"")
+              << "\n";
+}
+
+void CliManager::handleAddEdge(const QStringList& parts)
+{
+    auto flags = parseFlags(parts);
+    QString name = flags.value("name");
+    QString edgeType_raw = flags.value("type");
+    PortType edgeType = portTypeFromString(edgeType_raw);
+    FactoryEdgeNode* node = m_session->createFactoryEdgeNode(edgeType, nullptr, name);
+
+    if (!node)
+        m_out << "Failed to create factory.\n";
+    else
+        m_out << "Added Edge"
+              << (name.isEmpty() ? "" : " \"" + name + "\"")
+              << (" " + stringFromPortType(edgeType))
               << "\n";
 }
 

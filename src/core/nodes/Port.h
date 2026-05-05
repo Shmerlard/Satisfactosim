@@ -6,8 +6,21 @@
 class AbstractNode;
 struct Item;
 
-enum class PortType {Input, Output};
+enum class PortType { Input,
+    Output };
+inline PortType portTypeFromString(QString str)
+{
+    if (str == "input")
+        return PortType::Input;
+    return PortType::Output;
+}
 
+inline QString stringFromPortType(PortType type) // TODO: what is ODR??
+{
+    if (type == PortType::Input)
+        return "input";
+    return "output";
+}
 struct Port {
     Item* item;
     PortType type;
@@ -15,28 +28,36 @@ struct Port {
     QList<Port*> connectedTo;
     float amount;
 
-    void disconnect() {
+    void disconnect()
+    {
         for (auto* peer : connectedTo) {
             peer->connectedTo.removeAll(this);
         }
         connectedTo.clear();
     }
 
-    void disconnect(Port& peer) {
+    void disconnect(Port& peer)
+    {
         peer.connectedTo.removeOne(this);
         connectedTo.removeOne(&peer);
     }
 
-    void connect(Port& peer) {
+    void connect(Port& peer)
+    {
         connectedTo.append(&peer);
         peer.connectedTo.append(this);
     }
 
-    ~Port() {
+    ~Port()
+    {
         disconnect();
     }
 
     explicit Port(AbstractNode& owner, Item* item, PortType type)
-        : item(item), type(type), owner(owner), amount(0.0f) {}
+        : item(item)
+        , type(type)
+        , owner(owner)
+        , amount(0.0f)
+    {
+    }
 };
-

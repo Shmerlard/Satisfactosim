@@ -4,6 +4,7 @@
 #include "core/nodes/Factory.h"
 #include "core/nodes/FactoryNode.h"
 #include "core/nodes/ProductionNode.h"
+#include "core/nodes/FactoryEdgeNode.h"
 #include "core/types/Types.h"
 // #include "Solver.h"
 // #include "gui/models/SceneModel.h"
@@ -47,7 +48,7 @@ signals:
     void activeFactoryChanged();
     void solved();
 
-public:
+public: // TODO: only for internal use in save/load
     FactoryNode* createFactoryNode(Factory& parent, Factory& owned, QString name = QString());
 
 public slots:
@@ -65,6 +66,8 @@ public slots:
 
     Factory* createFactory(Factory* parent = nullptr, QString name = QString());
     void enterFactory(Factory* f);
+
+    FactoryEdgeNode* createFactoryEdgeNode(PortType portType, Factory* parentFactory = nullptr, QString name = QString());
     //
     void connectNode(Port* src, Port* dest);
     void connectNode(int srcNode, int srcPort, int dstNode, int dstPort);
