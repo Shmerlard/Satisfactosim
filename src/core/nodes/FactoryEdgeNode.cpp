@@ -35,3 +35,11 @@ QJsonObject FactoryEdgeNode::getJsonNode() const
 {
     return QJsonObject();
 }
+
+void FactoryEdgeNode::disconnectPort(Port* port, Port* peer, QString* err)
+{
+    AbstractNode::disconnectPort(port, peer, err);
+    if (port->connectedTo.empty()) {
+        port->item = nullptr;
+    }
+}

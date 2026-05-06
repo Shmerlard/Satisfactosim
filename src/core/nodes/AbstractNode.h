@@ -37,13 +37,13 @@ public:
     Factory* parentFactory() const { return m_parentFactory; }
     QString name() const { return m_name; }
 
-    // virtual int hierarchyLevel() const = 0; // TODO: to remove
     int hierarchyLevel() const { return static_cast<int>(m_type);}
     virtual float portRate(const Port* port) const = 0;
     virtual QJsonObject getJsonNode() const;
 
     void deletePorts();
     void disconnectAllPorts();
+    virtual void disconnectPort(Port* port, Port* peer, QString* err = nullptr);
 
     const std::vector<std::unique_ptr<Port>>& inputs() const { return m_inputs; }
     const std::vector<std::unique_ptr<Port>>& outputs() const { return m_outputs; }

@@ -79,10 +79,22 @@ bool AbstractNode::connectToPort(Port& src, Port& dst, QString* err)
         *err = "source and destination are already connected!";
         return false;
     }
-    if (src.item && dst.item && src.item != dst.item) {
+    if (!src.item && !dst.item) {
+        *err = "cannot connect 2 empty items";
+        return false;
+    }
+
+    if (!src.item)
+        src.item = dst.item;
+    else if (!dst.item)
+        dst.item = src.item;
+    else if (src.item != dst.item) {
         *err = "cannot connect two different items ports";
         return false;
     }
+
+    // if (src.item && dst.item && src.item != dst.item) {
+    // }
     src.connect(dst);
     err->clear();
     return true;
@@ -113,4 +125,26 @@ void AbstractNode::disconnectAllPorts()
         port->disconnect();
     for (auto& port : outputs())
         port->disconnect();
+}
+
+void AbstractNode::disconnectPort(Port* port, Port* peer, QString* err)
+{
+    QString _dummy;
+    if (!err)
+        err = &_dummy;
+
+    if (!peer) {
+        if (port->connectedTo.empty()) {
+            *err = "Port is not connected";
+            return;
+        }
+        port->disconnect();
+        return;
+    }
+
+    if (!port->connectedTo.contains(peer)) {
+        *err = "Ports are not connected";
+        return;
+    }
+    port->disconnect(*peer);
 }

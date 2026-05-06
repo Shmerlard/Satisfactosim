@@ -382,9 +382,16 @@ void CliManager::handleAddFact(const QStringList& parts)
 
 void CliManager::handleAddEdge(const QStringList& parts)
 {
-    auto flags = parseFlags(parts);
+    // positional: add edge <in|out|input|output> [--name <name>]
+    // flag-based: add edge --type <in|out|input|output> [--name <name>]
+    QString edgeType_raw;
+    QStringList rest = parts;
+    if (!rest.isEmpty() && !rest[0].startsWith('-'))
+        edgeType_raw = rest.takeFirst();
+    auto flags = parseFlags(rest);
     QString name = flags.value("name");
-    QString edgeType_raw = flags.value("type");
+    if (edgeType_raw.isEmpty())
+        edgeType_raw = flags.value("type");
     PortType edgeType = portTypeFromString(edgeType_raw);
     FactoryEdgeNode* node = m_session->createFactoryEdgeNode(edgeType, nullptr, name);
 
@@ -469,12 +476,11 @@ void CliManager::handleConnect(const QStringList& args)
         m_out << "2 Arguements Are needed for connection ";
         return;
     }
-    if (args[0] == "out" || args[0] == "in" || args[1] == "out" || args[1] == "in") {
-        // FIX: factory port connections
-
-        m_out << "Factory port connections not yet implemented\n";
-        return;
-    }
+    // if (args[0] == "out" || args[0] == "in" || args[1] == "out" || args[1] == "in") {
+    //
+    //     m_out << "Factory port connections not yet implemented\n";
+    //     return;
+    // }
 
     QString arg1 = args[0];
     int xPos1 = arg1.indexOf('x');
@@ -483,7 +489,6 @@ void CliManager::handleConnect(const QStringList& args)
     }
     int sourceNodeIdx = arg1.left(xPos1).toInt();
     int sourcePortIdx = arg1.mid(xPos1 + 1, arg1.length() - xPos1 - 1).toInt();
-    m_out << "srcnode and port: " << sourceNodeIdx << " " << sourcePortIdx << "\n";
 
     QString arg2 = args[1];
     int xPos2 = arg2.indexOf('x');
@@ -492,7 +497,6 @@ void CliManager::handleConnect(const QStringList& args)
     }
     int destNodeIdx = arg2.left(xPos2).toInt();
     int destPortIdx = arg2.mid(xPos2 + 1, arg2.length() - xPos2 - 1).toInt();
-    m_out << "srcnode and port: " << destNodeIdx << " " << destPortIdx << "\n";
 
     SessionManager::get().connectNode(sourceNodeIdx, sourcePortIdx, destNodeIdx, destPortIdx);
 }

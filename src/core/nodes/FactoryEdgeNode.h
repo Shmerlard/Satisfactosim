@@ -17,6 +17,7 @@ private:
     void buildPort();
 
 public:
+    void disconnectPort(Port* port, Port* peer, QString* err = nullptr) override;
     PortType edgeType() const { return m_edgeType; }
     float portRate(const Port* port) const override;
     QJsonObject getJsonNode() const override;

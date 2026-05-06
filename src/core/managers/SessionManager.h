@@ -48,7 +48,7 @@ signals:
     void activeFactoryChanged();
     void solved();
 
-public: // TODO: only for internal use in save/load
+public:
     FactoryNode* createFactoryNode(Factory& parent, Factory& owned, QString name = QString());
 
 public slots:

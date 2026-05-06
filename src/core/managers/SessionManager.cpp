@@ -30,7 +30,7 @@ QJsonObject serializeFactory(const Factory& factory)
     }
     obj["connections"] = connections;
     QJsonArray subFactories;
-    for (const auto& subFactory: factory.subFactories())
+    for (const auto& subFactory : factory.subFactories())
         subFactories.append(serializeFactory(*subFactory));
     obj["sub_factories"] = subFactories;
 
@@ -194,7 +194,6 @@ void SessionManager::enterFactory(Factory* f)
     // emit activeFactoryChanged();
 }
 
-
 // FIX: maybe move this function to be internal
 void SessionManager::connectNode(Port* src, Port* dest)
 {
@@ -236,22 +235,12 @@ void SessionManager::disconnectNode(Port* src, Port* dest)
         emit operationFailed("No Source Port Found");
         return;
     }
-
-    if (!dest) {
-        if (src->connectedTo.empty()) {
-            emit operationFailed("Port is not Connected!\n");
-            return;
-        }
-        src->disconnect();
-        emit nodeDisconnected();
+    QString err;
+    src->owner.disconnectPort(src, dest, &err);
+    if (!err.isEmpty()) {
+        emit operationFailed(err);
         return;
     }
-
-    if (!src->connectedTo.contains(dest)) {
-        emit operationFailed("Ports are not connected!");
-        return;
-    }
-    src->disconnect(*dest);
     emit nodeDisconnected();
 }
 
@@ -265,10 +254,8 @@ void SessionManager::disconnectNode(int srcNode, int srcPort, int dstNode, int d
     Port* srcPort_p = srcNode_p->getPortFromIndex(srcPort);
 
     if (dstNode == -1 || dstPort == -1) {
-        // if (srcPort_p && srcPort_p->connectedTo.size() == 1) {
         disconnectNode(srcPort_p, nullptr);
         return;
-        // }
     }
     AbstractNode* dstNode_p = m_activeFactory->subNodes().at(dstNode).get();
     if (!dstNode_p) {

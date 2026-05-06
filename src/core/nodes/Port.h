@@ -10,12 +10,12 @@ enum class PortType { Input,
     Output };
 inline PortType portTypeFromString(QString str)
 {
-    if (str == "input")
+    if (str == "input" || str == "in")
         return PortType::Input;
     return PortType::Output;
 }
 
-inline QString stringFromPortType(PortType type) // TODO: what is ODR??
+inline QString stringFromPortType(PortType type)
 {
     if (type == PortType::Input)
         return "input";
@@ -40,6 +40,11 @@ struct Port {
     {
         peer.connectedTo.removeOne(this);
         connectedTo.removeOne(&peer);
+
+        // TODO: check 
+        // if (this->owner.type) {
+        //
+        // }
     }
 
     void connect(Port& peer)

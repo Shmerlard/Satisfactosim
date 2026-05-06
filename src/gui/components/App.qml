@@ -22,7 +22,6 @@ Item {
 
                 Text {
                     // text: GameLibrary.recipesList[10].recipeName
-                    // TODO: find a way to access a specific recipe
                     color: "white"
                 }
         }

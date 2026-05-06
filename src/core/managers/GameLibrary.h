@@ -29,7 +29,6 @@ private:
     QMap<QString, ProductionMachine*> m_productionMachines;
 
     QMap<QString, Recipe*> m_recipes;
-    // TODO: populated but never used for lookup — getExtRecipeByResource searches resource->producedBy instead. Either use this map for O(1) lookup or remove it
     QMap<QString, ExtractionRecipe*> m_extractionRecipes;
     QMap<QString, Resource*> m_resources;
     QMap<QString, ExtractionMachine*> m_extractors;
