@@ -7,3 +7,6 @@ assets/icons
 .qmlls.ini
 assets/jsons/Docs.json
 .envrc
+.vscode/
+.qtcreator/
+CMakeLists.txt.user

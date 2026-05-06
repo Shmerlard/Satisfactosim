@@ -1,6 +1,7 @@
 #include "CliManager.h"
 #include <QCoreApplication>
 #include <QDir>
+#include <QFile>
 #include <QMap>
 #include <QString>
 // #include <format>
@@ -125,133 +126,92 @@ void printPort(QTextStream& out, Port* port, int portGlobalIdx)
     }
 }
 
-void printProductionNode(QTextStream& out, ProductionNode* node, Factory* factory)
-{
-    // int idx = factory->subNodes().indexOf(node);
-    int idx = 0;
-    for (const auto& n : factory->subNodes()) {
-        if (n.get() == node)
-            break;
-        idx++;
-    }
+// void printProductionNode(QTextStream& out, ProductionNode* node, Factory* factory) { ... }
+// void printExtractionNode(QTextStream& out, ExtractionNode* node, Factory* factory) { ... }
+// void printFactoryNode(QTextStream& out, FactoryNode* node, Factory* factory) { ... }
+// void printFactoryEdgeNode(QTextStream& out, FactoryEdgeNode* node, Factory* factory) { ... }
+// void printMachineNode(QTextStream& out, MachineNode* node, Factory* factory) { ... }
 
-    QString recipeName = "none";
-    QString machineName = "";
-    QString cycleInfo = "";
-    if (const ProductionRecipe* r = node->recipe()) {
-        recipeName = r->recipeClass;
-        if (r->producedIn)
-            machineName = r->producedIn->machineName;
-        cycleInfo = QString("  (%1s, %2MW)")
-                        .arg(r->recipeTime, 0, 'f', 1)
-                        .arg(r->producedIn ? r->producedIn->basePowerConsumption : 0.f, 0, 'f', 0);
-    }
-
-    QString limitStr = (node->machineLimit() >= 0)
-        ? QString("  [limit: %1]").arg(node->machineLimit(), 0, 'f', 2)
-        : QString();
-    out << CYAN << BOLD
-        << QString("┌─ [%1] %2  \"%3\"  x%4%5\n")
-               .arg(idx)
-               .arg(machineName)
-               .arg(node->name())
-               .arg(node->machineCount(), 0, 'f', 2)
-               .arg(limitStr)
-        << RESET;
-    out << CYAN << "│  " << RESET
-        << "recipe : " << recipeName << cycleInfo << "\n";
-
-    // inputs
-    int portIdx = 0;
-    for (auto& p : node->inputs()) {
-        out << CYAN << "│  " << RESET;
-        printPort(out, p.get(), portIdx++);
-    }
-    // outputs (portIdx continues from inputs count — matches getPortFromIndex)
-    for (auto& p : node->outputs()) {
-        out << CYAN << "│  " << RESET;
-        printPort(out, p.get(), portIdx++);
-    }
-    out << CYAN << "└" << QString("─").repeated(50) << RESET << "\n";
-}
-
-void printExtractionNode(QTextStream& out, ExtractionNode* node, Factory* factory)
-{
-    // int idx = factory->subNodes().indexOf(node);
-    int idx = 0;
-    for (const auto& n : factory->subNodes()) {
-        if (n.get() == node)
-            break;
-        idx++;
-    }
-
-    QString extractorName = node->getExtractorName();
-    QString resourceName = node->recipe() ? node->recipe()->resource->itemName : "none";
-
-    QString limitStr = (node->machineLimit() >= 0)
-        ? QString("  [limit: %1]").arg(node->machineLimit(), 0, 'f', 2)
-        : QString();
-    out << GREEN << BOLD
-        << QString("┌─ [%1] %2  \"%3\"  x%4%5\n")
-               .arg(idx)
-               .arg(extractorName)
-               .arg(node->name())
-               .arg(node->machineCount(), 0, 'f', 2)
-               .arg(limitStr)
-        << RESET;
-    static const QMap<NodePurity, QString> purityNames = {
-        { NodePurity::Impure, "Impure" },
-        { NodePurity::Normal, "Normal" },
-        { NodePurity::Pure, "Pure" },
-    };
-    out << GREEN << "│  " << RESET
-        << "resource : " << resourceName
-        << "  purity: " << purityNames.value(node->purity())
-        << "\n";
-
-    int portIdx = 0;
-    for (auto& p : node->outputs()) {
-        out << GREEN << "│  " << RESET;
-        printPort(out, p.get(), portIdx++);
-    }
-    out << GREEN << "└" << QString("─").repeated(50) << RESET << "\n";
-}
-
-void printFactoryNode(QTextStream& out, FactoryNode* node, Factory* factory)
+void printNode(QTextStream& out, AbstractNode* node, Factory* factory)
 {
     int idx = 0;
     for (const auto& n : factory->subNodes()) {
-        if (n.get() == node)
-            break;
+        if (n.get() == node) break;
         idx++;
     }
-    // TODO: add index of node method inside factry
 
-    out << YELLOW << BOLD
-        << QString("┌─ [%1] Factory  \"%2\"  (%3 nodes inside)\n")
-               .arg(idx)
-               .arg(node->name())
-               .arg(node->factory().subNodes().size())
-        << RESET;
+    QString color;
+    QString header;
+
+    switch (node->type()) {
+    case NodeType::Production: {
+        auto* n = static_cast<ProductionNode*>(node);
+        color = CYAN;
+        QString recipeName = "none", machineName, cycleInfo;
+        if (const ProductionRecipe* r = n->recipe()) {
+            recipeName = r->recipeClass;
+            if (r->producedIn) machineName = r->producedIn->machineName;
+            cycleInfo = QString("  (%1s, %2MW)")
+                            .arg(r->recipeTime, 0, 'f', 1)
+                            .arg(r->producedIn ? r->producedIn->basePowerConsumption : 0.f, 0, 'f', 0);
+        }
+        QString limitStr = n->machineLimit() >= 0
+            ? QString("  [limit: %1]").arg(n->machineLimit(), 0, 'f', 2) : QString();
+        header = QString("┌─ [%1] %2  \"%3\"  x%4%5\n│  recipe : %6%7")
+            .arg(idx).arg(machineName).arg(n->name())
+            .arg(n->machineCount(), 0, 'f', 2).arg(limitStr)
+            .arg(recipeName).arg(cycleInfo);
+        break;
+    }
+    case NodeType::Extraction: {
+        auto* n = static_cast<ExtractionNode*>(node);
+        color = GREEN;
+        static const QMap<NodePurity, QString> purityNames = {
+            { NodePurity::Impure, "Impure" },
+            { NodePurity::Normal, "Normal" },
+            { NodePurity::Pure, "Pure" },
+        };
+        QString limitStr = n->machineLimit() >= 0
+            ? QString("  [limit: %1]").arg(n->machineLimit(), 0, 'f', 2) : QString();
+        header = QString("┌─ [%1] %2  \"%3\"  x%4%5\n│  resource : %6  purity: %7")
+            .arg(idx).arg(n->getExtractorName()).arg(n->name())
+            .arg(n->machineCount(), 0, 'f', 2).arg(limitStr)
+            .arg(n->recipe() ? n->recipe()->resource->itemName : "none")
+            .arg(purityNames.value(n->purity()));
+        break;
+    }
+    case NodeType::Factory: {
+        auto* n = static_cast<FactoryNode*>(node);
+        color = YELLOW;
+        header = QString("┌─ [%1] Factory  \"%2\"  (%3 nodes inside)")
+            .arg(idx).arg(n->name()).arg(n->factory().subNodes().size());
+        break;
+    }
+    case NodeType::FactoryEdge: {
+        auto* n = static_cast<FactoryEdgeNode*>(node);
+        color = YELLOW;
+        header = QString("┌─ [%1] Edge  \"%2\"  (%3)")
+            .arg(idx).arg(n->name()).arg(stringFromPortType(n->edgeType()));
+        break;
+    }
+    default:
+        out << "WARNING: UNHANDLED PRINT\n";
+        return;
+    }
+
+    out << color << BOLD << header << "\n" << RESET;
 
     int portIdx = 0;
     for (auto& p : node->inputs()) {
-        out << YELLOW << "│  " << RESET;
+        out << color << "│  " << RESET;
         printPort(out, p.get(), portIdx++);
     }
     for (auto& p : node->outputs()) {
-        out << YELLOW << "│  " << RESET;
+        out << color << "│  " << RESET;
         printPort(out, p.get(), portIdx++);
     }
-    out << YELLOW << "└" << QString("─").repeated(50) << RESET << "\n";
+    out << color << "└" << QString("─").repeated(50) << RESET << "\n";
 }
-
-// void printMachineNode(QTextStream& out, MachineNode* node, Factory* factory)
-// {
-//     int idx = factory->subNodes().indexOf(node);
-//
-//     QString machineName = node->machineName();
-// }
 } // namespace
 
 CliManager::CliManager(QObject* parent)
@@ -467,27 +427,7 @@ void CliManager::handleLs()
         return;
     }
     for (const auto& node : factory->subNodes()) {
-        switch (node.get()->type()) {
-        case NodeType::Extraction: {
-            auto* p = static_cast<ExtractionNode*>(node.get());
-            printExtractionNode(m_out, p, factory);
-            break;
-        }
-        case NodeType::Production: {
-            auto* p = static_cast<ProductionNode*>(node.get());
-            printProductionNode(m_out, p, factory);
-            break;
-        }
-        case NodeType::Factory: {
-            auto* p = static_cast<FactoryNode*>(node.get());
-            printFactoryNode(m_out, p, factory);
-            break;
-        }
-        default: {
-            m_out << "WARNING: UNHANDLED PRINT";
-            break;
-        }
-        }
+        printNode(m_out, node.get(), factory);
         m_out << "\n";
     }
 }
@@ -514,7 +454,6 @@ void CliManager::handleCd(const QStringList& args)
         return;
     }
 
-    
     auto* target = nodes.at(index).get();
     if (target->type() != NodeType::Factory) {
         m_out << "Node " << index << " is not a factory node\n";
@@ -544,6 +483,7 @@ void CliManager::handleConnect(const QStringList& args)
     }
     int sourceNodeIdx = arg1.left(xPos1).toInt();
     int sourcePortIdx = arg1.mid(xPos1 + 1, arg1.length() - xPos1 - 1).toInt();
+    m_out << "srcnode and port: " << sourceNodeIdx << " " << sourcePortIdx << "\n";
 
     QString arg2 = args[1];
     int xPos2 = arg2.indexOf('x');
@@ -552,6 +492,7 @@ void CliManager::handleConnect(const QStringList& args)
     }
     int destNodeIdx = arg2.left(xPos2).toInt();
     int destPortIdx = arg2.mid(xPos2 + 1, arg2.length() - xPos2 - 1).toInt();
+    m_out << "srcnode and port: " << destNodeIdx << " " << destPortIdx << "\n";
 
     SessionManager::get().connectNode(sourceNodeIdx, sourcePortIdx, destNodeIdx, destPortIdx);
 }
@@ -664,6 +605,7 @@ void CliManager::handleTier(const QStringList& args)
     SessionManager::get().setExtractionTier(factory->subNodes().at(index).get(), tier);
     m_out << "Tier set to " << tier << " on node " << index << "\n";
 }
+
 void CliManager::handleRename(const QStringList& args)
 {
     if (args.size() != 2) {
@@ -705,12 +647,16 @@ void CliManager::handleSave(const QStringList& args)
 // -------------------- SLOTS --------------------------
 void CliManager::onInputReady()
 {
-    std::string line;
-    if (!std::getline(std::cin, line)) {
+    QFile stdinFile;
+    stdinFile.open(stdin, QIODevice::ReadOnly);
+    QByteArray data = stdinFile.readLine();
+    stdinFile.close();
+
+    if (data.isEmpty()) {
         emit quitRequested();
         return;
     }
-    QString qline = QString::fromStdString(line).trimmed();
+    QString qline = QString::fromUtf8(data).trimmed();
 
     if (!qline.isEmpty()) {
         processCommand(qline);

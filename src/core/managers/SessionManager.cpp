@@ -114,6 +114,14 @@ void SessionManager::load(const QString& path)
 {
 }
 
+FactoryEdgeNode* SessionManager::createFactoryEdgeNode(PortType edgeType, Factory* parentFactory, QString name)
+{
+    Factory* f = parentFactory ? parentFactory : m_activeFactory;
+    FactoryEdgeNode* node = f->createFactoryEdgeNode(edgeType);
+    emit nodeAdded(node);
+    return node;
+}
+
 ProductionNode* SessionManager::createProductionNode(const Recipe& recipe, Factory* factory, QString name)
 {
     Factory* f = factory ? factory : m_activeFactory;
@@ -163,10 +171,11 @@ ExtractionNode* SessionManager::createExtractionNodeByClass(QString rClass, int 
 Factory* SessionManager::createFactory(Factory* parent, QString name)
 {
     Factory* p = parent ? parent : m_activeFactory;
-    Factory* factory = new Factory(p, name);
-    FactoryNode* node = new FactoryNode(*p, *factory, name);
-    emit nodeAdded(node);
-    return factory;
+    // Factory* factory = new Factory(p, name);
+    // FactoryNode* node = new FactoryNode(*p, *factory, name);
+    Factory* newFactory = p->createFactory(name);
+    emit nodeAdded(newFactory->node());
+    return newFactory;
 }
 
 FactoryNode* SessionManager::createFactoryNode(Factory& parent, Factory& owned, QString name)
@@ -185,12 +194,6 @@ void SessionManager::enterFactory(Factory* f)
     // emit activeFactoryChanged();
 }
 
-FactoryEdgeNode* SessionManager::createFactoryEdgeNode(PortType edgeType, Factory* parentFactory, QString name)
-{
-    Factory* factory = parentFactory ? parentFactory : m_activeFactory;
-    FactoryEdgeNode* edge = new FactoryEdgeNode(*factory, edgeType, name);
-    return edge;
-}
 
 // FIX: maybe move this function to be internal
 void SessionManager::connectNode(Port* src, Port* dest)
@@ -213,7 +216,7 @@ void SessionManager::connectNode(Port* src, Port* dest)
 void SessionManager::connectNode(int srcNode, int srcPort, int dstNode, int dstPort)
 {
     AbstractNode* srcNode_p = m_activeFactory->subNodes().at(srcNode).get();
-    AbstractNode* dstNode_p = m_activeFactory->subNodes().at(srcNode).get();
+    AbstractNode* dstNode_p = m_activeFactory->subNodes().at(dstNode).get();
     if (!srcNode_p || !dstNode_p) {
         qWarning() << "Invalid Source or Destination Node";
         return;
@@ -299,13 +302,11 @@ void SessionManager::renameNode(int index, QString name)
 
 void SessionManager::deleteNode(AbstractNode* node)
 {
-    // FIXME: fix implementation!
     if (!node)
         return;
+    emit nodeRemoved(node);
     if (node->parentFactory())
         node->parentFactory()->removeNode(*node);
-    emit nodeRemoved(node);
-    delete node;
 }
 
 void SessionManager::setExtractionTier(AbstractNode* node, int tier)

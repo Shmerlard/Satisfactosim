@@ -32,7 +32,7 @@ int AbstractNode::getPortIndex(Port& port) const
             return i;
 
     for (int i = 0; i < m_outputs.size(); i++)
-        if (m_inputs[i].get() == &port)
+        if (m_outputs[i].get() == &port)
             return i + m_inputs.size();
     // int inputIndex = m_inputs.indexOf(&port);
     // if (inputIndex != -1)

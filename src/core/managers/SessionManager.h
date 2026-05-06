@@ -57,6 +57,7 @@ public slots:
     void save(const QString& path);
     void load(const QString& path);
 
+    FactoryEdgeNode* createFactoryEdgeNode(PortType edgeType, Factory* factory = nullptr, QString name = QString());
     ProductionNode* createProductionNode(const Recipe& recipe, Factory* factory = nullptr, QString name = QString());
     // ProductionNode* createProductionNode(const QString& recipe, Factory* factory = nullptr, QString name = QString());
     ProductionNode* createProductionNodeByClass(const QString& rClass, Factory* factory = nullptr, QString name = QString());
@@ -67,7 +68,7 @@ public slots:
     Factory* createFactory(Factory* parent = nullptr, QString name = QString());
     void enterFactory(Factory* f);
 
-    FactoryEdgeNode* createFactoryEdgeNode(PortType portType, Factory* parentFactory = nullptr, QString name = QString());
+    // FactoryEdgeNode* createFactoryEdgeNode(PortType portType, Factory* parentFactory = nullptr, QString name = QString());
     //
     void connectNode(Port* src, Port* dest);
     void connectNode(int srcNode, int srcPort, int dstNode, int dstPort);

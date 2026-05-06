@@ -4,6 +4,7 @@
 
 class FactoryEdgeNode : public AbstractNode {
     friend class SessionManager;
+    friend class Factory;
 
 private:
     explicit FactoryEdgeNode(
@@ -16,6 +17,7 @@ private:
     void buildPort();
 
 public:
+    PortType edgeType() const { return m_edgeType; }
     float portRate(const Port* port) const override;
     QJsonObject getJsonNode() const override;
 };

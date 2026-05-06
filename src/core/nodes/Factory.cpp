@@ -40,59 +40,15 @@ Factory* Factory::createFactory(QString name)
     return facPtr;
 }
 
-// void Factory::addNode(AbstractNode& node)
-// {
-//
-//     if (m_subNodes.contains(&node))
-//         return;
-//
-//     int newLevel = node.hierarchyLevel();
-//     NodeType type = node.type();
-//
-//     switch (type) {
-//     case NodeType::Abstract:
-//         // ERROR
-//         break;
-//     case NodeType::FactoryEdge: {
-//         auto* p = static_cast<FactoryEdgeNode*>(&node);
-//         m_edgeNodes.push_back(p);
-//         break;
-//     }
-//     case NodeType::Factory: {
-//         auto* p = static_cast<FactoryNode*>(&node);
-//         m_subFactories.append(&p->factory());
-//         break;
-//     }
-//     case NodeType::Extraction:
-//         break;
-//     case NodeType::Production:
-//         break;
-//     default:
-//         break;
-//     }
-//     // if (auto* p = dynamic_cast<FactoryNode*>(&node)) {
-//     //     m_subFactories.append(&p->factory());
-//     //     // FIX: maybe the order of the factories should match
-//     //     // the order of factory nodes
-//     // }
-//     //
-//     for (int i = 0; i < m_subNodes.size(); ++i) {
-//         if (m_subNodes[i]->hierarchyLevel() > newLevel) {
-//             m_subNodes.insert(i, &node);
-//             return;
-//         }
-//     }
-//     m_subNodes.append(&node);
-// }
+FactoryEdgeNode* Factory::createFactoryEdgeNode(PortType edgeType, QString name)
+{
+    FactoryEdgeNode* edge = new FactoryEdgeNode(*this, edgeType, name);
+    m_subNodes.push_back(std::unique_ptr<AbstractNode>(edge));
+    return edge;
+}
 
 void Factory::removeNode(AbstractNode& node)
 {
-    // // if (m_subFactories.contains(node))
-    // //     m_subFactories.removeAll(&node);
-    // if (auto* p = dynamic_cast<FactoryNode*>(&node)) {
-    //     m_subFactories.removeAll(&p->factory());
-    // }
-    // m_subNodes.removeAll(&node);
     for (auto it = m_subNodes.begin(); it != m_subNodes.end(); ++it) {
         if (it->get() == &node) {
             m_subNodes.erase(it);
@@ -100,9 +56,3 @@ void Factory::removeNode(AbstractNode& node)
         }
     }
 }
-
-// Factory::~Factory()
-// {
-//     qDeleteAll(m_subNodes);
-//     qDeleteAll(m_subFactories);
-// }

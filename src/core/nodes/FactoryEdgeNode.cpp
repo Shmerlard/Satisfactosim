@@ -7,6 +7,7 @@ FactoryEdgeNode::FactoryEdgeNode(
     QString name,
     QUuid id)
     : AbstractNode(parentFactory, name, id)
+    , m_edgeType(edgeType)
 {
     m_type = NodeType::FactoryEdge;
     // m_parentFactory->addNode(*this);

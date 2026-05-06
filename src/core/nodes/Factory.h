@@ -29,9 +29,10 @@ private:
 
 private:
 
-    ProductionNode* createProductionNode(const Recipe& recipe, QString name = QString());
-    ExtractionNode* createExtractionNode(const ExtractionRecipe& recipe, int tier = 1, QString name = QString());
-    Factory*        createFactory(QString name = QString());
+    Factory*         createFactory(QString name = QString());
+    FactoryEdgeNode* createFactoryEdgeNode(PortType edgeType, QString name = QString());
+    ExtractionNode*  createExtractionNode(const ExtractionRecipe& recipe, int tier = 1, QString name = QString());
+    ProductionNode*  createProductionNode(const Recipe& recipe, QString name = QString());
 public:
     explicit Factory(Factory* parent, QString name, QUuid id = QUuid());
     QUuid id() const { return m_id; }
