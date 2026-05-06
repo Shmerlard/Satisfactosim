@@ -4,10 +4,14 @@
 #include <QList>
 
 class AbstractNode;
+class FactoryEdgeNode;
 struct Item;
 
-enum class PortType { Input,
-    Output };
+enum class PortType {
+    Input,
+    Output
+};
+
 inline PortType portTypeFromString(QString str)
 {
     if (str == "input" || str == "in")
@@ -21,6 +25,12 @@ inline QString stringFromPortType(PortType type)
         return "input";
     return "output";
 }
+
+inline PortType operator!(PortType t)
+{
+    return t == PortType::Input ? PortType::Output : PortType::Input;
+}
+
 struct Port {
     Item* item;
     PortType type;
@@ -40,11 +50,6 @@ struct Port {
     {
         peer.connectedTo.removeOne(this);
         connectedTo.removeOne(&peer);
-
-        // TODO: check 
-        // if (this->owner.type) {
-        //
-        // }
     }
 
     void connect(Port& peer)
@@ -53,10 +58,7 @@ struct Port {
         peer.connectedTo.append(this);
     }
 
-    ~Port()
-    {
-        disconnect();
-    }
+    ~Port() { disconnect(); }
 
     explicit Port(AbstractNode& owner, Item* item, PortType type)
         : item(item)

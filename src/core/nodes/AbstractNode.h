@@ -44,6 +44,9 @@ public:
     void deletePorts();
     void disconnectAllPorts();
     virtual void disconnectPort(Port* port, Port* peer, QString* err = nullptr);
+    virtual bool connectToPort(Port& src, Port& dst, QString* err = nullptr);
+    virtual void onPortConnected(Port& port) {};
+    virtual void onPortDisconnected(Port& port) {};
 
     const std::vector<std::unique_ptr<Port>>& inputs() const { return m_inputs; }
     const std::vector<std::unique_ptr<Port>>& outputs() const { return m_outputs; }
@@ -53,5 +56,4 @@ public:
     int index() const;
     int getPortIndex(Port& port) const;
     Port* getPortFromIndex(int index) const;
-    bool connectToPort(Port& src, Port& dst, QString* err = nullptr);
 };

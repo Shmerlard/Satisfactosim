@@ -1,12 +1,14 @@
 # TODO
 - [ ] save/load
 - [ ] solver
-- [ ] connect output of factory
+- [x] connect output of factory
 - [x] finish fixes
 - [ ] json should be smaller
 - [ ] make more consistent ownership of subnodes and subfactories
 - [ ] decide over how to print errors in the session manager, by *err or signals
 - [ ] make more consistent args in the cli
+- [ ] tests
+- [ ] functions classes and structs descriptions
 
 
 ## save file example

@@ -25,6 +25,8 @@ pkgs.mkShell {
             ncurses
         ];
 
+  hardeningDisable = [ "fortify" ];
+
   shellHook = ''
     echo "CompileFlags:" > .clangd
     echo "  Add: [-isystem, ${pkgs.qt6.qtbase.dev}/include]" >> .clangd

@@ -93,9 +93,9 @@ bool AbstractNode::connectToPort(Port& src, Port& dst, QString* err)
         return false;
     }
 
-    // if (src.item && dst.item && src.item != dst.item) {
-    // }
     src.connect(dst);
+    dst.owner.onPortConnected(dst);
+    src.owner.onPortConnected(src);
     err->clear();
     return true;
 }
@@ -139,6 +139,8 @@ void AbstractNode::disconnectPort(Port* port, Port* peer, QString* err)
             return;
         }
         port->disconnect();
+        port->owner.onPortDisconnected(*port);
+        // FIX: on Port disconnected might cause problems here
         return;
     }
 
@@ -147,4 +149,6 @@ void AbstractNode::disconnectPort(Port* port, Port* peer, QString* err)
         return;
     }
     port->disconnect(*peer);
+    port->owner.onPortDisconnected(*port);
+    peer->owner.onPortDisconnected(*peer);
 }

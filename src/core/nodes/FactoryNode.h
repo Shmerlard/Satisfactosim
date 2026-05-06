@@ -10,13 +10,20 @@ class FactoryNode : public AbstractNode {
 private:
     explicit FactoryNode(Factory& parentFactory, Factory& ownedFactory, QString name = QString());
     Factory& m_factory;
+    // QMap<FactoryEdgeNode*, Port*> m_edgePorts;
+    QMap<Port*, FactoryEdgeNode*> m_portEdges;
+
 public:
-    ~FactoryNode() override = default;
+    // ~FactoryNode() override = default;
 
     Factory& factory() const { return m_factory; }
 
-    // int hierarchyLevel() const override { return 1; }
+    void disconnectPort(Port* port, Port* peer, QString* err = nullptr) override;
+    // bool connectToPort(Port& src, Port& dst, QString* err = nullptr) override;
+    void onPortConnected(Port& port) override;
+    void onPortDisconnected(Port& port) override;
+    Port* addEdgePort(FactoryEdgeNode* edge);
     float portRate(const Port* port) const override;
-    QJsonObject getJsonNode() const override;
 
+    QJsonObject getJsonNode() const override;
 };

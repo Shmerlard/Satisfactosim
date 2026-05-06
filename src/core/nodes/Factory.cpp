@@ -8,6 +8,7 @@ Factory::Factory(Factory* parent, QString name, QUuid id)
     : m_id(id.isNull() ? QUuid::createUuid() : id)
     , m_parent(parent)
     , m_name(name)
+    , m_node(nullptr)
 // , m_subNodes(QList<AbstractNode*>())
 {
 }
@@ -42,6 +43,10 @@ Factory* Factory::createFactory(QString name)
 
 FactoryEdgeNode* Factory::createFactoryEdgeNode(PortType edgeType, QString name)
 {
+    if (!m_parent) {
+        return nullptr;
+        // ADD ERROR MESSAGE
+    }
     FactoryEdgeNode* edge = new FactoryEdgeNode(*this, edgeType, name);
     m_subNodes.push_back(std::unique_ptr<AbstractNode>(edge));
     return edge;

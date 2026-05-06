@@ -112,6 +112,7 @@ void SessionManager::save(const QString& path)
 
 void SessionManager::load(const QString& path)
 {
+
 }
 
 FactoryEdgeNode* SessionManager::createFactoryEdgeNode(PortType edgeType, Factory* parentFactory, QString name)
@@ -194,7 +195,6 @@ void SessionManager::enterFactory(Factory* f)
     // emit activeFactoryChanged();
 }
 
-// FIX: maybe move this function to be internal
 void SessionManager::connectNode(Port* src, Port* dest)
 {
     if (!src || !dest)

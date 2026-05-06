@@ -467,7 +467,7 @@ void CliManager::handleCd(const QStringList& args)
         return;
     }
 
-    m_session->enterFactory(target->parentFactory());
+    m_session->enterFactory(&static_cast<FactoryNode*>(target)->factory());
 }
 
 void CliManager::handleConnect(const QStringList& args)
@@ -476,12 +476,6 @@ void CliManager::handleConnect(const QStringList& args)
         m_out << "2 Arguements Are needed for connection ";
         return;
     }
-    // if (args[0] == "out" || args[0] == "in" || args[1] == "out" || args[1] == "in") {
-    //
-    //     m_out << "Factory port connections not yet implemented\n";
-    //     return;
-    // }
-
     QString arg1 = args[0];
     int xPos1 = arg1.indexOf('x');
     if (xPos1 == -1) {
