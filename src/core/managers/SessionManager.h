@@ -33,6 +33,7 @@ private:
         // connect(this, &SessionManager::nodeAdded, m_sceneModel, &SceneModel::onNodeAdded);
         // m_sceneModel->loadFromFactory(m_rootFactory);
     }
+    // FIX: std::uniquepointer
     Factory* m_rootFactory = nullptr;
     Factory* m_activeFactory = nullptr;
     // SceneModel* m_sceneModel = nullptr;

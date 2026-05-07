@@ -283,6 +283,7 @@ void CliManager::processCommand(const QString& line)
         // { "solve", [this](const auto&) { handleSolve(); } },
         { "rename", [this](const auto& p) { handleRename(p); } },
         { "save", [this](const auto& p) { handleSave(p); } },
+        { "load", [this](const auto& p) { handleLoad(p); } },
         // FIX: fix help
         //
         // { "help", [this](const auto& p) { handleHelp(); } },
@@ -642,6 +643,21 @@ void CliManager::handleSave(const QStringList& args)
     m_out << "Saved to " << path << "\n";
 }
 
+void CliManager::handleLoad(const QStringList& args)
+{
+    if (args.isEmpty()) {
+        m_out << "Usage: load <path|name>  (name saves to current directory)\n";
+        return;
+    }
+    QString path = args[0];
+    if (!path.contains('/') && !path.contains('\\')) {
+        if (!path.endsWith(".json"))
+            path += ".json";
+        path = QCoreApplication::applicationDirPath() + "/" + path;
+    }
+    m_session->load(path);
+    m_out << "Loaded From: " << path << "\n";
+}
 // -------------------- SLOTS --------------------------
 void CliManager::onInputReady()
 {

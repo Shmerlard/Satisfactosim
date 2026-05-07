@@ -4,6 +4,7 @@
 #include <QDir>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <queue>
 
 namespace {
 QJsonObject serializeFactory(const Factory& factory)
@@ -37,63 +38,73 @@ QJsonObject serializeFactory(const Factory& factory)
     return obj;
 }
 
-Factory* deserializeFactory(const QJsonObject obj, Factory* parent, QMap<QString, AbstractNode*>& nodeMap)
+// Factory* deserializeFactory(const QJsonObject obj, Factory* parent, QMap<QString, AbstractNode*>& nodeMap)
+// {
+//     QUuid factoryId = QUuid(obj["id"].toString());
+//     QString name = obj["name"].toString();
+//
+//     Factory* factory = new Factory(parent, name, factoryId);
+//
+// QMap<QString, Factory*> subFactoryById;
+// for (const QJsonValue& v : obj["sub_factories"].toArray()) {
+//     Factory* sub = deserializeFactory(v.toObject(), factory, nodeMap);
+//     subFactoryById[sub->id().toString()] = sub;
+// }
+//
+// for (const QJsonValue& v : obj["nodes"].toArray()) {
+//     QJsonObject n = v.toObject();
+//     QString id = n["id"].toString();
+//     NodeType type = static_cast<NodeType>(n["type"].toInt());
+//     QString nname = n["name"].toString();
+//     QUuid nodeId = QUuid(id);
+//     AbstractNode* node = nullptr;
+//
+//     if (type == NodeType::Production) {
+//         float limit = (float)n["machineLimit"].toDouble(-1.0);
+//         const QString recipe = n["recipe"].toString();
+//         auto* pn = SessionManager::get().createProductionNodeByClass(recipe, factory, nname);
+//         pn->setId(nodeId);
+//         pn->setMachineLimit(limit);
+//         node = pn;
+//     } else if (type == NodeType::Extraction) {
+//         float limit = (float)n["machineLimit"].toDouble(-1.0);
+//         const QString recipe = n["recipe"].toString();
+//         int tier = n["tier"].toInt();
+//         NodePurity purity = static_cast<NodePurity>(n["purity"].toInt());
+//         auto* en = SessionManager::get().createExtractionNodeByClass(recipe, tier, factory, nname);
+//         en->setId(nodeId);
+//         en->setMachineLimit(limit);
+//         node = en;
+//     } else if (type == NodeType::Production) {
+//         QString factoryId = n["factoryId"].toString();
+//         Factory* sub = subFactoryById.value(factoryId);
+//         if (!sub) {
+//             // ERROR
+//             continue;
+//         }
+//         auto* fn = SessionManager::get().createFactoryNode(*factory, *sub, nname);
+//         node = fn;
+//
+//     } else {
+//     }
+//
+//     if (node)
+//         nodeMap[id] = node;
+// }
+//
+//     return factory;
+// }
+
+void deserializeFactory(
+        std::pair<Factory*, QJsonObject>& currentFactory,
+        std::queue<std::pair<Factory*, QJsonObject>>& pendingFactories)
 {
-    QUuid factoryId = QUuid(obj["id"].toString());
-    QString name = obj["name"].toString();
-
-    Factory* factory = new Factory(parent, name, factoryId);
-
-    QMap<QString, Factory*> subFactoryById;
-    for (const QJsonValue& v : obj["sub_factories"].toArray()) {
-        Factory* sub = deserializeFactory(v.toObject(), factory, nodeMap);
-        subFactoryById[sub->id().toString()] = sub;
-    }
-
-    for (const QJsonValue& v : obj["nodes"].toArray()) {
-        QJsonObject n = v.toObject();
-        QString id = n["id"].toString();
-        NodeType type = static_cast<NodeType>(n["type"].toInt());
-        QString nname = n["name"].toString();
-        QUuid nodeId = QUuid(id);
-        AbstractNode* node = nullptr;
-
-        if (type == NodeType::Production) {
-            float limit = (float)n["machineLimit"].toDouble(-1.0);
-            const QString recipe = n["recipe"].toString();
-            auto* pn = SessionManager::get().createProductionNodeByClass(recipe, factory, nname);
-            pn->setId(nodeId);
-            pn->setMachineLimit(limit);
-            node = pn;
-        } else if (type == NodeType::Extraction) {
-            float limit = (float)n["machineLimit"].toDouble(-1.0);
-            const QString recipe = n["recipe"].toString();
-            int tier = n["tier"].toInt();
-            NodePurity purity = static_cast<NodePurity>(n["purity"].toInt());
-            auto* en = SessionManager::get().createExtractionNodeByClass(recipe, tier, factory, nname);
-            en->setId(nodeId);
-            en->setMachineLimit(limit);
-            node = en;
-        } else if (type == NodeType::Production) {
-            QString factoryId = n["factoryId"].toString();
-            Factory* sub = subFactoryById.value(factoryId);
-            if (!sub) {
-                // ERROR
-                continue;
-            }
-            auto* fn = SessionManager::get().createFactoryNode(*factory, *sub, nname);
-            node = fn;
-
-        } else {
-        }
-
-        if (node)
-            nodeMap[id] = node;
-    }
-
-    return factory;
+    // 1. create a factory
+    // set it's id
+    // add to queue it's sub factories
+    // creates it's nodes
+    // connections
 }
-
 } // namespace
 
 void SessionManager::save(const QString& path)
@@ -112,7 +123,33 @@ void SessionManager::save(const QString& path)
 
 void SessionManager::load(const QString& path)
 {
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly)) {
+        emit operationFailed("Could not open file " + path);
+        return;
+    }
+    // CLEAN CURRENT FACTORIES
 
+    QJsonParseError parserError;
+    QJsonDocument doc = QJsonDocument::fromJson(file.readAll(), &parserError);
+
+    if (parserError.error != QJsonParseError::NoError) {
+        emit operationFailed("Json Parser Error: " + parserError.errorString());
+        return;
+    }
+
+    QJsonObject root = doc.object();
+    std::queue<std::pair<Factory*, QJsonObject>> pendingFactories;
+    QMap<QUuid, AbstractNode*> uuidMap;
+    QJsonObject rootFactoryJson = root["root_factory"].toObject();
+    m_rootFactory = new Factory(nullptr, QString("Main Factory"));
+    pendingFactories.push({ m_rootFactory, rootFactoryJson });
+
+    while (!pendingFactories.empty()) {
+        auto pair = pendingFactories.front();
+        pendingFactories.pop();
+        deserializeFactory(pair,  pendingFactories);
+    }
 }
 
 FactoryEdgeNode* SessionManager::createFactoryEdgeNode(PortType edgeType, Factory* parentFactory, QString name)

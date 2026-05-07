@@ -32,6 +32,7 @@ private:
     // void handleSolve();
     void handleRename(const QStringList& args);
     void handleSave(const QStringList& args);
+    void handleLoad(const QStringList& args);
     // void handleHelp();
 
 private slots:
