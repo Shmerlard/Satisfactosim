@@ -4,6 +4,7 @@
 #include <QDir>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include "src/core/nodes/Factory.h"
 #include <queue>
 
 namespace {
@@ -95,16 +96,30 @@ QJsonObject serializeFactory(const Factory& factory)
 //     return factory;
 // }
 
-void deserializeFactory(
-        std::pair<Factory*, QJsonObject>& currentFactory,
-        std::queue<std::pair<Factory*, QJsonObject>>& pendingFactories)
-{
-    // 1. create a factory
-    // set it's id
-    // add to queue it's sub factories
-    // creates it's nodes
-    // connections
-}
+// void deserializeFactory(
+//     std::pair<Factory*, QJsonObject>& currentFactory,
+//     std::queue<std::pair<Factory*, QJsonObject>>& pendingFactories)
+// {
+//     Factory* factory = currentFactory.first;
+//     QJsonObject* json = &currentFactory.second;
+//
+//     // QUuid factoryId = QUuid(currentFactory.second["id"].toString());
+//     QUuid factoryId = QUuid(json->value("id").toString());
+//     factory->setId(factoryId);
+//     factory->setName(json->value("name").toString());
+//
+//     // FIX: maybe too much duplication of the text objects happening?
+//     // pass by value of json?
+//     for (auto subFactoryJson : json->value("sub_factories").toArray()) {
+//         Factory* newSub = factory->createFactory();
+//     }
+//
+//     // 1. create a factory
+//     // set it's id
+//     // add to queue it's sub factories
+//     // creates it's nodes
+//     // connections
+// }
 } // namespace
 
 void SessionManager::save(const QString& path)
@@ -123,33 +138,33 @@ void SessionManager::save(const QString& path)
 
 void SessionManager::load(const QString& path)
 {
-    QFile file(path);
-    if (!file.open(QIODevice::ReadOnly)) {
-        emit operationFailed("Could not open file " + path);
-        return;
-    }
-    // CLEAN CURRENT FACTORIES
-
-    QJsonParseError parserError;
-    QJsonDocument doc = QJsonDocument::fromJson(file.readAll(), &parserError);
-
-    if (parserError.error != QJsonParseError::NoError) {
-        emit operationFailed("Json Parser Error: " + parserError.errorString());
-        return;
-    }
-
-    QJsonObject root = doc.object();
-    std::queue<std::pair<Factory*, QJsonObject>> pendingFactories;
-    QMap<QUuid, AbstractNode*> uuidMap;
-    QJsonObject rootFactoryJson = root["root_factory"].toObject();
-    m_rootFactory = new Factory(nullptr, QString("Main Factory"));
-    pendingFactories.push({ m_rootFactory, rootFactoryJson });
-
-    while (!pendingFactories.empty()) {
-        auto pair = pendingFactories.front();
-        pendingFactories.pop();
-        deserializeFactory(pair,  pendingFactories);
-    }
+    // QFile file(path);
+    // if (!file.open(QIODevice::ReadOnly)) {
+    //     emit operationFailed("Could not open file " + path);
+    //     return;
+    // }
+    // // CLEAN CURRENT FACTORIES
+    //
+    // QJsonParseError parserError;
+    // QJsonDocument doc = QJsonDocument::fromJson(file.readAll(), &parserError);
+    //
+    // if (parserError.error != QJsonParseError::NoError) {
+    //     emit operationFailed("Json Parser Error: " + parserError.errorString());
+    //     return;
+    // }
+    //
+    // QJsonObject root = doc.object();
+    // std::queue<std::pair<Factory*, QJsonObject>> pendingFactories;
+    // QMap<QUuid, AbstractNode*> uuidMap;
+    // QJsonObject rootFactoryJson = root["root_factory"].toObject();
+    // m_rootFactory = new Factory(nullptr, QString("Main Factory"));
+    // pendingFactories.push({ m_rootFactory, rootFactoryJson });
+    //
+    // while (!pendingFactories.empty()) {
+    //     auto pair = pendingFactories.front();
+    //     pendingFactories.pop();
+    //     deserializeFactory(pair, pendingFactories);
+    // }
 }
 
 FactoryEdgeNode* SessionManager::createFactoryEdgeNode(PortType edgeType, Factory* parentFactory, QString name)
@@ -349,4 +364,28 @@ void SessionManager::setMachineLimit(AbstractNode* node, float limit)
 {
     if (auto* mn = dynamic_cast<MachineNode*>(node))
         mn->setMachineLimit(limit);
+}
+
+void SessionManager::deserializeFactory(
+    std::pair<Factory*, QJsonObject>& currentFactory,
+    std::queue<std::pair<Factory*, QJsonObject>>& pendingFactories)
+{
+    // Factory* factory = currentFactory.first;
+    // QJsonObject* json = &currentFactory.second;
+    //
+    // QUuid factoryId = QUuid(json->value("id").toString());
+    // factory->setId(factoryId);
+    // factory->setName(json->value("name").toString());
+    //
+    // // FIX: maybe too much duplication of the text objects happening?
+    // // pass by value of json?
+    // for (auto subFactoryJson : json->value("sub_factories").toArray()) {
+    //     Factory* newSub = factory->createFactory();
+    // }
+
+    // 1. create a factory
+    // set it's id
+    // add to queue it's sub factories
+    // creates it's nodes
+    // connections
 }

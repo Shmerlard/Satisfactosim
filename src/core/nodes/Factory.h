@@ -35,6 +35,8 @@ private:
     ProductionNode*  createProductionNode(const Recipe& recipe, QString name = QString());
 public:
     explicit Factory(Factory* parent, QString name, QUuid id = QUuid());
+    void setId(QUuid id) { m_id = id; }
+    void setName(QString name) { m_name = name; }
     QUuid id() const { return m_id; }
     // ~Factory(); // FIXME: will need work
 

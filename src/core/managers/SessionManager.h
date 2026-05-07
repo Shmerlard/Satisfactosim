@@ -10,6 +10,7 @@
 // #include "gui/models/SceneModel.h"
 #include <QObject>
 #include <QQmlEngine>
+#include <queue>
 
 class SessionManager : public QObject {
     Q_OBJECT;
@@ -52,6 +53,9 @@ signals:
 public:
     FactoryNode* createFactoryNode(Factory& parent, Factory& owned, QString name = QString());
 
+    void deserializeFactory(
+            std::pair<Factory*, QJsonObject>& currentFactory,
+            std::queue<std::pair<Factory*, QJsonObject>>& pendingFactories);
 public slots:
     // void goParentFactory();
     // void goToRoot();
@@ -100,4 +104,5 @@ public:
     {
         return &get();
     }
+
 };
