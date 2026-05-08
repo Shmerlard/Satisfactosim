@@ -295,6 +295,10 @@ const ExtractionRecipe* GameLibrary::getExtRecipeByResource(const QString& name)
         return getExtRecipeByResource(resource);
     return nullptr;
 }
+const ExtractionRecipe* GameLibrary::getExtRecipeByClass(const QString& rClass) const
+{
+    return m_extractionRecipes.value(rClass);
+}
 
 const QMap<QString, Item*>& GameLibrary::Items() const
 {

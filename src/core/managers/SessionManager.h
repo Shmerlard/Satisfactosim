@@ -25,8 +25,9 @@ private:
     explicit SessionManager(QObject* parent = nullptr)
         : QObject(parent)
     {
-        m_rootFactory = new Factory(nullptr, QString("Main Factory"));
-        m_activeFactory = m_rootFactory;
+        // m_rootFactory = new Factory(nullptr, QString("Main Factory"));
+        m_rootFactory = std::make_unique<Factory>(nullptr, QString("Main Factory"));
+        m_activeFactory = m_rootFactory.get();
         ProductionNode* t1 = createProductionNodeByClass("Recipe_IngotIron_C");
         ProductionNode* t2 = createProductionNodeByClass("Recipe_IronPlate_C");
 
@@ -34,8 +35,7 @@ private:
         // connect(this, &SessionManager::nodeAdded, m_sceneModel, &SceneModel::onNodeAdded);
         // m_sceneModel->loadFromFactory(m_rootFactory);
     }
-    // FIX: std::uniquepointer
-    Factory* m_rootFactory = nullptr;
+    std::unique_ptr<Factory> m_rootFactory = nullptr;
     Factory* m_activeFactory = nullptr;
     // SceneModel* m_sceneModel = nullptr;
 
@@ -53,7 +53,7 @@ signals:
 public:
     FactoryNode* createFactoryNode(Factory& parent, Factory& owned, QString name = QString());
 
-    void deserializeFactory(
+    bool deserializeFactory(
             std::pair<Factory*, QJsonObject>& currentFactory,
             std::queue<std::pair<Factory*, QJsonObject>>& pendingFactories);
 public slots:
@@ -87,7 +87,7 @@ public slots:
     void setExtractionTier(AbstractNode* node, int tier);
     // Solver::Result solve();
 
-    Factory* rootFactory() const { return m_rootFactory; }
+    Factory* rootFactory() const { return m_rootFactory.get(); }
     Factory* activeFactory() const { return m_activeFactory; }
     // SceneModel* activeModel()   const { return m_sceneModel; }
 

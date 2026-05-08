@@ -1,10 +1,10 @@
 #include "SessionManager.h"
 #include "GameLibrary.h"
 #include "core/nodes/ProductionNode.h"
+#include "src/core/nodes/Factory.h"
 #include <QDir>
 #include <QJsonArray>
 #include <QJsonDocument>
-#include "src/core/nodes/Factory.h"
 #include <queue>
 
 namespace {
@@ -124,6 +124,8 @@ QJsonObject serializeFactory(const Factory& factory)
 
 void SessionManager::save(const QString& path)
 {
+    // TODO: add compression?
+    // remove default and empty values
     QJsonObject root;
     root["metadata"] = QJsonObject { { "version", 1 } };
     root["root_factory"] = serializeFactory(*m_rootFactory);
@@ -138,33 +140,40 @@ void SessionManager::save(const QString& path)
 
 void SessionManager::load(const QString& path)
 {
-    // QFile file(path);
-    // if (!file.open(QIODevice::ReadOnly)) {
-    //     emit operationFailed("Could not open file " + path);
-    //     return;
-    // }
-    // // CLEAN CURRENT FACTORIES
-    //
-    // QJsonParseError parserError;
-    // QJsonDocument doc = QJsonDocument::fromJson(file.readAll(), &parserError);
-    //
-    // if (parserError.error != QJsonParseError::NoError) {
-    //     emit operationFailed("Json Parser Error: " + parserError.errorString());
-    //     return;
-    // }
-    //
-    // QJsonObject root = doc.object();
-    // std::queue<std::pair<Factory*, QJsonObject>> pendingFactories;
-    // QMap<QUuid, AbstractNode*> uuidMap;
-    // QJsonObject rootFactoryJson = root["root_factory"].toObject();
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly)) {
+        emit operationFailed("Could not open file " + path);
+        return;
+    }
+    // CLEAN CURRENT FACTORIES
+
+    QJsonParseError parserError;
+    QJsonDocument doc = QJsonDocument::fromJson(file.readAll(), &parserError);
+
+    if (parserError.error != QJsonParseError::NoError) {
+        emit operationFailed("Json Parser Error: " + parserError.errorString());
+        return;
+    }
+
+    QJsonObject root = doc.object();
+    std::queue<std::pair<Factory*, QJsonObject>> pendingFactories;
+    QMap<QUuid, AbstractNode*> uuidMap;
+    QJsonObject rootFactoryJson = root["root_factory"].toObject();
     // m_rootFactory = new Factory(nullptr, QString("Main Factory"));
-    // pendingFactories.push({ m_rootFactory, rootFactoryJson });
-    //
-    // while (!pendingFactories.empty()) {
-    //     auto pair = pendingFactories.front();
-    //     pendingFactories.pop();
-    //     deserializeFactory(pair, pendingFactories);
-    // }
+    auto newRoot = std::make_unique<Factory>(nullptr, QString("Main Factory"));
+    pendingFactories.push({ newRoot.get(), rootFactoryJson });
+
+    while (!pendingFactories.empty()) {
+        auto pair = pendingFactories.front();
+        pendingFactories.pop();
+        if (!deserializeFactory(pair, pendingFactories)) {
+            emit operationFailed("Failed to load Factory");
+            return;
+        }
+    }
+
+    m_rootFactory = std::move(newRoot);
+    m_activeFactory = m_rootFactory.get();
 }
 
 FactoryEdgeNode* SessionManager::createFactoryEdgeNode(PortType edgeType, Factory* parentFactory, QString name)
@@ -366,22 +375,69 @@ void SessionManager::setMachineLimit(AbstractNode* node, float limit)
         mn->setMachineLimit(limit);
 }
 
-void SessionManager::deserializeFactory(
+bool SessionManager::deserializeFactory(
     std::pair<Factory*, QJsonObject>& currentFactory,
     std::queue<std::pair<Factory*, QJsonObject>>& pendingFactories)
 {
-    // Factory* factory = currentFactory.first;
-    // QJsonObject* json = &currentFactory.second;
-    //
-    // QUuid factoryId = QUuid(json->value("id").toString());
-    // factory->setId(factoryId);
-    // factory->setName(json->value("name").toString());
-    //
-    // // FIX: maybe too much duplication of the text objects happening?
-    // // pass by value of json?
-    // for (auto subFactoryJson : json->value("sub_factories").toArray()) {
-    //     Factory* newSub = factory->createFactory();
-    // }
+    Factory* factory = currentFactory.first;
+    QJsonObject* json = &currentFactory.second;
+
+    QUuid factoryId = QUuid(json->value("id").toString());
+    factory->setId(factoryId);
+    factory->setName(json->value("name").toString());
+
+    // FIX: maybe too much duplication of the text objects happening?
+    // pass by value of json?
+    for (auto subFactoryJson : json->value("sub_factories").toArray()) {
+        Factory* newSub = factory->createFactory();
+        pendingFactories.push({ newSub, subFactoryJson.toObject() });
+    }
+
+    for (auto node : json->value("nodes").toArray()) {
+        QJsonObject nodeObject = node.toObject();
+        QUuid nodeId = QUuid(nodeObject.value("id").toString());
+        QString nodeName = nodeObject["name"].toString();
+        NodeType nodeType = static_cast<NodeType>(nodeObject["type"].toInt());
+
+        switch (nodeType) {
+        case NodeType::Extraction: {
+            QString recipeString = nodeObject["recipe"].toString();
+            const ExtractionRecipe* nodeRecipe = GameLibrary::get().getExtRecipeByClass(recipeString);
+            if (!nodeRecipe) {
+                qWarning() << "COULDNT FIND NODE RECIPE: " << recipeString;
+                return false;
+            }
+            int nodeTier = nodeObject["tier"].toInt();
+            ExtractionNode* newNode = factory->createExtractionNode(*nodeRecipe,nodeTier, nodeName);
+            NodePurity nodePurity = static_cast<NodePurity>(nodeObject["purity"].toInt());
+            newNode->setPurity(nodePurity);
+            newNode->setId(nodeId);
+            break;
+        }
+        case NodeType::Production: {
+            QString recipeString = nodeObject["recipe"].toString();
+            // FIX: THIS COULD BE DANGEROUS
+            // const ProductionRecipe* nodeRecipe = static_cast<const ProductionRecipe*>(GameLibrary::get().getRecipeByClass(recipeString));
+            const Recipe* nodeRecipe = GameLibrary::get().getRecipeByClass(recipeString);
+            
+            if (!nodeRecipe) {
+                qWarning() << "COULDNT FIND NODE RECIPE: " << recipeString;
+                return false;
+            }
+            ProductionNode* newNode = factory->createProductionNode(*nodeRecipe, nodeName);
+            newNode->setId(nodeId);
+            break;
+        }
+        case NodeType::FactoryEdge: {
+            
+            break;
+        }
+        default: {
+            break;
+        }
+        }
+    }
+        return true;
 
     // 1. create a factory
     // set it's id

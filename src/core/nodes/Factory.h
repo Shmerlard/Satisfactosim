@@ -22,10 +22,8 @@ private:
     QString m_name;
     Factory* m_parent;
     FactoryNode* m_node;
-    // QList<Factory*> m_subFactories;
     std::vector<std::unique_ptr<Factory>> m_subFactories;
     std::vector<std::unique_ptr<AbstractNode>> m_subNodes;
-    // std::vector<std::unique_ptr<FactoryEdgeNode>> m_edgeNodes;
 
 private:
 
@@ -44,8 +42,6 @@ public:
     Factory* parent() const { return m_parent; }
     FactoryNode* node() const { return m_node; } // nullptr for root
 
-    // const QList<AbstractNode*>& subNodes() const { return m_subNodes; }
-    // const QList<Factory*>& subFactories() const { return m_subFactories; }
     const std::vector<std::unique_ptr<Factory>>& subFactories() const { return m_subFactories; }
     const std::vector<std::unique_ptr<AbstractNode>>& subNodes() const { return m_subNodes; }
 

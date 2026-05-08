@@ -28,6 +28,7 @@ private:
     QMap<QString, Machine*> m_machines;
     QMap<QString, ProductionMachine*> m_productionMachines;
 
+    // TODO: unique pointers?
     QMap<QString, Recipe*> m_recipes;
     QMap<QString, ExtractionRecipe*> m_extractionRecipes;
     QMap<QString, Resource*> m_resources;
@@ -58,6 +59,7 @@ public:
     // const ProductionRecipe* getProductionRecipe(const QString name);
     const ExtractionRecipe* getExtRecipeByResource(const Resource* resource) const;
     const ExtractionRecipe* getExtRecipeByResource(const QString& name) const;
+    const ExtractionRecipe* getExtRecipeByClass(const QString& rClass) const;
     const Machine* getMachine(const QString& name) const;
 
     const QMap<QString, Item*>& Items() const;

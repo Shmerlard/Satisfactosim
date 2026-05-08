@@ -1,4 +1,4 @@
-{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/refs/heads/nixos-24.11.tar.gz") {} }:
+{ pkgs ? import <nixpkgs> {} }:
 
 let
   nix-clangd = pkgs.writeShellScriptBin "clangd" ''

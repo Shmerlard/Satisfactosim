@@ -662,7 +662,9 @@ void CliManager::handleLoad(const QStringList& args)
 void CliManager::onInputReady()
 {
     QFile stdinFile;
-    stdinFile.open(stdin, QIODevice::ReadOnly);
+    if (!stdinFile.open(stdin, QIODevice::ReadOnly)){
+
+    }
     QByteArray data = stdinFile.readLine();
     stdinFile.close();
 
