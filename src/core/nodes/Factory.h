@@ -24,6 +24,7 @@ private:
     FactoryNode* m_node;
     std::vector<std::unique_ptr<Factory>> m_subFactories;
     std::vector<std::unique_ptr<AbstractNode>> m_subNodes;
+    std::vector<FactoryEdgeNode*> m_edges;
 
 private:
 
@@ -44,9 +45,10 @@ public:
 
     const std::vector<std::unique_ptr<Factory>>& subFactories() const { return m_subFactories; }
     const std::vector<std::unique_ptr<AbstractNode>>& subNodes() const { return m_subNodes; }
+    const std::vector<FactoryEdgeNode*>& edges() const { return m_edges; }
 
 
-    // void addNode(AbstractNode& node);
+    void addNode(std::unique_ptr<AbstractNode> node);
     void removeNode(AbstractNode& node);
 
 };

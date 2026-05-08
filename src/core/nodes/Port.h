@@ -7,7 +7,7 @@ class AbstractNode;
 class FactoryEdgeNode;
 struct Item;
 
-enum class PortType {
+enum class PortType : uint8_t {
     Input,
     Output
 };

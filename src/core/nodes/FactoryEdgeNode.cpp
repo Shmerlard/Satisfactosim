@@ -44,7 +44,8 @@ QJsonObject FactoryEdgeNode::getJsonNode() const
 {
     QJsonObject obj = AbstractNode::getJsonNode();
     // obj["edgeType"] = stringFromPortType(edgeType());
-    obj["edgeType"] = stringFromPortType(edgeType());
+    obj["edgeType"] = static_cast<uint8_t>(edgeType());
+    obj["portIndex"] = m_mirrorPort->owner.getPortIndex(*m_mirrorPort);
     return obj;
 }
 

@@ -4,7 +4,6 @@
 #include <QFile>
 #include <QMap>
 #include <QString>
-// #include <format>
 #include <iostream>
 
 namespace {
@@ -125,12 +124,6 @@ void printPort(QTextStream& out, Port* port, int portGlobalIdx)
         out << "\n";
     }
 }
-
-// void printProductionNode(QTextStream& out, ProductionNode* node, Factory* factory) { ... }
-// void printExtractionNode(QTextStream& out, ExtractionNode* node, Factory* factory) { ... }
-// void printFactoryNode(QTextStream& out, FactoryNode* node, Factory* factory) { ... }
-// void printFactoryEdgeNode(QTextStream& out, FactoryEdgeNode* node, Factory* factory) { ... }
-// void printMachineNode(QTextStream& out, MachineNode* node, Factory* factory) { ... }
 
 void printNode(QTextStream& out, AbstractNode* node, Factory* factory)
 {
@@ -408,7 +401,7 @@ void CliManager::handleAddEdge(const QStringList& parts)
 void CliManager::handleRm(const QStringList& args)
 {
     if (args.size() == 0) {
-        m_out << "Usage: rm <idx>";
+        m_out << "Usage: rm <idx>\n";
         return;
     }
     bool ok;
@@ -499,7 +492,7 @@ void CliManager::handleConnect(const QStringList& args)
 void CliManager::handleDisconnect(const QStringList& args)
 {
     if (args.size() == 0) {
-        m_out << "Usage: disconnect <idx>";
+        m_out << "Usage: disconnect <idx>\n";
         return;
     }
     QString arg1 = args.value(0);

@@ -15,9 +15,18 @@ QJsonObject serializeFactory(const Factory& factory)
     obj["name"] = factory.name();
 
     QJsonArray nodesArray;
-    for (const auto& node : factory.subNodes())
+    for (const auto& node : factory.subNodes()) {
+        if (node->type() == NodeType::FactoryEdge)
+            continue;
+        // FIX: move into more seperated approach
         nodesArray.append(node->getJsonNode());
+    }
     obj["nodes"] = nodesArray;
+
+    QJsonArray edgesArray;
+    for (const auto& edge : factory.edges())
+        edgesArray.append(edge->getJsonNode());
+    obj["edges"] = edgesArray;
 
     QJsonArray connections;
     for (const auto& node : factory.subNodes()) {
@@ -30,7 +39,23 @@ QJsonObject serializeFactory(const Factory& factory)
             }
         }
     }
+    // auto serializeConnections = [&](const AbstractNode* node) {
+    //     for (const auto& port : node->outputs()) {
+    //         for (Port* peer : port->connectedTo) {
+    //             QJsonObject conn;
+    //             conn["from"] = QJsonArray { node->id().toString(), node->getPortIndex(*port) };
+    //             conn["to"] = QJsonArray { peer->owner.id().toString(),
+    //                 peer->owner.getPortIndex(*peer) };
+    //             connections.append(conn);
+    //         }
+    //     }
+    // };
+    // for (const auto& node : factory.subNodes())
+    //     serializeConnections(node.get());
+    // for (const auto& edge : factory.edges())
+    //     serializeConnections(edge.get());
     obj["connections"] = connections;
+
     QJsonArray subFactories;
     for (const auto& subFactory : factory.subFactories())
         subFactories.append(serializeFactory(*subFactory));
@@ -39,87 +64,6 @@ QJsonObject serializeFactory(const Factory& factory)
     return obj;
 }
 
-// Factory* deserializeFactory(const QJsonObject obj, Factory* parent, QMap<QString, AbstractNode*>& nodeMap)
-// {
-//     QUuid factoryId = QUuid(obj["id"].toString());
-//     QString name = obj["name"].toString();
-//
-//     Factory* factory = new Factory(parent, name, factoryId);
-//
-// QMap<QString, Factory*> subFactoryById;
-// for (const QJsonValue& v : obj["sub_factories"].toArray()) {
-//     Factory* sub = deserializeFactory(v.toObject(), factory, nodeMap);
-//     subFactoryById[sub->id().toString()] = sub;
-// }
-//
-// for (const QJsonValue& v : obj["nodes"].toArray()) {
-//     QJsonObject n = v.toObject();
-//     QString id = n["id"].toString();
-//     NodeType type = static_cast<NodeType>(n["type"].toInt());
-//     QString nname = n["name"].toString();
-//     QUuid nodeId = QUuid(id);
-//     AbstractNode* node = nullptr;
-//
-//     if (type == NodeType::Production) {
-//         float limit = (float)n["machineLimit"].toDouble(-1.0);
-//         const QString recipe = n["recipe"].toString();
-//         auto* pn = SessionManager::get().createProductionNodeByClass(recipe, factory, nname);
-//         pn->setId(nodeId);
-//         pn->setMachineLimit(limit);
-//         node = pn;
-//     } else if (type == NodeType::Extraction) {
-//         float limit = (float)n["machineLimit"].toDouble(-1.0);
-//         const QString recipe = n["recipe"].toString();
-//         int tier = n["tier"].toInt();
-//         NodePurity purity = static_cast<NodePurity>(n["purity"].toInt());
-//         auto* en = SessionManager::get().createExtractionNodeByClass(recipe, tier, factory, nname);
-//         en->setId(nodeId);
-//         en->setMachineLimit(limit);
-//         node = en;
-//     } else if (type == NodeType::Production) {
-//         QString factoryId = n["factoryId"].toString();
-//         Factory* sub = subFactoryById.value(factoryId);
-//         if (!sub) {
-//             // ERROR
-//             continue;
-//         }
-//         auto* fn = SessionManager::get().createFactoryNode(*factory, *sub, nname);
-//         node = fn;
-//
-//     } else {
-//     }
-//
-//     if (node)
-//         nodeMap[id] = node;
-// }
-//
-//     return factory;
-// }
-
-// void deserializeFactory(
-//     std::pair<Factory*, QJsonObject>& currentFactory,
-//     std::queue<std::pair<Factory*, QJsonObject>>& pendingFactories)
-// {
-//     Factory* factory = currentFactory.first;
-//     QJsonObject* json = &currentFactory.second;
-//
-//     // QUuid factoryId = QUuid(currentFactory.second["id"].toString());
-//     QUuid factoryId = QUuid(json->value("id").toString());
-//     factory->setId(factoryId);
-//     factory->setName(json->value("name").toString());
-//
-//     // FIX: maybe too much duplication of the text objects happening?
-//     // pass by value of json?
-//     for (auto subFactoryJson : json->value("sub_factories").toArray()) {
-//         Factory* newSub = factory->createFactory();
-//     }
-//
-//     // 1. create a factory
-//     // set it's id
-//     // add to queue it's sub factories
-//     // creates it's nodes
-//     // connections
-// }
 } // namespace
 
 void SessionManager::save(const QString& path)
@@ -145,7 +89,6 @@ void SessionManager::load(const QString& path)
         emit operationFailed("Could not open file " + path);
         return;
     }
-    // CLEAN CURRENT FACTORIES
 
     QJsonParseError parserError;
     QJsonDocument doc = QJsonDocument::fromJson(file.readAll(), &parserError);
@@ -159,7 +102,6 @@ void SessionManager::load(const QString& path)
     std::queue<std::pair<Factory*, QJsonObject>> pendingFactories;
     QMap<QUuid, AbstractNode*> uuidMap;
     QJsonObject rootFactoryJson = root["root_factory"].toObject();
-    // m_rootFactory = new Factory(nullptr, QString("Main Factory"));
     auto newRoot = std::make_unique<Factory>(nullptr, QString("Main Factory"));
     pendingFactories.push({ newRoot.get(), rootFactoryJson });
 
@@ -381,7 +323,7 @@ bool SessionManager::deserializeFactory(
 {
     Factory* factory = currentFactory.first;
     QJsonObject* json = &currentFactory.second;
-
+    QMap<QUuid, AbstractNode*> uuidMap;
     QUuid factoryId = QUuid(json->value("id").toString());
     factory->setId(factoryId);
     factory->setName(json->value("name").toString());
@@ -389,10 +331,31 @@ bool SessionManager::deserializeFactory(
     // FIX: maybe too much duplication of the text objects happening?
     // pass by value of json?
     for (auto subFactoryJson : json->value("sub_factories").toArray()) {
+        QJsonObject subFactObject = subFactoryJson.toObject();
         Factory* newSub = factory->createFactory();
-        pendingFactories.push({ newSub, subFactoryJson.toObject() });
+        // FIX: add check
+        newSub->setId(QUuid(subFactObject["id"].toString()));
+        pendingFactories.push({ newSub, subFactObject });
     }
 
+    // ------------ creating edges ---------------------
+    auto edgesArray = json->value("edges").toArray();
+    std::vector<QJsonObject> edgeVec;
+    for (auto e : edgesArray)
+        edgeVec.push_back(e.toObject());
+    std::sort(edgeVec.begin(), edgeVec.end(), [](const QJsonObject& a, const QJsonObject& b) {
+        return a["portIndex"].toInt() < b["portIndex"].toInt();
+    });
+    for (auto& edgeObject : edgeVec) {
+        QUuid edgeId = QUuid(edgeObject["id"].toString());
+        QString edgeName = edgeObject["name"].toString();
+        PortType edgeType = static_cast<PortType>(edgeObject["edgeType"].toInt());
+        FactoryEdgeNode* newEdge = factory->createFactoryEdgeNode(edgeType, edgeName);
+        newEdge->setId(edgeId);
+        uuidMap.insert(edgeId, newEdge);
+    }
+
+    // ------------ creating nodes ---------------------
     for (auto node : json->value("nodes").toArray()) {
         QJsonObject nodeObject = node.toObject();
         QUuid nodeId = QUuid(nodeObject.value("id").toString());
@@ -408,40 +371,98 @@ bool SessionManager::deserializeFactory(
                 return false;
             }
             int nodeTier = nodeObject["tier"].toInt();
-            ExtractionNode* newNode = factory->createExtractionNode(*nodeRecipe,nodeTier, nodeName);
+            ExtractionNode* newNode = factory->createExtractionNode(*nodeRecipe, nodeTier, nodeName);
             NodePurity nodePurity = static_cast<NodePurity>(nodeObject["purity"].toInt());
+            float limit = nodeObject["machineLimit"].toDouble();
             newNode->setPurity(nodePurity);
             newNode->setId(nodeId);
+            newNode->setMachineLimit(limit);
+            uuidMap.insert(nodeId, newNode);
             break;
         }
         case NodeType::Production: {
             QString recipeString = nodeObject["recipe"].toString();
-            // FIX: THIS COULD BE DANGEROUS
-            // const ProductionRecipe* nodeRecipe = static_cast<const ProductionRecipe*>(GameLibrary::get().getRecipeByClass(recipeString));
             const Recipe* nodeRecipe = GameLibrary::get().getRecipeByClass(recipeString);
-            
+
             if (!nodeRecipe) {
                 qWarning() << "COULDNT FIND NODE RECIPE: " << recipeString;
                 return false;
             }
+            float limit = nodeObject["machineLimit"].toDouble();
             ProductionNode* newNode = factory->createProductionNode(*nodeRecipe, nodeName);
             newNode->setId(nodeId);
+            newNode->setMachineLimit(limit);
+            uuidMap.insert(nodeId, newNode);
             break;
         }
-        case NodeType::FactoryEdge: {
-            
+        // case NodeType::FactoryEdge: {
+        //     PortType edgeType = static_cast<PortType>(nodeObject["edgeType"].toInt());
+        //     FactoryEdgeNode* newNode = factory->createFactoryEdgeNode(edgeType, nodeName);
+        //     newNode->setId(nodeId);
+        //     break;
+        // }
+        case NodeType::Factory: {
+            QUuid factoryId = QUuid(nodeObject["factoryId"].toString());
+            FactoryNode* matchingNode = nullptr;
+            for (auto& subNode : factory->subNodes()) {
+                if (subNode->type() == NodeType::Factory) {
+                    auto* fn = static_cast<FactoryNode*>(subNode.get());
+                    if (fn->factory().id() == factoryId) {
+                        matchingNode = fn;
+                        break;
+                    }
+                }
+            }
+            if (!matchingNode) {
+                qWarning() << "ERROR FINDING FACTORY" << factoryId.toString();
+                break;
+            }
+            matchingNode->setId(nodeId);
+            matchingNode->setName(nodeName);
+            uuidMap.insert(nodeId, matchingNode);
+            // FIX: maybe it would be better to add another function for creating a factory without subfactorynode
+            // and just create a node later;
             break;
         }
         default: {
+            qWarning() << "WARNING: UNABLE TO LOAD A NODE" << nodeId.toString();
             break;
         }
         }
     }
-        return true;
 
-    // 1. create a factory
-    // set it's id
-    // add to queue it's sub factories
-    // creates it's nodes
-    // connections
+    // ------------ creating connections ---------------------
+    auto connectionsArray = json->value("connections").toArray();
+    for (auto connectionJson : connectionsArray) {
+        auto connection = connectionJson.toObject();
+        QJsonArray from = connection["from"].toArray();
+        QJsonArray to = connection["to"].toArray();
+
+        AbstractNode* fromNode = uuidMap.value(QUuid(from[0].toString()));
+        AbstractNode* toNode = uuidMap.value(QUuid(to[0].toString()));
+        if (!fromNode || !toNode) {
+            qWarning() << "Connection references unknown node";
+            continue;
+        }
+
+        Port* srcPort = fromNode->getPortFromIndex(from[1].toInt());
+        Port* dstPort = toNode->getPortFromIndex(to[1].toInt());
+        if (!srcPort || !dstPort) {
+            qWarning() << "Connection references invalid port";
+            continue;
+        }
+
+        fromNode->connectToPort(*srcPort, *dstPort);
+    }
+    // for (auto connectionJson : connectionsArray) {
+    //     auto connection = connectionJson.toObject();
+    //     QUuid fromId = QUuid(connection.value("from").toArray()[0].toString());
+    //     int fromIndex = connection.value("from").toArray()[1].toInt();
+    //     QUuid toId = QUuid(connection.value("to").toArray()[0].toString());
+    //     int toIndex = connection.value("to").toArray()[1].toInt();
+    //
+    //
+    // }
+
+    return true;
 }
