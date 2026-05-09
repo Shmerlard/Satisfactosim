@@ -37,7 +37,6 @@ public:
     void setId(QUuid id) { m_id = id; }
     void setName(QString name) { m_name = name; }
     QUuid id() const { return m_id; }
-    // ~Factory(); // FIXME: will need work
 
     QString name() const { return m_name; }
     Factory* parent() const { return m_parent; }
