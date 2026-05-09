@@ -14,7 +14,6 @@ MachineNode::MachineNode(
 {
 }
 
-
 QJsonObject MachineNode::getJsonNode() const
 {
     QJsonObject obj = AbstractNode::getJsonNode();
@@ -23,5 +22,9 @@ QJsonObject MachineNode::getJsonNode() const
     return obj;
 }
 
-
-
+QString MachineNode::machineIcon() const
+{
+    if (!m_machine)
+        return QString();
+    return "image://assets/machine/" + m_machine->machineClass;
+}

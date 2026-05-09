@@ -11,9 +11,11 @@ ProductionNode::ProductionNode(
     : MachineNode(parentFactory, name, 1, -1, id)
 {
     m_type = NodeType::Production;
-    m_recipe = &recipe;
+    // m_recipe = &recipe;
     // m_parentFactory->addNode(*this);
-    buildPortsFromRecipe();
+    // m_machine = recipe.producedIn;  // ← add this
+    setRecipe(&recipe);
+    // buildPortsFromRecipe();
 }
 
 // void ProductionNode::deletePorts()
@@ -56,12 +58,13 @@ ProductionNode::~ProductionNode()
     deletePorts();
 }
 
-void ProductionNode::setRecipe(const ProductionRecipe* recipe)
+void ProductionNode::setRecipe(const Recipe* recipe)
 {
     if (m_recipe == recipe)
         return;
 
     m_recipe = recipe;
+    m_machine = static_cast<const ProductionRecipe*>(m_recipe)->producedIn;
     deletePorts();
     buildPortsFromRecipe();
 }

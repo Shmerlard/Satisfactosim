@@ -7,8 +7,9 @@ import FACTORY_QT
 Item {
     anchors.fill: parent
 
-    // readonly property real mouseContentX: workspace.mouseContentX
-    // readonly property real mouseContentY: workspace.mouseContentY
+    property alias zoomScale: workspace.zoomScale
+    property alias contentX:  workspace.contentX
+    property alias contentY:  workspace.contentY
 
     RowLayout {
         anchors.fill: parent
@@ -27,6 +28,7 @@ Item {
         }
 
         Workspace {
+            id: workspace
             Layout.fillWidth: true
             Layout.fillHeight: true
         }

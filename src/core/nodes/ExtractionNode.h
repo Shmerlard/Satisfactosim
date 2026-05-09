@@ -8,6 +8,7 @@ class ExtractionNode : public MachineNode {
 
     friend class SessionManager;
     friend class Factory;
+
 private:
     explicit ExtractionNode(
         Factory& parentFactory,
@@ -35,5 +36,4 @@ public:
     QString getExtractorName() const; // FIX: remove
     QString machineName() const override;
     QString getMachineIcon() const;
-    // int hierarchyLevel() const override { return 2; }
 };

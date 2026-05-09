@@ -83,14 +83,28 @@ ApplicationWindow {
     //     }
     // }
 
+    property real savedZoom: 1.0
+    property real savedContentX: 0
+    property real savedContentY: 0
+
     Loader {
         id: uiLoader
         anchors.fill: parent
         source: "gui/components/App.qml"
+        onLoaded: {
+            item.zoomScale   = appWindow.savedZoom
+            item.contentX    = appWindow.savedContentX
+            item.contentY    = appWindow.savedContentY
+        }
     }
     Shortcut {
         sequence: "F5"
         onActivated: {
+            if (uiLoader.item) {
+                appWindow.savedZoom     = uiLoader.item.zoomScale
+                appWindow.savedContentX = uiLoader.item.contentX
+                appWindow.savedContentY = uiLoader.item.contentY
+            }
             uiLoader.source = "";
             reloadTimer.restart();
         }

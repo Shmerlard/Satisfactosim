@@ -10,6 +10,11 @@ struct Recipe;
 class MachineNode : public AbstractNode {
     Q_OBJECT;
 
+    Q_PROPERTY(QString machineName READ machineName NOTIFY recipeChanged)
+    Q_PROPERTY(QString machineIcon READ machineIcon NOTIFY recipeChanged)
+    Q_PROPERTY(float machineCount READ machineCount) // FIX: add notify
+    Q_PROPERTY(float machineLimit READ machineLimit) // FIX: add notify
+
     friend class Solver;
 protected:
     explicit MachineNode(
@@ -31,6 +36,10 @@ public:
     virtual QString machineName() const = 0;
     float machineCount() const { return m_machineCount; }
     float machineLimit() const { return m_machineLimit; }
+    QString machineIcon() const;
     void setMachineLimit(float limit) { m_machineLimit = limit; }
     QJsonObject getJsonNode() const override;
+
+signals:
+    void recipeChanged();
 };

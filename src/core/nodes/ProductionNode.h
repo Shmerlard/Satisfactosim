@@ -6,7 +6,7 @@
 class ProductionNode : public MachineNode {
     Q_OBJECT;
 
-    Q_PROPERTY(QString machineName READ machineName CONSTANT);
+    // Q_PROPERTY(QString machineName READ machineName CONSTANT);
 
     friend class SessionManager;
     friend class Factory;
@@ -23,7 +23,7 @@ private:
 public:
     ~ProductionNode() override;
 
-    void setRecipe(const ProductionRecipe* recipe);
+    void setRecipe(const Recipe* recipe);
     const ProductionRecipe* recipe() const override;
     Machine* machine() const;
 

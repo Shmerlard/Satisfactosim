@@ -8,8 +8,9 @@ Item {
     property int modelIndex: -1
     property Item contentContainer: null
 
-    implicitWidth: mainLayout.width + 10
-    implicitHeight: mainLayout.height + 10
+    implicitWidth: inputsCol.implicitWidth + nameText.implicitWidth + outputsCol.implicitWidth + 40
+    implicitHeight: Math.max(50, mainLayout.implicitHeight)
+
     Rectangle {
         id: background
         anchors.fill: parent
@@ -20,22 +21,44 @@ Item {
     }
     RowLayout {
         id: mainLayout
+        anchors.fill: parent
+        anchors.margins: 0
 
         ColumnLayout {
+            id: inputsCol
             Repeater {
-                model: root.nodeData.inputs
+                model: root.nodeData ? root.nodeData.inputs : []
                 delegate: Port {
                     portData: modelData
                     isInput: true
                 }
             }
         }
-        Text {
-            text: root.nodeData ? root.nodeData.name : ""
+        Item {
+            Layout.fillWidth: true
         }
         ColumnLayout {
+            id: centerCol
+            Image {
+                source: root.nodeData ? root.nodeData.machineIcon : ""
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredHeight: 50
+                Layout.preferredWidth: 50
+                // onStatusChanged: console.log("icon status:", status, "source:", source)
+            }
+            Text {
+                id: nameText
+                // text: root.nodeData ? root.nodeData.name : ""
+                text: root.nodeData.machineName
+            }
+        }
+        Item {
+            Layout.fillWidth: true
+        }
+        ColumnLayout {
+            id: outputsCol
             Repeater {
-                model: root.nodeData.outputs
+                model: root.nodeData ? root.nodeData.outputs : []
                 delegate: Port {
                     portData: modelData
                     isInput: false

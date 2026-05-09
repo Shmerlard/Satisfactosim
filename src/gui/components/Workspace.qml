@@ -8,6 +8,8 @@ Item {
     property int sceneSize: 5000
     property real mouseContentX: 0
     property real mouseContentY: 0
+    property alias contentX: flickable.contentX
+    property alias contentY: flickable.contentY
     // PlaceMenu {
     //     id: placeMenu
     // }

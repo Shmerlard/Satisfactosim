@@ -12,7 +12,7 @@ Item {
     Rectangle {
         id: background
         anchors.fill: parent
-        color: "blue"
+        color: "green"
     }
     RowLayout {
         id: mainLayout
