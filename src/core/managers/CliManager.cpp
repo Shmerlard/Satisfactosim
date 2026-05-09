@@ -129,7 +129,8 @@ void printNode(QTextStream& out, AbstractNode* node, Factory* factory)
 {
     int idx = 0;
     for (const auto& n : factory->subNodes()) {
-        if (n.get() == node) break;
+        if (n.get() == node)
+            break;
         idx++;
     }
 
@@ -143,17 +144,23 @@ void printNode(QTextStream& out, AbstractNode* node, Factory* factory)
         QString recipeName = "none", machineName, cycleInfo;
         if (const ProductionRecipe* r = n->recipe()) {
             recipeName = r->recipeClass;
-            if (r->producedIn) machineName = r->producedIn->machineName;
+            if (r->producedIn)
+                machineName = r->producedIn->machineName;
             cycleInfo = QString("  (%1s, %2MW)")
                             .arg(r->recipeTime, 0, 'f', 1)
                             .arg(r->producedIn ? r->producedIn->basePowerConsumption : 0.f, 0, 'f', 0);
         }
         QString limitStr = n->machineLimit() >= 0
-            ? QString("  [limit: %1]").arg(n->machineLimit(), 0, 'f', 2) : QString();
+            ? QString("  [limit: %1]").arg(n->machineLimit(), 0, 'f', 2)
+            : QString();
         header = QString("┌─ [%1] %2  \"%3\"  x%4%5\n│  recipe : %6%7")
-            .arg(idx).arg(machineName).arg(n->name())
-            .arg(n->machineCount(), 0, 'f', 2).arg(limitStr)
-            .arg(recipeName).arg(cycleInfo);
+                     .arg(idx)
+                     .arg(machineName)
+                     .arg(n->name())
+                     .arg(n->machineCount(), 0, 'f', 2)
+                     .arg(limitStr)
+                     .arg(recipeName)
+                     .arg(cycleInfo);
         break;
     }
     case NodeType::Extraction: {
@@ -165,26 +172,34 @@ void printNode(QTextStream& out, AbstractNode* node, Factory* factory)
             { NodePurity::Pure, "Pure" },
         };
         QString limitStr = n->machineLimit() >= 0
-            ? QString("  [limit: %1]").arg(n->machineLimit(), 0, 'f', 2) : QString();
+            ? QString("  [limit: %1]").arg(n->machineLimit(), 0, 'f', 2)
+            : QString();
         header = QString("┌─ [%1] %2  \"%3\"  x%4%5\n│  resource : %6  purity: %7")
-            .arg(idx).arg(n->getExtractorName()).arg(n->name())
-            .arg(n->machineCount(), 0, 'f', 2).arg(limitStr)
-            .arg(n->recipe() ? n->recipe()->resource->itemName : "none")
-            .arg(purityNames.value(n->purity()));
+                     .arg(idx)
+                     .arg(n->getExtractorName())
+                     .arg(n->name())
+                     .arg(n->machineCount(), 0, 'f', 2)
+                     .arg(limitStr)
+                     .arg(n->recipe() ? n->recipe()->resource->itemName : "none")
+                     .arg(purityNames.value(n->purity()));
         break;
     }
     case NodeType::Factory: {
         auto* n = static_cast<FactoryNode*>(node);
         color = YELLOW;
         header = QString("┌─ [%1] Factory  \"%2\"  (%3 nodes inside)")
-            .arg(idx).arg(n->name()).arg(n->factory().subNodes().size());
+                     .arg(idx)
+                     .arg(n->name())
+                     .arg(n->factory().subNodes().size());
         break;
     }
     case NodeType::FactoryEdge: {
         auto* n = static_cast<FactoryEdgeNode*>(node);
         color = YELLOW;
         header = QString("┌─ [%1] Edge  \"%2\"  (%3)")
-            .arg(idx).arg(n->name()).arg(stringFromPortType(n->edgeType()));
+                     .arg(idx)
+                     .arg(n->name())
+                     .arg(stringFromPortType(n->edgeType()));
         break;
     }
     default:
@@ -192,7 +207,8 @@ void printNode(QTextStream& out, AbstractNode* node, Factory* factory)
         return;
     }
 
-    out << color << BOLD << header << "\n" << RESET;
+    out << color << BOLD << header << "\n"
+        << RESET;
 
     int portIdx = 0;
     for (auto& p : node->inputs()) {
@@ -212,6 +228,8 @@ CliManager::CliManager(QObject* parent)
     , m_out(stdout)
     , m_session(&SessionManager::get())
 {
+    s_instance = this;
+    qInstallMessageHandler(messageHandler);
     m_notifier = new QSocketNotifier(0, QSocketNotifier::Read, this);
     connect(m_notifier, &QSocketNotifier::activated, this, &CliManager::onInputReady);
 
@@ -234,10 +252,35 @@ CliManager::CliManager(QObject* parent)
 
 CliManager::~CliManager()
 {
-    // std::cout.rdbuf(m_oldBuf);
-    // endwin();
-    // delete
-    // delete m_logBuf;
+    qInstallMessageHandler(nullptr);
+    s_instance = nullptr;
+}
+
+CliManager* CliManager::s_instance = nullptr;
+
+void CliManager::messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString& msg)
+{
+    if (!s_instance)
+        return;
+    QString prefix;
+    switch (type) {
+    case QtDebugMsg:
+        prefix = DIM + "[log] " + RESET;
+        break;
+    case QtWarningMsg:
+        prefix = YELLOW + "[warn] " + RESET;
+        break;
+    case QtCriticalMsg:
+        prefix = RED + "[crit] " + RESET;
+        break;
+    case QtFatalMsg:
+        prefix = RED + "[fatal] " + RESET;
+        break;
+    default:
+        break;
+    }
+    s_instance->m_out << "\r\033[2k" << prefix << msg << "\n";
+    s_instance->printPrompt();
 }
 
 void CliManager::printPrompt()
@@ -655,8 +698,7 @@ void CliManager::handleLoad(const QStringList& args)
 void CliManager::onInputReady()
 {
     QFile stdinFile;
-    if (!stdinFile.open(stdin, QIODevice::ReadOnly)){
-
+    if (!stdinFile.open(stdin, QIODevice::ReadOnly)) {
     }
     QByteArray data = stdinFile.readLine();
     stdinFile.close();

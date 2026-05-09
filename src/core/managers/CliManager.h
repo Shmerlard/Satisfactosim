@@ -13,6 +13,8 @@ private:
     QTextStream m_out;
     SessionManager* m_session;
 
+    static CliManager* s_instance;
+    static void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString& msg);
     void printPrompt();
     void processCommand(const QString& line);
 
