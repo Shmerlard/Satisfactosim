@@ -14,7 +14,7 @@ private:
         QUuid id = QUuid());
 
     PortType m_edgeType;
-    Port* m_mirrorPort;
+    Port* m_mirrorPort = nullptr;
 
 public:
     Port* port() const;

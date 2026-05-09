@@ -21,7 +21,7 @@ ProductionNode* Factory::createProductionNode(const Recipe& recipe, QString name
 
 ExtractionNode* Factory::createExtractionNode(const ExtractionRecipe& recipe, int tier, QString name)
 {
-    ExtractionNode* ptr = new ExtractionNode(*this, recipe, 0, name);
+    ExtractionNode* ptr = new ExtractionNode(*this, recipe, tier, name);
     addNode(std::unique_ptr<AbstractNode>(ptr));
     return ptr;
 }
@@ -64,4 +64,5 @@ void Factory::removeNode(AbstractNode& node)
             return;
         }
     }
+    m_edges.erase(std::remove(m_edges.begin(), m_edges.end(), &node), m_edges.end());
 }

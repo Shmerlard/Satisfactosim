@@ -141,7 +141,9 @@ ProductionNode* SessionManager::createProductionNodeByClass(const QString& rClas
         return nullptr;
 
     Factory* f = factory ? factory : m_activeFactory;
-    return f->createProductionNode(*r, name);
+    ProductionNode* node = f->createProductionNode(*r, name);
+    emit nodeAdded(node);
+    return node;
 }
 
 ExtractionNode* SessionManager::createExtractionNode(const ExtractionRecipe* recipe, int tier, Factory* factory, QString name)

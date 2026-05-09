@@ -1,7 +1,10 @@
 #include "ExtractionNode.h"
 #include "core/types/Types.h"
 
-ExtractionNode::~ExtractionNode() = default;
+ExtractionNode::~ExtractionNode()
+{
+    deletePorts();
+}
 
 ExtractionNode::ExtractionNode(
     Factory& parentFactory,
@@ -23,7 +26,7 @@ void ExtractionNode::buildPortsFromRecipe()
 {
     if (!recipe())
         return;
-//
+    //
     // Port* out = new Port(*this, recipe()->resource, PortType::Output);
 
     // m_outputs.append(std::make_unique<Port>(*this, recipe()->resource, PortType::Output));
@@ -97,4 +100,9 @@ QString ExtractionNode::getMachineIcon() const
 const ExtractionRecipe* ExtractionNode::recipe() const
 {
     return static_cast<const ExtractionRecipe*>(m_recipe);
+}
+
+void ExtractionNode::setRecipe(const ExtractionRecipe* recipe)
+{
+    // FIX: implement
 }
