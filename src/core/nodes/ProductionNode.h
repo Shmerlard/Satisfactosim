@@ -4,9 +4,12 @@
 
 
 class ProductionNode : public MachineNode {
+    Q_OBJECT;
+
+    Q_PROPERTY(QString machineName READ machineName CONSTANT);
+
     friend class SessionManager;
     friend class Factory;
-
 private:
     explicit ProductionNode(
             Factory& parentFactory,

@@ -8,8 +8,9 @@ struct Recipe;
 // class Solver;
 
 class MachineNode : public AbstractNode {
-    friend class Solver;
+    Q_OBJECT;
 
+    friend class Solver;
 protected:
     explicit MachineNode(
         Factory& parentFactory,

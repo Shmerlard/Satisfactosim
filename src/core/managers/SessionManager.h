@@ -28,7 +28,7 @@ private:
         // m_rootFactory = new Factory(nullptr, QString("Main Factory"));
         m_rootFactory = std::make_unique<Factory>(nullptr, QString("Main Factory"));
         m_activeFactory = m_rootFactory.get();
-        ProductionNode* t1 = createProductionNodeByClass("Recipe_IngotIron_C");
+        ProductionNode* t1 = createProductionNodeByClass("Recipe_IngotIron_C", m_activeFactory, "RRA");
         ProductionNode* t2 = createProductionNodeByClass("Recipe_IronPlate_C");
 
         // m_sceneModel = new SceneModel(this, this);

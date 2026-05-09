@@ -2,27 +2,25 @@
 
 #include "core/managers/SessionManager.h"
 #include "core/nodes/AbstractNode.h"
-#include "gui/items/AbstractItem.h"
+#include "SceneModel.h"
+
 #include <QMap>
 #include <QObject>
-
-class ProductionItem;
 
 class SceneManager : public QObject {
     Q_OBJECT;
 
+    Q_PROPERTY(SceneModel* model READ model CONSTANT)
+
 private:
-    QMap<AbstractNode*, AbstractItem*> m_nodeItemMap;
     SessionManager* m_session = nullptr;
+    SceneModel* m_model = nullptr;
 
 public:
     explicit SceneManager(SessionManager* session, QObject* parent = nullptr);
-
-    AbstractItem* itemFromNode(AbstractNode* node);
+    SceneModel* model() const { return m_model; }
 
 public slots:
     void onNodeAdded(AbstractNode* node);
     void onNodeRemoved(AbstractNode* node);
-
-    ProductionItem* createProductionItem(const Recipe& recipe, Factory* factory = nullptr, QString name = QString(), QPointF pos = QPointF(0,0));
 };

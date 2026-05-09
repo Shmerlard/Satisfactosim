@@ -66,7 +66,7 @@ qt_add_qml_module(FactoryApp
             # src/core/managers/Solver.h              src/core/managers/Solver.cpp
 
     src/core/nodes/AbstractNode.h           src/core/nodes/AbstractNode.cpp
-            src/core/nodes/ExtractionNode.h         src/core/nodes/ExtractionNode.cpp
+    src/core/nodes/ExtractionNode.h         src/core/nodes/ExtractionNode.cpp
     src/core/nodes/Factory.h                src/core/nodes/Factory.cpp
     src/core/nodes/FactoryEdgeNode.h        src/core/nodes/FactoryEdgeNode.cpp
     src/core/nodes/FactoryNode.h            src/core/nodes/FactoryNode.cpp
@@ -78,6 +78,9 @@ qt_add_qml_module(FactoryApp
     #
     #         # GUI
     src/gui/QmlReloader.h
+    
+    src/gui/controllers/SceneManager.h      src/gui/controllers/SceneManager.cpp
+    src/gui/controllers/SceneModel.h        src/gui/controllers/SceneModel.cpp
     #
     #         src/gui/bridges/ItemBridge.h
     #         src/gui/bridges/PortBridge.h
@@ -108,7 +111,7 @@ target_include_directories(FactoryApp PRIVATE
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/src/core/managers
     ${CMAKE_SOURCE_DIR}/src/core/nodes
-    # ${CMAKE_SOURCE_DIR}/src/gui/controllers
+    ${CMAKE_SOURCE_DIR}/src/gui/controllers
     # ${CMAKE_SOURCE_DIR}/src/gui/items
     # ${CMAKE_SOURCE_DIR}/src/gui/models
     # ${CMAKE_SOURCE_DIR}/src/gui/bridges

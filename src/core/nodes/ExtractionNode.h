@@ -4,9 +4,10 @@
 #include "core/types/Types.h"
 
 class ExtractionNode : public MachineNode {
+    Q_OBJECT;
+
     friend class SessionManager;
     friend class Factory;
-
 private:
     explicit ExtractionNode(
         Factory& parentFactory,

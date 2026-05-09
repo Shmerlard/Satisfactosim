@@ -26,12 +26,9 @@ Item {
                 }
         }
 
-        // Workspace {
-        //     id: workspace
-        //     anchors.fill: parent
-        //     Layout.fillWidth: true
-        //     Layout.fillHeight: true
-        //     sceneSize: 5000
-        // }
+        Workspace {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+        }
     }
 }

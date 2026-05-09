@@ -1,4 +1,6 @@
 #include "SceneModel.h"
+#include "core/nodes/Factory.h"
+#include "core/nodes/AbstractNode.h"
 
 SceneModel::SceneModel(SceneManager* scene, QObject* parent)
     : QAbstractListModel(parent)
@@ -16,11 +18,11 @@ QVariant SceneModel::data(const QModelIndex& index, int role) const
     if (!index.isValid() || index.row() >= m_items.count())
         return QVariant();
 
-    AbstractItem* entry = m_items.at(index.row());
+    AbstractNode* entry = m_items.at(index.row());
 
     switch (role) {
     case NodeDataRole:
-        return QVariant::fromValue(entry);
+        return QVariant::fromValue<QObject*>(entry);
     default:
         return QVariant();
     }
@@ -41,9 +43,25 @@ void SceneModel::loadFromFactory(Factory* factory)
     beginResetModel();
     m_items.clear();
     for (const auto& node : factory->subNodes()) {
-        AbstractItem* item = m_sceneManager->itemFromNode(node.get());
-        if (item)
-            m_items.append(item);
+        m_items.append(node.get());
     }
     endResetModel();
+}
+
+void SceneModel::addNode(AbstractNode* node)
+{
+    int row = m_items.count();
+    beginInsertRows(QModelIndex(), row, row);
+    m_items.append(node);
+    endInsertRows();
+}
+
+void SceneModel::removeNode(AbstractNode* node)
+{
+    int row = m_items.indexOf(node);
+    if (row < 0)
+        return;
+    beginRemoveRows(QModelIndex(), row, row);
+    m_items.removeAt(row);
+    endRemoveRows();
 }

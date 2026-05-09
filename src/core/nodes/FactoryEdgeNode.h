@@ -3,6 +3,8 @@
 #include "AbstractNode.h"
 
 class FactoryEdgeNode : public AbstractNode {
+    Q_OBJECT;
+
     friend class SessionManager;
     friend class Factory;
 

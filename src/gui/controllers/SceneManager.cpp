@@ -1,39 +1,28 @@
 #include "SceneManager.h"
-#include "gui/items/ProductionItem.h"
+#include "SceneModel.h"
 
 SceneManager::SceneManager(SessionManager* session, QObject* parent)
     : QObject(parent)
 {
     m_session = (!session) ? &SessionManager::get() : session;
-    connect(m_session, &SessionManager::nodeAdded, this, &SceneManager::onNodeAdded);
-    connect(m_session, &SessionManager::nodeRemoved, this, &SceneManager::onNodeRemoved);
-}
+    m_model = new SceneModel(this, this);
 
-AbstractItem* SceneManager::itemFromNode(AbstractNode* node) {
-    return m_nodeItemMap.value(node, nullptr);
+    connect(m_session, &SessionManager::nodeAdded,   this, &SceneManager::onNodeAdded);
+    connect(m_session, &SessionManager::nodeRemoved, this, &SceneManager::onNodeRemoved);
+    connect(m_session, &SessionManager::activeFactoryChanged, this, [this](){
+        m_model->loadFromFactory(m_session->activeFactory());
+    });
+
+    m_model->loadFromFactory(m_session->activeFactory());
 }
 
 void SceneManager::onNodeAdded(AbstractNode* node)
 {
-    if (!node)
-        return;
-
-    if (m_nodeItemMap.contains(node))
-        return;
-    m_nodeItemMap.insert(node, new AbstractItem(node, QPointF(0, 0), this));
+    m_model->addNode(node);
 }
 
 void SceneManager::onNodeRemoved(AbstractNode* node)
 {
-    // DO STUFF
+    m_model->removeNode(node);
 }
 
-ProductionItem* SceneManager::createProductionItem(const Recipe& recipe, Factory* factory, QString name, QPointF pos)
-{
-    ProductionNode* node = SessionManager::get().createProductionNode(recipe, factory, name);
-    if (!node)
-        return nullptr;
-
-    ProductionItem* item = new ProductionItem(node, pos, this);
-    return item;
-}

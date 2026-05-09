@@ -4,6 +4,8 @@
 #include "Factory.h"
 
 class FactoryNode : public AbstractNode {
+    Q_OBJECT;
+
     friend class SessionManager;
     friend class Factory;
 

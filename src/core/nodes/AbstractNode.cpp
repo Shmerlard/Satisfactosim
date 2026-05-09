@@ -152,3 +152,56 @@ void AbstractNode::disconnectPort(Port* port, Port* peer, QString* err)
     port->owner.onPortDisconnected(*port);
     peer->owner.onPortDisconnected(*peer);
 }
+
+void AbstractNode::setName(QString name)
+{
+    m_name = name;
+    emit nameChanged();
+}
+
+QVariantList AbstractNode::inputsQml() const
+{
+    QVariantList list;
+    int idx = 0;
+    for (const auto& p : m_inputs) {
+        QVariantMap map;
+        map["iconUrl"]   = p->item ? "image://assets/item/" + p->item->itemClass : "";
+        map["amount"]    = p->amount;
+        map["portIndex"] = idx++;
+        map["nodeIndex"] = index();
+        list.append(map);
+    }
+    return list;
+}
+
+QVariantList AbstractNode::outputsQml() const
+{
+    QVariantList list;
+    int idx = static_cast<int>(m_inputs.size());
+    for (const auto& p : m_outputs) {
+        QVariantMap map;
+        map["iconUrl"]   = p->item ? "image://assets/item/" + p->item->itemClass : "";
+        map["amount"]    = p->amount;
+        map["portIndex"] = idx++;
+        map["nodeIndex"] = index();
+        list.append(map);
+    }
+    return list;
+}
+void AbstractNode::setPos(QPointF pos)
+{
+    m_pos = pos;
+    emit posChanged();
+}
+
+void AbstractNode::setPosX(double x)
+{
+    m_pos.setX(x);
+    emit posChanged();
+}
+
+void AbstractNode::setPosY(double y)
+{
+    m_pos.setY(y);
+    emit posChanged();
+}

@@ -2,9 +2,11 @@
 
 #include "Port.h"
 #include <QJsonObject>
-// #include <QList>
 #include <QObject>
+#include <QPointF>
 #include <QUuid>
+#include <QVariantList>
+#include <QVariantMap>
 
 class Factory;
 
@@ -16,16 +18,28 @@ enum class NodeType : uint8_t {
     Production
 };
 
-class AbstractNode {
+class AbstractNode : public QObject {
+    Q_OBJECT;
+    Q_PROPERTY(double posX READ posX WRITE setPosX NOTIFY posChanged)
+    Q_PROPERTY(double posY READ posY WRITE setPosY NOTIFY posChanged)
+    Q_PROPERTY(QString name READ name NOTIFY nameChanged)
+    Q_PROPERTY(int nodeType READ nodeTypeInt CONSTANT)
+    Q_PROPERTY(QVariantList inputs  READ inputsQml  NOTIFY portsChanged)
+    Q_PROPERTY(QVariantList outputs READ outputsQml NOTIFY portsChanged)
+public:
+    int nodeTypeInt() const { return static_cast<int>(m_type); }
+
 protected:
     explicit AbstractNode(
         Factory& parentFactory,
         QString name = QString(),
         QUuid id = QUuid());
+
     QUuid m_id;
     NodeType m_type = NodeType::Abstract;
-    Factory* m_parentFactory;
-    QString m_name;
+    Factory* m_parentFactory = nullptr;
+    QString m_name = QString("");
+    QPointF m_pos = QPointF(0, 0);
     std::vector<std::unique_ptr<Port>> m_inputs;
     std::vector<std::unique_ptr<Port>> m_outputs;
 
@@ -37,7 +51,7 @@ public:
     Factory* parentFactory() const { return m_parentFactory; }
     QString name() const { return m_name; }
 
-    int hierarchyLevel() const { return static_cast<int>(m_type);}
+    int hierarchyLevel() const { return static_cast<int>(m_type); }
     virtual float portRate(const Port* port) const = 0;
     virtual QJsonObject getJsonNode() const;
 
@@ -45,15 +59,29 @@ public:
     void disconnectAllPorts();
     virtual void disconnectPort(Port* port, Port* peer, QString* err = nullptr);
     virtual bool connectToPort(Port& src, Port& dst, QString* err = nullptr);
-    virtual void onPortConnected(Port& port) {};
-    virtual void onPortDisconnected(Port& port) {};
+    virtual void onPortConnected(Port& port) { };
+    virtual void onPortDisconnected(Port& port) { };
 
+    QPointF pos() const { return m_pos; }
+    double posX() const { return m_pos.x(); }
+    double posY() const { return m_pos.y(); }
     const std::vector<std::unique_ptr<Port>>& inputs() const { return m_inputs; }
     const std::vector<std::unique_ptr<Port>>& outputs() const { return m_outputs; }
+    QVariantList inputsQml() const;
+    QVariantList outputsQml() const;
+
     void setId(QUuid id) { m_id = id; }
-    void setName(QString name) { m_name = name; }
+    void setName(QString name);
+    void setPos(QPointF pos);
+    void setPosX(double x);
+    void setPosY(double y);
 
     int index() const;
     int getPortIndex(Port& port) const;
     Port* getPortFromIndex(int index) const;
+
+signals:
+    void posChanged();
+    void nameChanged();
+    void portsChanged();
 };

@@ -14,9 +14,11 @@ class ExtractionNode;
 struct Recipe;
 
 class Factory {
-private:
+
     friend class SessionManager;
     friend class FactoryNode;
+
+private:
 
     QUuid m_id;
     QString m_name;
