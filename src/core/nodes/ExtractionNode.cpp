@@ -17,7 +17,6 @@ ExtractionNode::ExtractionNode(
 {
     m_type = NodeType::Extraction;
     m_recipe = &recipe;
-    // m_parentFactory->addNode(*this);
 
     buildPortsFromRecipe();
 }
@@ -26,23 +25,8 @@ void ExtractionNode::buildPortsFromRecipe()
 {
     if (!recipe())
         return;
-    //
-    // Port* out = new Port(*this, recipe()->resource, PortType::Output);
-
-    // m_outputs.append(std::make_unique<Port>(*this, recipe()->resource, PortType::Output));
     m_outputs.push_back(std::make_unique<Port>(*this, recipe()->resource, PortType::Output));
 }
-
-// void ExtractionNode::deletePorts()
-// {
-//     for (Port* port : m_outputs) {
-//         for (Port* peer : port->connectedTo) {
-//             peer->connectedTo.removeAll(port);
-//         }
-//     }
-//     qDeleteAll(m_outputs);
-//     m_outputs.clear();
-// }
 
 const Machine* ExtractionNode::extractor() const
 {
@@ -55,8 +39,6 @@ const Machine* ExtractionNode::extractor() const
 QJsonObject ExtractionNode::getJsonNode() const
 {
     QJsonObject obj = MachineNode::getJsonNode();
-    // obj["type"] = "extraction";
-    // obj["resource"] = recipe()->resource->itemClass;
     obj["tier"] = m_tier;
     obj["purity"] = static_cast<int>(m_purity);
     return obj;
@@ -92,9 +74,10 @@ QString ExtractionNode::machineName() const
     return extractor() ? extractor()->machineName : "No Machine";
 }
 
-QString ExtractionNode::getMachineIcon() const
+QString ExtractionNode::machineIcon() const
 {
-    return extractor() ? extractor()->iconPath : "";
+    const Machine* m = extractor();
+    return m ? "image://assets/machine/" + m->machineClass : QString();
 }
 
 const ExtractionRecipe* ExtractionNode::recipe() const

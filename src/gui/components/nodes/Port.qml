@@ -12,7 +12,7 @@ Item {
     Rectangle {
         id: background
         anchors.fill: parent
-        color: "green"
+        color: root.isInput ? "#0d3349" : "#3d1a0d"
     }
     RowLayout {
         id: mainLayout
@@ -25,6 +25,7 @@ Item {
         }
         Text {
             text: root.isInput ? "INPUT" : "OUTPUT"
+            color: "white"
         }
     }
 }

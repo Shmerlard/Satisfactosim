@@ -256,6 +256,7 @@ void GameLibrary::parseExtractionRecipes()
             r->recipeName = allowedResource->itemName;
             r->family = family;
             r->resource = allowedResource;
+            r->outputs.insert(allowedResource, 1); // FIX: 1 is not right here
             m_extractionRecipes.insert(r->recipeClass, r);
             m_recipes.insert(r->recipeClass, r);
             allowedResource->producedBy.append(r);

@@ -7,7 +7,7 @@ Popup {
     property real spawnX: 0
     property real spawnY: 0
 
-    width: 300
+    width: 600
     height: 300
     clip: true
 
@@ -18,37 +18,25 @@ Popup {
             Layout.preferredWidth: 30
         }
         ColumnLayout {
-            TextField {
-                id: searchBox
-                Layout.fillWidth: true
-                implicitHeight: 35
-                placeholderText: "Search recipes..."
-                color: "white"
-                placeholderTextColor: "#888888"
-                leftPadding: 10
-
-                background: Rectangle {
-                    color: "#1a1a1a"
-                    border.color: searchBox.activeFocus ? "#666666" : "#444444"
-                    border.width: 1
-                    radius: 4
-                }
-
-                onTextChanged: {
-                    sceneManager.recipes.setFilterString(text)
-                }
-            }
-
+            PlaceMenuSearchBox {}
             ScrollView {
-
-                Layout.fillWidth: true
+                // Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.fillWidth: false
                 Layout.fillHeight: true
                 clip: true
                 ScrollBar.vertical.policy: ScrollBar.AsNeeded
                 ColumnLayout {
-                    // spacing: 8
+                    width: parent.width
+                    Layout.alignment: Qt.AlignHCenter
+                    Rectangle {
+                        // anchors.fill: parent
+                        Layout.alignment: Qt.AlignHCenter
+                        Layout.fillWidth: true
+                        color: "yellow"
+                    }
                     Repeater {
                         model: sceneManager.recipes
+
                         delegate: PlaceMenuEntry {
                             recipe: model
                             spawnX: root.spawnX

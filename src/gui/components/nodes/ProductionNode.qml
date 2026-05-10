@@ -14,8 +14,8 @@ Item {
     Rectangle {
         id: background
         anchors.fill: parent
-        color: "yellow"
-        border.color: "black"
+        color: "#1e2838"
+        border.color: "#e8a020"
         border.width: 1
         radius: 10
     }
@@ -50,6 +50,7 @@ Item {
                 id: nameText
                 // text: root.nodeData ? root.nodeData.name : ""
                 text: root.nodeData ? root.nodeData.machineName : ""
+                color: "white"
             }
         }
         Item {

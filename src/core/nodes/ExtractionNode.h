@@ -35,5 +35,6 @@ public:
     QJsonObject getJsonNode() const override;
     QString getExtractorName() const; // FIX: remove
     QString machineName() const override;
-    QString getMachineIcon() const;
+    QString machineIcon() const override;
+    // QString getMachineIcon() const;
 };

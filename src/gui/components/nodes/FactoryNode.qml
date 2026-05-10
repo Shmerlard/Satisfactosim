@@ -13,8 +13,8 @@ Item {
     Rectangle {
         id: background
         anchors.fill: parent
-        color: "green"
-        border.color: "black"
+        color: "#2d1e3d"
+        border.color: "#8e44ad"
         border.width: 1
         radius: 10
     }
@@ -40,6 +40,7 @@ Item {
             }
             Text {
                 text: root.nodeData ? root.nodeData.name : ""
+                color: "white"
             }
         }
     }
