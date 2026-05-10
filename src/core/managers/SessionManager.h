@@ -51,7 +51,7 @@ public slots:
     void load(const QString& path);
 
     FactoryEdgeNode* createFactoryEdgeNode(PortType edgeType, Factory* factory = nullptr, QString name = QString());
-    ProductionNode* createProductionNode(const Recipe& recipe, Factory* factory = nullptr, QString name = QString());
+    ProductionNode* createProductionNode(const ProductionRecipe& recipe, Factory* factory = nullptr, QString name = QString());
     ProductionNode* createProductionNodeByClass(const QString& rClass, Factory* factory = nullptr, QString name = QString());
     ExtractionNode* createExtractionNode(const ExtractionRecipe* recipe, int tier = 1, Factory* factory = nullptr, QString name = QString());
     ExtractionNode* createExtractionNodeByName(QString resourceName, int tier = 1, Factory* factory = nullptr, QString name = QString());

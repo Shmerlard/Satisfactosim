@@ -40,5 +40,3 @@ QHash<int, QByteArray> RecipeListModel::roleNames() const
     roles[ClassRole] = "class";
     return roles;
 }
-
-

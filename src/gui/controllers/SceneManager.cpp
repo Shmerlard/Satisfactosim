@@ -1,6 +1,6 @@
 #include "SceneManager.h"
-#include "SceneModel.h"
 #include "RecipeListModel.h"
+#include "SceneModel.h"
 
 SceneManager::SceneManager(SessionManager* session, QObject* parent)
     : QObject(parent)
@@ -8,10 +8,12 @@ SceneManager::SceneManager(SessionManager* session, QObject* parent)
     m_session = (!session) ? &SessionManager::get() : session;
     m_model = new SceneModel(this, this);
     m_recipeModel = new RecipeListModel(this);
+    m_recipeFilterModel = new RecipeFilterModel(this);
+    m_recipeFilterModel->setSourceModel(m_recipeModel);
 
-    connect(m_session, &SessionManager::nodeAdded,      this, &SceneManager::onNodeAdded);
-    connect(m_session, &SessionManager::nodeRemoved,    this, &SceneManager::onNodeRemoved);
-    connect(m_session, &SessionManager::factoryChanged, this, [this](Factory* f){
+    connect(m_session, &SessionManager::nodeAdded, this, &SceneManager::onNodeAdded);
+    connect(m_session, &SessionManager::nodeRemoved, this, &SceneManager::onNodeRemoved);
+    connect(m_session, &SessionManager::factoryChanged, this, [this](Factory* f) {
         m_model->loadFromFactory(f);
         emit factoryChanged();
     });
@@ -37,4 +39,34 @@ void SceneManager::enterFactory(AbstractNode* factoryNode)
     FactoryNode* factoryNode_p = static_cast<FactoryNode*>(factoryNode);
     Factory* f = &factoryNode_p->factory();
     m_session->enterFactory(f);
+}
+
+// void SceneManager::createMachineNode(Recipe* recipe, double x, double y)
+// {
+//     AbstractNode* node = nullptr;
+//     if (auto* p = dynamic_cast<const ProductionRecipe*>(recipe)) {
+//         node = m_session->createProductionNode(*p);
+//     } else if ( auto* p = dynamic_cast<const ExtractionRecipe*>(recipe)) {
+//         node = m_session->createExtractionNode(p);
+//     } else {
+//         return;
+//     }
+//     node->setPosX(x);
+//     node->setPosY(y);
+//
+// }
+void SceneManager::createMachineNode(const QString recipe, double x, double y)
+{
+    AbstractNode* node = nullptr;
+    const Recipe* recipe_p = GameLibrary::get().getRecipeByClass(recipe);
+    if (auto* p = dynamic_cast<const ProductionRecipe*>(recipe_p)) {
+        node = m_session->createProductionNode(*p);
+    } else if ( auto* p = dynamic_cast<const ExtractionRecipe*>(recipe_p)) {
+        node = m_session->createExtractionNode(p);
+    } else {
+        return;
+    }
+    node->setPosX(x);
+    node->setPosY(y);
+
 }

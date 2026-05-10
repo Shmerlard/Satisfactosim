@@ -8,20 +8,48 @@ Item {
     property int modelIndex: -1
     property Item contentContainer: null
 
-    implicitWidth: mainLayout.width + 10
-    implicitHeight: mainLayout.height + 10
+    implicitWidth: nameText.implicitWidth + outputsCol.implicitWidth + 40
+    implicitHeight: Math.max(50, mainLayout.implicitHeight)
+
     Rectangle {
         id: background
         anchors.fill: parent
-        color: "blue"
+        color: "pink"
         border.color: "black"
         border.width: 1
         radius: 10
     }
     RowLayout {
         id: mainLayout
-        Text {
-            text: root.nodeData ? root.nodeData.name : ""
+        anchors.fill: parent
+        anchors.margins: 0
+
+        Item { Layout.fillWidth: true }
+        ColumnLayout {
+            id: centerCol
+            Image {
+                source: root.nodeData ? root.nodeData.machineIcon : ""
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredHeight: 50
+                Layout.preferredWidth: 50
+            }
+            Text {
+                id: nameText
+                text: root.nodeData ? root.nodeData.machineName : ""
+            }
+        }
+        Item {
+            Layout.fillWidth: true
+        }
+        ColumnLayout {
+            id: outputsCol
+            Repeater {
+                model: root.nodeData ? root.nodeData.outputs : []
+                delegate: Port {
+                    portData: modelData
+                    isInput: false
+                }
+            }
         }
     }
     MouseArea {
@@ -52,6 +80,4 @@ Item {
             root.nodeData.posY = pt.y - lastY;
         }
     }
-
-
 }

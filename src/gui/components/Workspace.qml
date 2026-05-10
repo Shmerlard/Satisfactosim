@@ -165,6 +165,8 @@ Item {
                 if (mouse.button == Qt.RightButton) {
                     placeMenu.x = mouse.x
                     placeMenu.y = mouse.y
+                    placeMenu.spawnX = mouse.x
+                    placeMenu.spawnY = mouse.y
                     placeMenu.open()
                 }
             }

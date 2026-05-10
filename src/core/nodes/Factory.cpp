@@ -12,7 +12,7 @@ Factory::Factory(Factory* parent, QString name, QUuid id)
 {
 }
 
-ProductionNode* Factory::createProductionNode(const Recipe& recipe, QString name)
+ProductionNode* Factory::createProductionNode(const ProductionRecipe& recipe, QString name)
 {
     ProductionNode* ptr = new ProductionNode(*this, recipe, name);
     addNode(std::unique_ptr<AbstractNode>(ptr));

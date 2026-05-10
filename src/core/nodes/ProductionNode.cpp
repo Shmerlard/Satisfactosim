@@ -5,7 +5,7 @@
 
 ProductionNode::ProductionNode(
     Factory& parentFactory,
-    const Recipe& recipe,
+    const ProductionRecipe& recipe,
     QString name,
     QUuid id)
     : MachineNode(parentFactory, name, 1, -1, id)
@@ -36,7 +36,7 @@ ProductionNode::~ProductionNode()
     deletePorts();
 }
 
-void ProductionNode::setRecipe(const Recipe* recipe)
+void ProductionNode::setRecipe(const ProductionRecipe* recipe)
 {
     if (m_recipe == recipe)
         return;

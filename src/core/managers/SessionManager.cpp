@@ -112,7 +112,7 @@ FactoryEdgeNode* SessionManager::createFactoryEdgeNode(PortType edgeType, Factor
     return node;
 }
 
-ProductionNode* SessionManager::createProductionNode(const Recipe& recipe, Factory* factory, QString name)
+ProductionNode* SessionManager::createProductionNode(const ProductionRecipe& recipe, Factory* factory, QString name)
 {
     Factory* f = factory ? factory : m_activeFactory;
     ProductionNode* node = f->createProductionNode(recipe, name);
@@ -126,10 +126,13 @@ ProductionNode* SessionManager::createProductionNodeByClass(const QString& rClas
     if (!r)
         return nullptr;
 
-    Factory* f = factory ? factory : m_activeFactory;
-    ProductionNode* node = f->createProductionNode(*r, name);
-    emit nodeAdded(node);
-    return node;
+    if (auto* p = dynamic_cast<const ProductionRecipe*>(r)) {
+        Factory* f = factory ? factory : m_activeFactory;
+        ProductionNode* node = f->createProductionNode(*p, name);
+        emit nodeAdded(node);
+        return node;
+    }
+    return nullptr;
 }
 
 ExtractionNode* SessionManager::createExtractionNode(const ExtractionRecipe* recipe, int tier, Factory* factory, QString name)
@@ -384,7 +387,7 @@ bool SessionManager::deserializeFactory(
         }
         case NodeType::Production: {
             QString recipeString = nodeObject["recipe"].toString();
-            const Recipe* nodeRecipe = GameLibrary::get().getRecipeByClass(recipeString);
+            const ProductionRecipe* nodeRecipe = static_cast<const ProductionRecipe*>(GameLibrary::get().getRecipeByClass(recipeString));
 
             if (!nodeRecipe) {
                 qWarning() << "COULDNT FIND NODE RECIPE: " << recipeString;

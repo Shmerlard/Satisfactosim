@@ -11,7 +11,7 @@ class ProductionNode : public MachineNode {
 private:
     explicit ProductionNode(
             Factory& parentFactory,
-            const Recipe& recipe,
+            const ProductionRecipe& recipe,
             QString name = QString(),
             QUuid id = QUuid());
 
@@ -21,7 +21,7 @@ private:
 public:
     ~ProductionNode() override;
 
-    void setRecipe(const Recipe* recipe);
+    void setRecipe(const ProductionRecipe* recipe);
     const ProductionRecipe* recipe() const override;
     Machine* machine() const;
 

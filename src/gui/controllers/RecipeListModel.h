@@ -3,6 +3,7 @@
 #include "core/types/Types.h"
 #include <QAbstractListModel>
 #include <QObject>
+#include <QSortFilterProxyModel>
 #include <core/managers/GameLibrary.h>
 
 class RecipeListModel : public QAbstractListModel {
@@ -23,4 +24,25 @@ public:
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
+
+    // public slots:
+    //     void setFilter(const QString& text);
+};
+
+class RecipeFilterModel : public QSortFilterProxyModel {
+    Q_OBJECT;
+
+public:
+    explicit RecipeFilterModel(QObject* parent = nullptr)
+        : QSortFilterProxyModel(parent)
+    {
+        setFilterCaseSensitivity(Qt::CaseInsensitive);
+        setFilterRole(Qt::UserRole + 1);
+    }
+
+public slots:
+    void setFilterString(const QString& text)
+    {
+        setFilterFixedString(text);
+    }
 };
