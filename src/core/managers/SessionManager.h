@@ -7,7 +7,6 @@
 #include "core/nodes/FactoryEdgeNode.h"
 #include "core/types/Types.h"
 // #include "Solver.h"
-// #include "gui/models/SceneModel.h"
 #include <QObject>
 #include <QQmlEngine>
 #include <queue>
@@ -17,27 +16,19 @@ class SessionManager : public QObject {
     QML_SINGLETON;
     QML_ELEMENT;
 
-    // Q_PROPERTY(Factory* rootFactory   READ rootFactory   CONSTANT)
-    // Q_PROPERTY(Factory* activeFactory READ activeFactory NOTIFY activeFactoryChanged)
-    // Q_PROPERTY(SceneModel* activeModel READ activeModel  CONSTANT)
 
 private:
     explicit SessionManager(QObject* parent = nullptr)
         : QObject(parent)
     {
-        // m_rootFactory = new Factory(nullptr, QString("Main Factory"));
         m_rootFactory = std::make_unique<Factory>(nullptr, QString("Main Factory"));
         m_activeFactory = m_rootFactory.get();
         ProductionNode* t1 = createProductionNodeByClass("Recipe_IngotIron_C", m_activeFactory, "RRA");
         ProductionNode* t2 = createProductionNodeByClass("Recipe_IronPlate_C");
 
-        // m_sceneModel = new SceneModel(this, this);
-        // connect(this, &SessionManager::nodeAdded, m_sceneModel, &SceneModel::onNodeAdded);
-        // m_sceneModel->loadFromFactory(m_rootFactory);
     }
     std::unique_ptr<Factory> m_rootFactory = nullptr;
     Factory* m_activeFactory = nullptr;
-    // SceneModel* m_sceneModel = nullptr;
 
 signals:
     void operationFailed(const QString& reason);
@@ -47,7 +38,6 @@ signals:
     void portsConnected(AbstractNode* srcNode, int srcPortIdx, AbstractNode* dstNode, int dstPortIdx);
     void nodeRemoved(AbstractNode* node);
     void factoryChanged(Factory* factory);
-    void activeFactoryChanged();
     void solved();
 
 public:
@@ -57,14 +47,11 @@ public:
             std::pair<Factory*, QJsonObject>& currentFactory,
             std::queue<std::pair<Factory*, QJsonObject>>& pendingFactories);
 public slots:
-    // void goParentFactory();
-    // void goToRoot();
     void save(const QString& path);
     void load(const QString& path);
 
     FactoryEdgeNode* createFactoryEdgeNode(PortType edgeType, Factory* factory = nullptr, QString name = QString());
     ProductionNode* createProductionNode(const Recipe& recipe, Factory* factory = nullptr, QString name = QString());
-    // ProductionNode* createProductionNode(const QString& recipe, Factory* factory = nullptr, QString name = QString());
     ProductionNode* createProductionNodeByClass(const QString& rClass, Factory* factory = nullptr, QString name = QString());
     ExtractionNode* createExtractionNode(const ExtractionRecipe* recipe, int tier = 1, Factory* factory = nullptr, QString name = QString());
     ExtractionNode* createExtractionNodeByName(QString resourceName, int tier = 1, Factory* factory = nullptr, QString name = QString());
@@ -72,9 +59,9 @@ public slots:
 
     Factory* createFactory(Factory* parent = nullptr, QString name = QString());
     void enterFactory(Factory* f);
+    void enterRootFactory();
+    void enterParentFactory();
 
-    // FactoryEdgeNode* createFactoryEdgeNode(PortType portType, Factory* parentFactory = nullptr, QString name = QString());
-    //
     void connectNode(Port* src, Port* dest);
     void connectNode(int srcNode, int srcPort, int dstNode, int dstPort);
     void disconnectNode(Port* src, Port* dest);
@@ -89,9 +76,6 @@ public slots:
 
     Factory* rootFactory() const { return m_rootFactory.get(); }
     Factory* activeFactory() const { return m_activeFactory; }
-    // SceneModel* activeModel()   const { return m_sceneModel; }
-
-    // QList<Factory*> getSubFactories() const { return m_activeFactory->subFactories(); };
 
 public:
     static SessionManager& get()

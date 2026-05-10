@@ -21,10 +21,38 @@ Item {
             color: "#2b2b2b"
             // color: "blue"
 
-                Text {
-                    // text: GameLibrary.recipesList[10].recipeName
-                    color: "white"
-                }
+            ColumnLayout {
+                // Repeater {
+                //     model: sceneManager.recipes
+                //     delegate: RecipeEntry {
+                //         recipe: model
+                //     }
+                    // delegate: Item {
+                    //     implicitHeight: mainLayout.implicitHeight
+                    //     implicitWidth: mainLayout.implicitWidth
+                    //     Rectangle {
+                    //         anchors.fill: parent
+                    //         color: "white"
+                    //     }
+                    //     ColumnLayout {
+                    //         id: mainLayout
+                    //         Text {
+                    //             id: entryText
+                    //             text: model["name"]
+                    //         }
+                    //         Text {
+                    //             text: model["class"]
+                    //         }
+                    //
+                    //     }
+                    //     
+                    // }
+                // }
+            }
+                // Text {
+                //     // text: GameLibrary.recipesList[10].recipeName
+                //     color: "white"
+                // }
         }
 
         Workspace {

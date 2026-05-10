@@ -49,7 +49,7 @@ Item {
             Text {
                 id: nameText
                 // text: root.nodeData ? root.nodeData.name : ""
-                text: root.nodeData.machineName
+                text: root.nodeData ? root.nodeData.machineName : ""
             }
         }
         Item {

@@ -1,4 +1,5 @@
-assets/icons
+assets/icons/items
+assets/icons/machines
 assets/jsons/Docs.json
 
 .direnv/

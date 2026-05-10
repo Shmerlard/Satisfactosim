@@ -23,6 +23,7 @@ pkgs.mkShell {
             libGL
             muparser
             ncurses
+            cppcheck
         ];
 
   hardeningDisable = [ "fortify" ];

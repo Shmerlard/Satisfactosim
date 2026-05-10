@@ -20,9 +20,8 @@ void AssetManager::loadAssets()
         }
         // m_itemIcons[i] = QPixmap(iconPath);
     }
-        qDebug() << "Got: " << success << "Sucesses and: " 
-            << failures << " failures";
-
+    qDebug() << "Got: " << success << "Sucesses and: "
+             << failures << " failures";
 
     for (Machine* m : GameLibrary::get().Machines()) {
         QString iconPath = m->iconPath;
@@ -72,6 +71,14 @@ QPixmap AssetImageProvider::requestPixmap(const QString& id, QSize* size, const 
         const Item* i = GameLibrary::get().getItem(className);
         if (i) {
             QPixmap pix = AssetManager::get().getItemIcon(i);
+            if (size)
+                *size = pix.size();
+            return pix;
+        }
+    } else if (type == "misc") {
+
+        QPixmap pix("assets/icons/misc/" + className);
+        if (!pix.isNull()) {
             if (size)
                 *size = pix.size();
             return pix;

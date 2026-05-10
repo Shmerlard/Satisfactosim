@@ -6,8 +6,6 @@
 class ProductionNode : public MachineNode {
     Q_OBJECT;
 
-    // Q_PROPERTY(QString machineName READ machineName CONSTANT);
-
     friend class SessionManager;
     friend class Factory;
 private:
@@ -31,5 +29,4 @@ public:
     QJsonObject getJsonNode() const override;
     QString machineName() const override;
     QString getMachineIcon() const;
-    // int hierarchyLevel() const override { return 3; }
 };

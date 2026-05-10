@@ -39,21 +39,6 @@ QJsonObject serializeFactory(const Factory& factory)
             }
         }
     }
-    // auto serializeConnections = [&](const AbstractNode* node) {
-    //     for (const auto& port : node->outputs()) {
-    //         for (Port* peer : port->connectedTo) {
-    //             QJsonObject conn;
-    //             conn["from"] = QJsonArray { node->id().toString(), node->getPortIndex(*port) };
-    //             conn["to"] = QJsonArray { peer->owner.id().toString(),
-    //                 peer->owner.getPortIndex(*peer) };
-    //             connections.append(conn);
-    //         }
-    //     }
-    // };
-    // for (const auto& node : factory.subNodes())
-    //     serializeConnections(node.get());
-    // for (const auto& edge : factory.edges())
-    //     serializeConnections(edge.get());
     obj["connections"] = connections;
 
     QJsonArray subFactories;
@@ -116,6 +101,7 @@ void SessionManager::load(const QString& path)
 
     m_rootFactory = std::move(newRoot);
     m_activeFactory = m_rootFactory.get();
+    emit factoryChanged(m_activeFactory);
 }
 
 FactoryEdgeNode* SessionManager::createFactoryEdgeNode(PortType edgeType, Factory* parentFactory, QString name)
@@ -197,7 +183,17 @@ void SessionManager::enterFactory(Factory* f)
         return;
     m_activeFactory = f;
     emit factoryChanged(f);
-    // emit activeFactoryChanged();
+}
+
+void SessionManager::enterRootFactory()
+{
+    enterFactory(m_rootFactory.get());
+}
+
+void SessionManager::enterParentFactory()
+{
+    if (m_activeFactory->parent())
+        enterFactory(m_activeFactory->parent());
 }
 
 void SessionManager::connectNode(Port* src, Port* dest)
@@ -363,6 +359,8 @@ bool SessionManager::deserializeFactory(
         QUuid nodeId = QUuid(nodeObject.value("id").toString());
         QString nodeName = nodeObject["name"].toString();
         NodeType nodeType = static_cast<NodeType>(nodeObject["type"].toInt());
+        float posX = nodeObject["posX"].toDouble();
+        float posY = nodeObject["posY"].toDouble();
 
         switch (nodeType) {
         case NodeType::Extraction: {
@@ -378,6 +376,8 @@ bool SessionManager::deserializeFactory(
             float limit = nodeObject["machineLimit"].toDouble();
             newNode->setPurity(nodePurity);
             newNode->setId(nodeId);
+            newNode->setPosX(posX);
+            newNode->setPosY(posY);
             newNode->setMachineLimit(limit);
             uuidMap.insert(nodeId, newNode);
             break;
@@ -393,6 +393,8 @@ bool SessionManager::deserializeFactory(
             float limit = nodeObject["machineLimit"].toDouble();
             ProductionNode* newNode = factory->createProductionNode(*nodeRecipe, nodeName);
             newNode->setId(nodeId);
+            newNode->setPosX(posX);
+            newNode->setPosY(posY);
             newNode->setMachineLimit(limit);
             uuidMap.insert(nodeId, newNode);
             break;
@@ -421,6 +423,8 @@ bool SessionManager::deserializeFactory(
             }
             matchingNode->setId(nodeId);
             matchingNode->setName(nodeName);
+            matchingNode->setPosX(posX);
+            matchingNode->setPosY(posY);
             uuidMap.insert(nodeId, matchingNode);
             // FIX: maybe it would be better to add another function for creating a factory without subfactorynode
             // and just create a node later;
@@ -456,15 +460,6 @@ bool SessionManager::deserializeFactory(
 
         fromNode->connectToPort(*srcPort, *dstPort);
     }
-    // for (auto connectionJson : connectionsArray) {
-    //     auto connection = connectionJson.toObject();
-    //     QUuid fromId = QUuid(connection.value("from").toArray()[0].toString());
-    //     int fromIndex = connection.value("from").toArray()[1].toInt();
-    //     QUuid toId = QUuid(connection.value("to").toArray()[0].toString());
-    //     int toIndex = connection.value("to").toArray()[1].toInt();
-    //
-    //
-    // }
 
     return true;
 }

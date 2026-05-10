@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import FACTORY_QT
+import "./menus"
 
 Item {
     id: root
@@ -10,9 +11,9 @@ Item {
     property real mouseContentY: 0
     property alias contentX: flickable.contentX
     property alias contentY: flickable.contentY
-    // PlaceMenu {
-    //     id: placeMenu
-    // }
+    PlaceMenu {
+        id: placeMenu
+    }
 
     Rectangle {
         anchors.fill: parent
@@ -100,15 +101,17 @@ Item {
                         source: {
                             if (!nodeData) return ""
                             switch (nodeData.nodeType) {
-                                case 4: return "ProductionNode.qml"
-                                case 3: return "ExtractionNode.qml"
-                                case 2: return "FactoryNode.qml"
+                                case 1: return "nodes/EdgeNode.qml"
+                                case 2: return "nodes/FactoryNode.qml"
+                                case 3: return "nodes/ExtractionNode.qml"
+                                case 4: return "nodes/ProductionNode.qml"
                                 default: return ""
                             }
                         }
                         onLoaded: {
                             item.nodeData = nodeData
                             item.contentContainer = sceneContainer
+                            item.modelIndex = index
                         }
                     }
                 }
@@ -121,14 +124,49 @@ Item {
     Item {
         anchors.fill: flickable
 
+        Rectangle {
+            id: backButton
+            visible: !sceneManager.isRootFactory
+            width: 100
+            height: 100
+            color: "transparent"
+            Image {
+                source: "image://assets/misc/arrow-right-circle-solid.png"
+                fillMode: Image.PreserveAspectFit
+                anchors.fill: parent
+            }
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                acceptedButtons: Qt.LeftButton
+                containmentMask: Item {
+                    width: backButton.width
+                    height: backButton.height
+                    function contains(p) {
+                        var r = width / 2
+                        return (p.x - r) * (p.x - r) + (p.y - r) * (p.y - r) <= r * r
+                    }
+                }
+                onClicked: SessionManager.enterParentFactory()
+            }
+        }
+
         MouseArea {
             anchors.fill: parent
-            acceptedButtons: Qt.NoButton
+            acceptedButtons: Qt.RightButton
             hoverEnabled: true
 
             onPositionChanged: mouse => {
                 root.mouseContentX = Math.floor((mouse.x + flickable.contentX) / root.zoomScale);
                 root.mouseContentY = Math.floor((mouse.y + flickable.contentY) / root.zoomScale);
+            }
+
+            onClicked: mouse => {
+                if (mouse.button == Qt.RightButton) {
+                    placeMenu.x = mouse.x
+                    placeMenu.y = mouse.y
+                    placeMenu.open()
+                }
             }
         }
 

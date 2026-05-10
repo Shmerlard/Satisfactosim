@@ -11,29 +11,8 @@ ProductionNode::ProductionNode(
     : MachineNode(parentFactory, name, 1, -1, id)
 {
     m_type = NodeType::Production;
-    // m_recipe = &recipe;
-    // m_parentFactory->addNode(*this);
-    // m_machine = recipe.producedIn;  // ← add this
     setRecipe(&recipe);
-    // buildPortsFromRecipe();
 }
-
-// void ProductionNode::deletePorts()
-// {
-//     auto disconnectAll = [](const QList<Port*>& ports) {
-//         for (Port* port : ports) {
-//             for (Port* peer : port->connectedTo) {
-//                 peer->connectedTo.removeAll(port);
-//             }
-//         }
-//     };
-//     disconnectAll(m_inputs);
-//     disconnectAll(m_outputs);
-//     qDeleteAll(m_inputs);
-//     qDeleteAll(m_outputs);
-//     m_inputs.clear();
-//     m_outputs.clear();
-// }
 
 void ProductionNode::buildPortsFromRecipe()
 {
@@ -47,7 +26,6 @@ void ProductionNode::buildPortsFromRecipe()
     }
     auto outIt = recipe()->outputs.constBegin();
     while (outIt != recipe()->outputs.constEnd()) {
-        // m_outputs.append(new Port(*this, outIt.key(), PortType::Output));
         m_outputs.push_back(std::make_unique<Port>(*this, outIt.key(), PortType::Output));
         ++outIt;
     }
@@ -72,8 +50,6 @@ void ProductionNode::setRecipe(const Recipe* recipe)
 QJsonObject ProductionNode::getJsonNode() const
 {
     QJsonObject obj = MachineNode::getJsonNode();
-    // obj["type"] = "production";
-    // obj["recipe"] = recipe() ? recipe()->recipeClass : "";
     return obj;
 }
 

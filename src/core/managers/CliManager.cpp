@@ -479,7 +479,13 @@ void CliManager::handleLs()
 void CliManager::handleCd(const QStringList& args)
 {
     if (args.empty()) {
-        m_session->enterFactory(m_session->rootFactory());
+        m_session->enterRootFactory();
+        return;
+    }
+
+
+    if (args[0] == "..") {
+        m_session->enterParentFactory();
         return;
     }
 
@@ -490,8 +496,8 @@ void CliManager::handleCd(const QStringList& args)
         return;
     }
 
-    auto* factory = SessionManager::get().activeFactory();
-    auto& nodes = factory->subNodes();
+    auto* activeFactory = SessionManager::get().activeFactory();
+    auto& nodes = activeFactory->subNodes();
 
     if (index < 0 || index >= nodes.size()) {
         m_out << "No node at index " << index << "\n";

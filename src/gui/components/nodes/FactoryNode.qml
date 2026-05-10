@@ -20,8 +20,27 @@ Item {
     }
     RowLayout {
         id: mainLayout
-        Text {
-            text: root.nodeData ? root.nodeData.name : ""
+        ColumnLayout {
+            id: inputsCol
+            Repeater {
+                model: root.nodeData ? root.nodeData.inputs : []
+                delegate: Port {
+                    portData: modelData
+                    isInput: true
+                }
+            }
+        }
+
+        ColumnLayout {
+            Image {
+                source: "image://assets/misc/industry.png"
+                Layout.preferredHeight: 50
+                Layout.preferredWidth: 50
+                Layout.alignment: Qt.AlignHCenter
+            }
+            Text {
+                text: root.nodeData ? root.nodeData.name : ""
+            }
         }
     }
     MouseArea {
@@ -29,11 +48,14 @@ Item {
         anchors.fill: parent
         hoverEnabled: true
         preventStealing: true
-        acceptedButtons: Qt.LeftButton | Qt.RightButton   // ← add RightButton
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
 
         property real lastX: 0
         property real lastY: 0
 
+        onDoubleClicked: {
+            sceneManager.enterFactory(root.nodeData)
+        }
         onPressed: mouse => {
             if (mouse.button === Qt.RightButton)
                 return;
@@ -52,6 +74,4 @@ Item {
             root.nodeData.posY = pt.y - lastY;
         }
     }
-
-
 }

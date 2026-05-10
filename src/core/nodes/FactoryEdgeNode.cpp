@@ -21,7 +21,7 @@ float FactoryEdgeNode::portRate(const Port* port) const
     return 0.f;
 }
 
-void FactoryEdgeNode::onPortConnected(Port& port) 
+void FactoryEdgeNode::onPortConnected(Port& port)
 {
     // FIX: fix when there i s more then one connection already
     // make sure its not in root factory
@@ -33,10 +33,9 @@ void FactoryEdgeNode::onPortDisconnected(Port& port)
 {
     // FIX: also needs to check if the edge node is also empty
     // FIX: needs to check that theport is actually this=parent
-    if(this->port()->connectedTo.empty()) {
+    if (this->port()->connectedTo.empty()) {
         this->port()->item = nullptr;
         this->m_mirrorPort->item = nullptr;
-
     }
 }
 
@@ -59,7 +58,8 @@ void FactoryEdgeNode::disconnectPort(Port* port, Port* peer, QString* err)
     }
 }
 
-bool FactoryEdgeNode::connectToPort(Port& src, Port& dst, QString* err) {
+bool FactoryEdgeNode::connectToPort(Port& src, Port& dst, QString* err)
+{
     return AbstractNode::connectToPort(src, dst, err);
 
     // update item
@@ -69,4 +69,11 @@ Port* FactoryEdgeNode::port() const
 {
     auto& selectedList = (m_edgeType == PortType::Input) ? m_outputs : m_inputs;
     return selectedList.empty() ? nullptr : selectedList[0].get();
+}
+
+QString FactoryEdgeNode::itemName() const
+{
+    if (!port() || !port()->item)
+        return "?";
+    return port()->item->itemName;
 }

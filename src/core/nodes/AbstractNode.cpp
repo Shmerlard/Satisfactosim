@@ -34,13 +34,6 @@ int AbstractNode::getPortIndex(Port& port) const
     for (int i = 0; i < m_outputs.size(); i++)
         if (m_outputs[i].get() == &port)
             return i + m_inputs.size();
-    // int inputIndex = m_inputs.indexOf(&port);
-    // if (inputIndex != -1)
-    //     return inputIndex;
-    //
-    // int outputIndex = m_outputs.indexOf(&port);
-    // if (outputIndex != -1)
-    //     return m_inputs.count() + outputIndex;
 
     return -1;
 }
@@ -107,14 +100,13 @@ QJsonObject AbstractNode::getJsonNode() const
     obj["id"] = m_id.toString();
     obj["name"] = m_name;
     obj["type"] = static_cast<uint8_t>(m_type);
+    obj["posX"] = posX();
+    obj["posY"] = posY();
     return obj;
 }
 
 void AbstractNode::deletePorts()
 {
-    // disconnectAllPorts();
-    // qDeleteAll(m_inputs);
-    // qDeleteAll(m_outputs);
     m_outputs.clear();
     m_inputs.clear();
 }

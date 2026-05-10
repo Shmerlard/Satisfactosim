@@ -81,6 +81,7 @@ qt_add_qml_module(FactoryApp
     
     src/gui/controllers/SceneManager.h      src/gui/controllers/SceneManager.cpp
     src/gui/controllers/SceneModel.h        src/gui/controllers/SceneModel.cpp
+    src/gui/controllers/RecipeListModel.h   src/gui/controllers/RecipeListModel.cpp
     #
     #         src/gui/bridges/ItemBridge.h
     #         src/gui/bridges/PortBridge.h

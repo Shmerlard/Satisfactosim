@@ -19,7 +19,6 @@ class Factory {
     friend class FactoryNode;
 
 private:
-
     QUuid m_id;
     QString m_name;
     Factory* m_parent;
@@ -29,11 +28,11 @@ private:
     std::vector<FactoryEdgeNode*> m_edges;
 
 private:
-
-    Factory*         createFactory(QString name = QString());
+    Factory* createFactory(QString name = QString());
     FactoryEdgeNode* createFactoryEdgeNode(PortType edgeType, QString name = QString());
-    ExtractionNode*  createExtractionNode(const ExtractionRecipe& recipe, int tier = 1, QString name = QString());
-    ProductionNode*  createProductionNode(const Recipe& recipe, QString name = QString());
+    ExtractionNode* createExtractionNode(const ExtractionRecipe& recipe, int tier = 1, QString name = QString());
+    ProductionNode* createProductionNode(const Recipe& recipe, QString name = QString());
+
 public:
     explicit Factory(Factory* parent, QString name, QUuid id = QUuid());
     void setId(QUuid id) { m_id = id; }
@@ -48,8 +47,6 @@ public:
     const std::vector<std::unique_ptr<AbstractNode>>& subNodes() const { return m_subNodes; }
     const std::vector<FactoryEdgeNode*>& edges() const { return m_edges; }
 
-
     void addNode(std::unique_ptr<AbstractNode> node);
     void removeNode(AbstractNode& node);
-
 };

@@ -5,6 +5,8 @@
 class FactoryEdgeNode : public AbstractNode {
     Q_OBJECT;
 
+    Q_PROPERTY(QString itemName READ itemName NOTIFY itemChanged);
+
     friend class SessionManager;
     friend class Factory;
 
@@ -28,4 +30,9 @@ public:
     float portRate(const Port* port) const override;
     QJsonObject getJsonNode() const override;
     void setMirrorPort(Port& port) { m_mirrorPort = &port; }
+
+    QString itemName() const;
+
+signals:
+    void itemChanged();
 };
