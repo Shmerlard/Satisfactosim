@@ -39,9 +39,6 @@ public:
 
     void loadData();
     const Recipe* getRecipeByClass(const QString& name) const;
-    // const Recipe* getRecipeByName(const QString& name) const;
-    // const ProductionRecipe* getProductionRecipe(const Item* resource);
-    // const ProductionRecipe* getProductionRecipe(const QString name);
     const ExtractionRecipe* getExtRecipeByResource(const Resource* resource) const;
     const ExtractionRecipe* getExtRecipeByResource(const QString& name) const;
     const ExtractionRecipe* getExtRecipeByClass(const QString& rClass) const;

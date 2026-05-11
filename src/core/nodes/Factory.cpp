@@ -16,6 +16,7 @@ Factory::Factory(Factory* parent, QString name, QUuid id)
 
 ProductionNode* Factory::createProductionNode(const ProductionRecipe& recipe, QString name)
 {
+    // FIX: add chehcks?
     ProductionNode* ptr = new ProductionNode(*this, recipe, name);
     addNode(*ptr);
     return ptr;
@@ -28,12 +29,14 @@ ExtractionNode* Factory::createExtractionNode(const ExtractionRecipe& recipe, in
     return ptr;
 }
 
-Factory* Factory::createFactory(QString name)
+Factory* Factory::createFactory(QString name, bool ignoreNode)
 {
     Factory* facPtr = new Factory(this, name, QUuid());
-    // facPtr->setParent(this);
-    FactoryNode* facNodePtr = new FactoryNode(*this, *facPtr, name);
-    addNode(*facNodePtr);
+
+    if (!ignoreNode) {
+        FactoryNode* facNodePtr = new FactoryNode(*this, *facPtr, name);
+        addNode(*facNodePtr);
+    }
 
     m_subFactories.append(facPtr);
     return facPtr;
@@ -49,6 +52,13 @@ FactoryEdgeNode* Factory::createFactoryEdgeNode(PortType edgeType, QString name)
     // m_edges.push_back(edge);
     addNode(*edge);
     return edge;
+}
+
+FactoryNode* Factory::createFactoryNode(Factory* targetFactory, QString name)
+{
+    FactoryNode* node = new FactoryNode(*this, *targetFactory, name);
+    addNode(*node);
+    return node;
 }
 
 Connection* Factory::connect(Port& a, Port& b)
@@ -83,7 +93,6 @@ void Factory::disconnect(Port& a, Port& b)
         delete conn;
     }
 }
-
 
 void Factory::addNode(AbstractNode& node)
 {

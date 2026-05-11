@@ -27,29 +27,32 @@ private:
     Factory* m_parent;
     FactoryNode* m_node = nullptr;
 
-    QList<Factory*> m_subFactories;
     QList<AbstractNode*> m_nodes;
+    QList<Factory*> m_subFactories;
     QList<Connection*> m_connections;
+
     QList<FactoryEdgeNode*> m_edges;
 
 private:
-    Factory* createFactory(QString name = QString());
+    Factory* createFactory(QString name = QString(), bool ignoreNode = false);
     FactoryEdgeNode* createFactoryEdgeNode(PortType edgeType, QString name = QString());
     ExtractionNode* createExtractionNode(const ExtractionRecipe& recipe, int tier = 1, QString name = QString());
     ProductionNode* createProductionNode(const ProductionRecipe& recipe, QString name = QString());
+    FactoryNode* createFactoryNode(Factory* targetFactory, QString name = QString());
 
 public:
     explicit Factory(Factory* parentFactory, QString name, QUuid id = QUuid());
     void setId(QUuid id) { m_id = id; }
     void setName(QString name) { m_name = name; }
-    QUuid id() const { return m_id; }
 
+    QUuid id() const { return m_id; }
     QString name() const { return m_name; }
     Factory* parent() const { return m_parent; }
     FactoryNode* node() const { return m_node; } // nullptr for root
 
-    const QList<Factory*>& subFactories() const { return m_subFactories; }
     const QList<AbstractNode*>& nodes() const { return m_nodes; }
+    const QList<Factory*>& subFactories() const { return m_subFactories; }
+    const QList<Connection*>& connections() const { return m_connections; }
     const QList<FactoryEdgeNode*>& edges() const { return m_edges; }
 
     Connection* connect(Port& a, Port& b);

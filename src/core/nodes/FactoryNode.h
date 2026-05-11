@@ -12,7 +12,7 @@ class FactoryNode : public AbstractNode {
 private:
     explicit FactoryNode(
             Factory& parentFactory,
-            Factory& ownedFactory,
+            Factory& targetFactory,
             QString name = QString());
     Factory& m_factory;
     QMap<Port*, FactoryEdgeNode*> m_portEdges;

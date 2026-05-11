@@ -41,6 +41,11 @@ void SceneManager::enterFactory(AbstractNode* factoryNode)
     m_session->enterFactory(f);
 }
 
+void SceneManager::enterParentFactory()
+{
+    m_session->enterParentFactory();
+}
+
 // void SceneManager::createMachineNode(Recipe* recipe, double x, double y)
 // {
 //     AbstractNode* node = nullptr;
@@ -62,7 +67,7 @@ void SceneManager::createMachineNode(const QString recipe, double x, double y)
     if (auto* p = dynamic_cast<const ProductionRecipe*>(recipe_p)) {
         node = m_session->createProductionNode(*p);
     } else if ( auto* p = dynamic_cast<const ExtractionRecipe*>(recipe_p)) {
-        node = m_session->createExtractionNode(p);
+        node = m_session->createExtractionNode(*p);
     } else {
         return;
     }

@@ -147,7 +147,7 @@ Item {
                         return (p.x - r) * (p.x - r) + (p.y - r) * (p.y - r) <= r * r
                     }
                 }
-                onClicked: SessionManager.enterParentFactory()
+                onClicked: sceneManager.enterParentFactory()
             }
         }
 

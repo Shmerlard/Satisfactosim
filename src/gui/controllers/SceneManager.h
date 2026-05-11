@@ -35,7 +35,7 @@ public slots:
     void onNodeRemoved(AbstractNode* node);
 
     void enterFactory(AbstractNode* factoryNode);
-
+    void enterParentFactory();
     // void createMachineNode(Recipe* recipe, double x, double y);
     void createMachineNode(const QString recipe, double x, double y);
 };

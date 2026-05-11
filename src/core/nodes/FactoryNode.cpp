@@ -3,13 +3,13 @@
 
 FactoryNode::FactoryNode(
     Factory& parentFactory,
-    Factory& ownedFactory,
+    Factory& targetFactory,
     QString name)
     : AbstractNode(parentFactory, name)
-    , m_factory(ownedFactory)
+    , m_factory(targetFactory)
 {
     m_type = NodeType::Factory;
-    ownedFactory.m_node = this;
+    targetFactory.m_node = this;
 }
 
 float FactoryNode::portRate(const Port* port) const
