@@ -16,7 +16,6 @@ private:
             QUuid id = QUuid());
 
 
-    void buildPortsFromRecipe() override;
 
 public:
     ~ProductionNode() override;
@@ -24,9 +23,8 @@ public:
     void setRecipe(const ProductionRecipe* recipe);
     const ProductionRecipe* recipe() const override;
     Machine* machine() const;
+    QJsonObject getJsonNode() const override;
+    void buildPortsFromRecipe() override;
 
     float portRate(const Port* port) const override;
-    QJsonObject getJsonNode() const override;
-    QString machineName() const override;
-    QString getMachineIcon() const;
 };

@@ -70,15 +70,15 @@ Machine* ProductionNode::machine() const
     return recipe()->producedIn;
 }
 
-QString ProductionNode::machineName() const
-{
-    return machine() ? machine()->machineName : "No Machine";
-}
-
-QString ProductionNode::getMachineIcon() const
-{
-    return machine() ? machine()->iconPath : "";
-}
+// QString ProductionNode::machineName() const
+// {
+//     return machine() ? machine()->machineName : "No Machine";
+// }
+//
+// QString ProductionNode::getMachineIcon() const
+// {
+//     return machine() ? machine()->iconPath : "";
+// }
 
 const ProductionRecipe* ProductionNode::recipe() const
 {

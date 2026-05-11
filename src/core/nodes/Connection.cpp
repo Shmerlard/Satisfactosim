@@ -1,5 +1,6 @@
 #include "Connection.h"
 #include "core/nodes/Port.h"
+#include "AbstractNode.h"
 
 Connection::Connection(Port* src, Port* dst)
     : m_src(src)
@@ -25,5 +26,8 @@ Port* Connection::getPeer(Port& port)
 
 QJsonObject Connection::getJsonObject()
 {
-    return QJsonObject();
+    QJsonObject obj;
+    obj["from"] = QJsonArray { m_src->owner.id().toString(), m_src->owner.getPortIndex(*m_src) };
+    obj["to"] = QJsonArray { m_dst->owner.id().toString(), m_dst->owner.getPortIndex(*m_dst) };
+    return obj;
 }

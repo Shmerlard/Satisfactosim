@@ -13,6 +13,19 @@ AbstractNode::AbstractNode(
 {
 }
 
+// ---------- MISC ---------------
+QJsonObject AbstractNode::getJsonNode() const
+{
+
+    QJsonObject obj;
+    obj["id"] = m_id.toString();
+    obj["name"] = m_name;
+    obj["type"] = static_cast<uint8_t>(m_type);
+    obj["posX"] = posX();
+    obj["posY"] = posY();
+    return obj;
+}
+
 int AbstractNode::index() const
 {
     // FIX: may need a const_cast
@@ -26,37 +39,39 @@ int AbstractNode::index() const
     return -1;
 }
 
-int AbstractNode::getPortIndex(Port& port) const
+// ---------- PORTS ---------------
+void AbstractNode::deletePorts()
 {
-    // FIX: we may not need to put all the ports in one line
-    for (int i = 0; i < m_inputs.size(); i++)
-        if (m_inputs[i].get() == &port)
-            return i;
-
-    for (int i = 0; i < m_outputs.size(); i++)
-        if (m_outputs[i].get() == &port)
-            return i + m_inputs.size();
-
-    return -1;
+    m_outputs.clear();
+    m_inputs.clear();
 }
 
-Port* AbstractNode::getPortFromIndex(int index) const
+void AbstractNode::disconnectAllPorts()
 {
-    if (index < 0)
+    for (auto& port : inputs())
+        port->disconnect();
+    for (auto& port : outputs())
+        port->disconnect();
+}
+
+Connection* AbstractNode::disconnectPort(Port& port, Port& peer, QString* err)
+{
+    QString _dummy;
+    if (!err)
+        err = &_dummy;
+
+    Connection* conn = port.connection(peer);
+    if (!conn) {
+        *err = "Ports are not connected";
         return nullptr;
-    int cnt_in = m_inputs.size();
-    int cnt_total = cnt_in + m_outputs.size();
-
-    if (index < cnt_in)
-        return m_inputs[index].get();
-    else if (index < cnt_total)
-        return m_outputs[index - cnt_in].get();
-
-    return nullptr;
+    }
+    port.connections.removeOne(conn);
+    peer.connections.removeOne(conn);
+    port.owner.onPortDisconnected(port);
+    peer.owner.onPortDisconnected(peer);
+    return conn;
 }
 
-// TODO: look for differences between signals for notifying erros in session
-// and *err
 Connection* AbstractNode::connectToPort(Port& src, Port& dst, QString* err)
 {
     QString _dummy;
@@ -97,54 +112,33 @@ Connection* AbstractNode::connectToPort(Port& src, Port& dst, QString* err)
     return connection;
 }
 
-QJsonObject AbstractNode::getJsonNode() const
+int AbstractNode::getPortIndex(Port& port) const
 {
+    // FIX: we may not need to put all the ports in one line
+    for (int i = 0; i < m_inputs.size(); i++)
+        if (m_inputs[i].get() == &port)
+            return i;
 
-    QJsonObject obj;
-    obj["id"] = m_id.toString();
-    obj["name"] = m_name;
-    obj["type"] = static_cast<uint8_t>(m_type);
-    obj["posX"] = posX();
-    obj["posY"] = posY();
-    return obj;
+    for (int i = 0; i < m_outputs.size(); i++)
+        if (m_outputs[i].get() == &port)
+            return i + m_inputs.size();
+
+    return -1;
 }
 
-void AbstractNode::deletePorts()
+Port* AbstractNode::getPortFromIndex(int index) const
 {
-    m_outputs.clear();
-    m_inputs.clear();
-}
-
-void AbstractNode::disconnectAllPorts()
-{
-    for (auto& port : inputs())
-        port->disconnect();
-    for (auto& port : outputs())
-        port->disconnect();
-}
-
-Connection* AbstractNode::disconnectPort(Port& port, Port& peer, QString* err)
-{
-    QString _dummy;
-    if (!err)
-        err = &_dummy;
-
-    Connection* conn = port.connection(peer);
-    if (!conn) {
-        *err = "Ports are not connected";
+    if (index < 0)
         return nullptr;
-    }
-    port.connections.removeOne(conn);
-    peer.connections.removeOne(conn);
-    port.owner.onPortDisconnected(port);
-    peer.owner.onPortDisconnected(peer);
-    return conn;
-}
+    int cnt_in = m_inputs.size();
+    int cnt_total = cnt_in + m_outputs.size();
 
-void AbstractNode::setName(QString name)
-{
-    m_name = name;
-    emit nameChanged();
+    if (index < cnt_in)
+        return m_inputs[index].get();
+    else if (index < cnt_total)
+        return m_outputs[index - cnt_in].get();
+
+    return nullptr;
 }
 
 QVariantList AbstractNode::inputsQml() const
@@ -153,8 +147,8 @@ QVariantList AbstractNode::inputsQml() const
     int idx = 0;
     for (const auto& p : m_inputs) {
         QVariantMap map;
-        map["iconUrl"]   = p->item ? "image://assets/item/" + p->item->itemClass : "";
-        map["amount"]    = p->amount;
+        map["iconUrl"] = p->item ? "image://assets/item/" + p->item->itemClass : "";
+        map["amount"] = p->amount;
         map["portIndex"] = idx++;
         map["nodeIndex"] = index();
         list.append(map);
@@ -168,14 +162,22 @@ QVariantList AbstractNode::outputsQml() const
     int idx = static_cast<int>(m_inputs.size());
     for (const auto& p : m_outputs) {
         QVariantMap map;
-        map["iconUrl"]   = p->item ? "image://assets/item/" + p->item->itemClass : "";
-        map["amount"]    = p->amount;
+        map["iconUrl"] = p->item ? "image://assets/item/" + p->item->itemClass : "";
+        map["amount"] = p->amount;
         map["portIndex"] = idx++;
         map["nodeIndex"] = index();
         list.append(map);
     }
     return list;
 }
+
+// ---------- SETTERS ---------------
+void AbstractNode::setName(QString name)
+{
+    m_name = name;
+    emit nameChanged();
+}
+
 void AbstractNode::setPos(QPointF pos)
 {
     m_pos = pos;

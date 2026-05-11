@@ -69,16 +69,16 @@ QString ExtractionNode::getExtractorName() const
     return extractor() ? extractor()->machineName : "No Machine";
 }
 
-QString ExtractionNode::machineName() const
-{
-    return extractor() ? extractor()->machineName : "No Machine";
-}
-
-QString ExtractionNode::machineIcon() const
-{
-    const Machine* m = extractor();
-    return m ? "image://assets/machine/" + m->machineClass : QString();
-}
+// QString ExtractionNode::machineName() const
+// {
+//     return extractor() ? extractor()->machineName : "No Machine";
+// }
+//
+// QString ExtractionNode::machineIcon() const
+// {
+//     const Machine* m = extractor();
+//     return m ? "image://assets/machine/" + m->machineClass : QString();
+// }
 
 const ExtractionRecipe* ExtractionNode::recipe() const
 {

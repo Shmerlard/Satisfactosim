@@ -79,9 +79,6 @@ Item {
         property real lastX: 0
         property real lastY: 0
 
-        Component.onCompleted: {
-            console.log("NODE: ", root.z);
-        }
         onPressed: mouse => {
             if (mouse.button === Qt.RightButton)
                 return;

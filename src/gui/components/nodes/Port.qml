@@ -10,9 +10,6 @@ Item {
     implicitHeight: mainLayout.height + 5
     z: 1
 
-        Component.onCompleted: {
-            console.log("PORT: ", root.z)
-        }
     Rectangle {
         id: background
         anchors.fill: parent

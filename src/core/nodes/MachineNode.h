@@ -16,6 +16,7 @@ class MachineNode : public AbstractNode {
     Q_PROPERTY(float machineLimit READ machineLimit) // FIX: add notify
 
     friend class Solver;
+
 protected:
     explicit MachineNode(
         Factory& parentFactory,
@@ -30,13 +31,13 @@ protected:
     float m_machineLimit = -1;
 
     virtual void buildPortsFromRecipe() = 0;
-    virtual const Recipe* recipe() const  { return m_recipe; }
+    virtual const Recipe* recipe() const { return m_recipe; }
 
 public:
-    virtual QString machineName() const = 0;
+    QString machineName() const;
     float machineCount() const { return m_machineCount; }
     float machineLimit() const { return m_machineLimit; }
-    virtual QString machineIcon() const;
+    QString machineIcon() const;
     void setMachineLimit(float limit) { m_machineLimit = limit; }
     QJsonObject getJsonNode() const override;
 

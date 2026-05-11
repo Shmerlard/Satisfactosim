@@ -34,7 +34,4 @@ public:
     float portRate(const Port* port) const override;
     QJsonObject getJsonNode() const override;
     QString getExtractorName() const; // FIX: remove
-    QString machineName() const override;
-    QString machineIcon() const override;
-    // QString getMachineIcon() const;
 };

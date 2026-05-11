@@ -28,3 +28,10 @@ QString MachineNode::machineIcon() const
         return QString();
     return "image://assets/machine/" + m_machine->machineClass;
 }
+
+QString MachineNode::machineName() const
+{
+    if (!m_machine)
+        return QString();
+    return m_machine->machineName;
+}

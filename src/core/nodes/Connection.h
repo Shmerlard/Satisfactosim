@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QColor>
 #include <QJsonObject>
+#include <QJsonArray>
 
 class Port;
 
