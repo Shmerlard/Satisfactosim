@@ -69,17 +69,32 @@ Item {
     }
     MouseArea {
         id: mouseArea
+        enabled: true
         anchors.fill: parent
         hoverEnabled: true
         preventStealing: true
         acceptedButtons: Qt.LeftButton | Qt.RightButton   // ← add RightButton
+        propagateComposedEvents: true
 
         property real lastX: 0
         property real lastY: 0
 
+        Component.onCompleted: {
+            console.log("NODE: ", root.z);
+        }
         onPressed: mouse => {
             if (mouse.button === Qt.RightButton)
                 return;
+            var localPos = mapToItem(inputsCol, mouse.x, mouse.y);
+            if (inputsCol.contains(localPos)) {
+                mouse.accepted = false;
+                return;
+            }
+            localPos = mapToItem(outputsCol, mouse.x, mouse.y);
+            if (outputsCol.contains(localPos)) {
+                mouse.accepted = false;
+                return;
+            }
             if (!root.contentContainer || !root.nodeData)
                 return;
             var pt = mouseArea.mapToItem(root.contentContainer, mouse.x, mouse.y);

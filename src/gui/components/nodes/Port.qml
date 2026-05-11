@@ -8,7 +8,11 @@ Item {
 
     implicitWidth: mainLayout.width + 5
     implicitHeight: mainLayout.height + 5
+    z: 1
 
+        Component.onCompleted: {
+            console.log("PORT: ", root.z)
+        }
     Rectangle {
         id: background
         anchors.fill: parent
@@ -27,5 +31,22 @@ Item {
             text: root.isInput ? "INPUT" : "OUTPUT"
             color: "white"
         }
+    }
+    MouseArea {
+        id: mouseArea
+
+        anchors.fill: parent
+        hoverEnabled: true
+        preventStealing: true
+        acceptedButtons: Qt.LeftButton
+
+        propagateComposedEvents: true
+        onPressed: mouse => {
+            if (mouse.button === Qt.LeftButton) {
+                console.log(root.portData)
+            }
+        }
+
+
     }
 }
