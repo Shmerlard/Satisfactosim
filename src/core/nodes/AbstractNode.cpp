@@ -1,11 +1,13 @@
 #include "AbstractNode.h"
+#include "Connection.h"
 #include "Factory.h"
 
 AbstractNode::AbstractNode(
     Factory& parentFactory,
     QString name,
     QUuid id)
-    : m_parentFactory(&parentFactory)
+    : QObject(&parentFactory)
+    , m_parentFactory(&parentFactory)
     , m_id(id.isNull() ? QUuid::createUuid() : id)
     , m_name(name)
 {
@@ -16,8 +18,8 @@ int AbstractNode::index() const
     // FIX: may need a const_cast
     // return m_parentFactory->subNodes().indexOf(this);
     int idx = 0;
-    for (auto& it : m_parentFactory->subNodes()) {
-        if (this == it.get())
+    for (auto& it : m_parentFactory->nodes()) {
+        if (this == it)
             return idx;
         idx++;
     }
@@ -55,26 +57,26 @@ Port* AbstractNode::getPortFromIndex(int index) const
 
 // TODO: look for differences between signals for notifying erros in session
 // and *err
-bool AbstractNode::connectToPort(Port& src, Port& dst, QString* err)
+Connection* AbstractNode::connectToPort(Port& src, Port& dst, QString* err)
 {
     QString _dummy;
     if (!err)
         err = &_dummy;
     if (&dst.owner == &src.owner) {
         *err = "source and destination belong to the same node!";
-        return false;
+        return nullptr;
     }
     if (dst.type == src.type) {
         *err = "source and destination are the same type!";
-        return false;
+        return nullptr;
     }
-    if (dst.connectedTo.contains(&src) || src.connectedTo.contains(&dst)) {
+    if (src.isConnected(dst)) {
         *err = "source and destination are already connected!";
-        return false;
+        return nullptr;
     }
     if (!src.item && !dst.item) {
         *err = "cannot connect 2 empty items";
-        return false;
+        return nullptr;
     }
 
     if (!src.item)
@@ -83,14 +85,16 @@ bool AbstractNode::connectToPort(Port& src, Port& dst, QString* err)
         dst.item = src.item;
     else if (src.item != dst.item) {
         *err = "cannot connect two different items ports";
-        return false;
+        return nullptr;
     }
 
-    src.connect(dst);
+    Connection* connection = new Connection(&src, &dst);
+    src.connections.append(connection);
+    dst.connections.append(connection);
     dst.owner.onPortConnected(dst);
     src.owner.onPortConnected(src);
     err->clear();
-    return true;
+    return connection;
 }
 
 QJsonObject AbstractNode::getJsonNode() const
@@ -119,30 +123,22 @@ void AbstractNode::disconnectAllPorts()
         port->disconnect();
 }
 
-void AbstractNode::disconnectPort(Port* port, Port* peer, QString* err)
+Connection* AbstractNode::disconnectPort(Port& port, Port& peer, QString* err)
 {
     QString _dummy;
     if (!err)
         err = &_dummy;
 
-    if (!peer) {
-        if (port->connectedTo.empty()) {
-            *err = "Port is not connected";
-            return;
-        }
-        port->disconnect();
-        port->owner.onPortDisconnected(*port);
-        // FIX: on Port disconnected might cause problems here
-        return;
-    }
-
-    if (!port->connectedTo.contains(peer)) {
+    Connection* conn = port.connection(peer);
+    if (!conn) {
         *err = "Ports are not connected";
-        return;
+        return nullptr;
     }
-    port->disconnect(*peer);
-    port->owner.onPortDisconnected(*port);
-    peer->owner.onPortDisconnected(*peer);
+    port.connections.removeOne(conn);
+    peer.connections.removeOne(conn);
+    port.owner.onPortDisconnected(port);
+    peer.owner.onPortDisconnected(peer);
+    return conn;
 }
 
 void AbstractNode::setName(QString name)

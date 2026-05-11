@@ -8,6 +8,7 @@
 #include <QVariantList>
 #include <QVariantMap>
 
+class Connection;
 class Factory;
 
 enum class NodeType : uint8_t {
@@ -57,8 +58,8 @@ public:
 
     void deletePorts();
     void disconnectAllPorts();
-    virtual void disconnectPort(Port* port, Port* peer, QString* err = nullptr);
-    virtual bool connectToPort(Port& src, Port& dst, QString* err = nullptr);
+    virtual Connection* disconnectPort(Port& port, Port& peer, QString* err = nullptr);
+    virtual Connection* connectToPort(Port& src, Port& dst, QString* err = nullptr);
     virtual void onPortConnected(Port& port) { };
     virtual void onPortDisconnected(Port& port) { };
 

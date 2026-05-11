@@ -4,6 +4,7 @@
 #include <QFile>
 #include <QMap>
 #include <QString>
+#include "core/nodes/Connection.h"
 #include <iostream>
 
 namespace {
@@ -110,11 +111,12 @@ void printPort(QTextStream& out, Port* port, int portGlobalIdx)
                .arg(qty, 4) // right-align qty in 4 chars
                .arg(item);
 
-    if (port->connectedTo.isEmpty()) {
+    if (port->connections.isEmpty()) {
         out << DIM << "  (unconnected)" << RESET << "\n";
     } else {
         out << "  →";
-        for (Port* peer : port->connectedTo) {
+        for (Connection* conn : port->connections) {
+            Port* peer = conn->getPeer(*port);
             int peerNodeIdx = peer->owner.index();
             int peerPortIdx = peer->owner.getPortIndex(*peer);
             QString peerItem = peer->item ? peer->item->itemName : "?";
@@ -128,8 +130,8 @@ void printPort(QTextStream& out, Port* port, int portGlobalIdx)
 void printNode(QTextStream& out, AbstractNode* node, Factory* factory)
 {
     int idx = 0;
-    for (const auto& n : factory->subNodes()) {
-        if (n.get() == node)
+    for (const auto& n : factory->nodes()) {
+        if (n == node)
             break;
         idx++;
     }
@@ -190,7 +192,7 @@ void printNode(QTextStream& out, AbstractNode* node, Factory* factory)
         header = QString("┌─ [%1] Factory  \"%2\"  (%3 nodes inside)")
                      .arg(idx)
                      .arg(n->name())
-                     .arg(n->factory().subNodes().size());
+                     .arg(n->factory().nodes().size());
         break;
     }
     case NodeType::FactoryEdge: {
@@ -453,10 +455,10 @@ void CliManager::handleRm(const QStringList& args)
         return;
 
     auto factory = SessionManager::get().activeFactory();
-    auto& nodes = factory->subNodes();
+    auto& nodes = factory->nodes();
 
     if (index >= 0 && index < nodes.size()) {
-        AbstractNode* target = nodes.at(index).get();
+        AbstractNode* target = nodes.at(index);
         SessionManager::get().deleteNode(target);
         return;
     }
@@ -465,13 +467,13 @@ void CliManager::handleRm(const QStringList& args)
 void CliManager::handleLs()
 {
     auto* factory = SessionManager::get().activeFactory();
-    if (!factory || factory->subNodes().empty()) {
+    if (!factory || factory->nodes().empty()) {
         m_out << DIM << "(empty factory)\n"
               << RESET;
         return;
     }
-    for (const auto& node : factory->subNodes()) {
-        printNode(m_out, node.get(), factory);
+    for (const auto& node : factory->nodes()) {
+        printNode(m_out, node, factory);
         m_out << "\n";
     }
 }
@@ -497,14 +499,14 @@ void CliManager::handleCd(const QStringList& args)
     }
 
     auto* activeFactory = SessionManager::get().activeFactory();
-    auto& nodes = activeFactory->subNodes();
+    auto& nodes = activeFactory->nodes();
 
     if (index < 0 || index >= nodes.size()) {
         m_out << "No node at index " << index << "\n";
         return;
     }
 
-    auto* target = nodes.at(index).get();
+    auto* target = nodes.at(index);
     if (target->type() != NodeType::Factory) {
         m_out << "Node " << index << " is not a factory node\n";
         return;
@@ -581,11 +583,11 @@ void CliManager::handleLimit(const QStringList& args)
         return;
     }
     auto* factory = SessionManager::get().activeFactory();
-    if (index < 0 || index >= factory->subNodes().size()) {
+    if (index < 0 || index >= factory->nodes().size()) {
         m_out << "No node at index " << index << "\n";
         return;
     }
-    AbstractNode* node = factory->subNodes().at(index).get();
+    AbstractNode* node = factory->nodes().at(index);
     SessionManager::get().setMachineLimit(node, value);
     m_out << "Limit set to " << value << " on node " << index << "\n";
 }
@@ -616,11 +618,11 @@ void CliManager::handlePurity(const QStringList& args)
         return;
     }
     auto* factory = SessionManager::get().activeFactory();
-    if (index < 0 || index >= factory->subNodes().size()) {
+    if (index < 0 || index >= factory->nodes().size()) {
         m_out << "No node at index " << index << "\n";
         return;
     }
-    SessionManager::get().setExtractionPurity(factory->subNodes().at(index).get(), purity);
+    SessionManager::get().setExtractionPurity(factory->nodes().at(index), purity);
     m_out << "Purity set to " << args[1] << " on node " << index << "\n";
 }
 
@@ -639,11 +641,11 @@ void CliManager::handleTier(const QStringList& args)
         return;
     }
     auto* factory = SessionManager::get().activeFactory();
-    if (index < 0 || index >= factory->subNodes().size()) {
+    if (index < 0 || index >= factory->nodes().size()) {
         m_out << "No node at index " << index << "\n";
         return;
     }
-    SessionManager::get().setExtractionTier(factory->subNodes().at(index).get(), tier);
+    SessionManager::get().setExtractionTier(factory->nodes().at(index), tier);
     m_out << "Tier set to " << tier << " on node " << index << "\n";
 }
 

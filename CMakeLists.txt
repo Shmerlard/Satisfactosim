@@ -66,6 +66,7 @@ qt_add_qml_module(FactoryApp
             # src/core/managers/Solver.h              src/core/managers/Solver.cpp
 
     src/core/nodes/AbstractNode.h           src/core/nodes/AbstractNode.cpp
+    src/core/nodes/Connection.h             src/core/nodes/Connection.cpp
     src/core/nodes/ExtractionNode.h         src/core/nodes/ExtractionNode.cpp
     src/core/nodes/Factory.h                src/core/nodes/Factory.cpp
     src/core/nodes/FactoryEdgeNode.h        src/core/nodes/FactoryEdgeNode.cpp

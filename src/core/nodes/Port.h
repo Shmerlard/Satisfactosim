@@ -2,8 +2,10 @@
 
 // #include <QString>
 #include <QList>
+#include "Connection.h"
 
 class AbstractNode;
+// class Connection;
 class FactoryEdgeNode;
 struct Item;
 
@@ -35,27 +37,28 @@ struct Port {
     Item* item;
     PortType type;
     AbstractNode& owner;
-    QList<Port*> connectedTo;
-    float amount;
+    QList<Connection*> connections;
+    float amount; // the sum of amounts from all connections
 
     void disconnect()
     {
-        for (auto* peer : connectedTo) {
-            peer->connectedTo.removeAll(this);
+        connections.clear();
+    }
+
+    bool isConnected(Port& peer) {
+        for (auto* conn : connections) {
+            if (conn->getPeer(*this) == &peer)
+                return true;
         }
-        connectedTo.clear();
+        return false;
     }
 
-    void disconnect(Port& peer)
-    {
-        peer.connectedTo.removeOne(this);
-        connectedTo.removeOne(&peer);
-    }
-
-    void connect(Port& peer)
-    {
-        connectedTo.append(&peer);
-        peer.connectedTo.append(this);
+    Connection* connection(Port& peer) {
+        for (auto* conn : connections) {
+            if (conn->getPeer(*this) == &peer)
+                return conn;
+        }
+        return nullptr;
     }
 
     ~Port() { disconnect(); }

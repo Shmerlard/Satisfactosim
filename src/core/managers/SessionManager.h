@@ -21,13 +21,14 @@ private:
     explicit SessionManager(QObject* parent = nullptr)
         : QObject(parent)
     {
-        m_rootFactory = std::make_unique<Factory>(nullptr, QString("Main Factory"));
-        m_activeFactory = m_rootFactory.get();
+        m_rootFactory = new Factory(nullptr, QString("Main Factory"));
+        m_rootFactory->setParent(this);
+        m_activeFactory = m_rootFactory;
         ProductionNode* t1 = createProductionNodeByClass("Recipe_IngotIron_C", m_activeFactory, "RRA");
         ProductionNode* t2 = createProductionNodeByClass("Recipe_IronPlate_C");
 
     }
-    std::unique_ptr<Factory> m_rootFactory = nullptr;
+    Factory* m_rootFactory = nullptr;
     Factory* m_activeFactory = nullptr;
 
 signals:
@@ -74,7 +75,7 @@ public slots:
     void setExtractionTier(AbstractNode* node, int tier);
     // Solver::Result solve();
 
-    Factory* rootFactory() const { return m_rootFactory.get(); }
+    Factory* rootFactory() const { return m_rootFactory; }
     Factory* activeFactory() const { return m_activeFactory; }
 
 public:

@@ -33,7 +33,7 @@ void FactoryEdgeNode::onPortDisconnected(Port& port)
 {
     // FIX: also needs to check if the edge node is also empty
     // FIX: needs to check that theport is actually this=parent
-    if (this->port()->connectedTo.empty()) {
+    if (this->port()->connections.empty()) {
         this->port()->item = nullptr;
         this->m_mirrorPort->item = nullptr;
     }
@@ -48,22 +48,6 @@ QJsonObject FactoryEdgeNode::getJsonNode() const
     return obj;
 }
 
-// Needs a special care in order to set the item to null when it's empty
-void FactoryEdgeNode::disconnectPort(Port* port, Port* peer, QString* err)
-{
-    // FIX: add error
-    AbstractNode::disconnectPort(port, peer, err);
-    if (port->connectedTo.empty()) {
-        port->item = nullptr;
-    }
-}
-
-bool FactoryEdgeNode::connectToPort(Port& src, Port& dst, QString* err)
-{
-    return AbstractNode::connectToPort(src, dst, err);
-
-    // update item
-}
 
 Port* FactoryEdgeNode::port() const
 {

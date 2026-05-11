@@ -42,8 +42,8 @@ void SceneModel::loadFromFactory(Factory* factory)
 
     beginResetModel();
     m_items.clear();
-    for (const auto& node : factory->subNodes()) {
-        m_items.append(node.get());
+    for (const auto& node : factory->nodes()) {
+        m_items.append(node);
     }
     endResetModel();
 }

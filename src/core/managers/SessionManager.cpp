@@ -15,7 +15,7 @@ QJsonObject serializeFactory(const Factory& factory)
     obj["name"] = factory.name();
 
     QJsonArray nodesArray;
-    for (const auto& node : factory.subNodes()) {
+    for (const auto& node : factory.nodes()) {
         if (node->type() == NodeType::FactoryEdge)
             continue;
         // FIX: move into more seperated approach
@@ -29,13 +29,14 @@ QJsonObject serializeFactory(const Factory& factory)
     obj["edges"] = edgesArray;
 
     QJsonArray connections;
-    for (const auto& node : factory.subNodes()) {
+    for (const auto& node : factory.nodes()) {
         for (const auto& port : node->outputs()) {
-            for (Port* peer : port->connectedTo) {
-                QJsonObject conn;
-                conn["from"] = QJsonArray { node->id().toString(), node->getPortIndex(*port) };
-                conn["to"] = QJsonArray { peer->owner.id().toString(), peer->owner.getPortIndex(*peer) };
-                connections.append(conn);
+            for (Connection* conn : port->connections) {
+                // QJsonObject 
+                QJsonObject connObject = conn->getJsonObject();
+                // connObject["from"] = QJsonArray { node->id().toString(), node->getPortIndex(*port) };
+                // connObject["to"] = QJsonArray { peer->owner.id().toString(), peer->owner.getPortIndex(*peer) };
+                connections.append(connObject);
             }
         }
     }
@@ -87,20 +88,22 @@ void SessionManager::load(const QString& path)
     std::queue<std::pair<Factory*, QJsonObject>> pendingFactories;
     QMap<QUuid, AbstractNode*> uuidMap;
     QJsonObject rootFactoryJson = root["root_factory"].toObject();
-    auto newRoot = std::make_unique<Factory>(nullptr, QString("Main Factory"));
-    pendingFactories.push({ newRoot.get(), rootFactoryJson });
+    auto newRoot = new Factory(nullptr, QString("Main Factory"));
+    pendingFactories.push({ newRoot, rootFactoryJson });
 
     while (!pendingFactories.empty()) {
         auto pair = pendingFactories.front();
         pendingFactories.pop();
         if (!deserializeFactory(pair, pendingFactories)) {
+            delete newRoot;
             emit operationFailed("Failed to load Factory");
             return;
         }
     }
 
-    m_rootFactory = std::move(newRoot);
-    m_activeFactory = m_rootFactory.get();
+    delete m_rootFactory;
+    m_rootFactory = newRoot;
+    m_activeFactory = m_rootFactory;
     emit factoryChanged(m_activeFactory);
 }
 
@@ -190,7 +193,7 @@ void SessionManager::enterFactory(Factory* f)
 
 void SessionManager::enterRootFactory()
 {
-    enterFactory(m_rootFactory.get());
+    enterFactory(m_rootFactory);
 }
 
 void SessionManager::enterParentFactory()
@@ -218,8 +221,8 @@ void SessionManager::connectNode(Port* src, Port* dest)
 
 void SessionManager::connectNode(int srcNode, int srcPort, int dstNode, int dstPort)
 {
-    AbstractNode* srcNode_p = m_activeFactory->subNodes().at(srcNode).get();
-    AbstractNode* dstNode_p = m_activeFactory->subNodes().at(dstNode).get();
+    AbstractNode* srcNode_p = m_activeFactory->nodes().at(srcNode);
+    AbstractNode* dstNode_p = m_activeFactory->nodes().at(dstNode);
     if (!srcNode_p || !dstNode_p) {
         qWarning() << "Invalid Source or Destination Node";
         return;
@@ -240,7 +243,7 @@ void SessionManager::disconnectNode(Port* src, Port* dest)
         return;
     }
     QString err;
-    src->owner.disconnectPort(src, dest, &err);
+    // src->owner.disconnectPort(src, dest, &err);
     if (!err.isEmpty()) {
         emit operationFailed(err);
         return;
@@ -250,7 +253,7 @@ void SessionManager::disconnectNode(Port* src, Port* dest)
 
 void SessionManager::disconnectNode(int srcNode, int srcPort, int dstNode, int dstPort)
 {
-    AbstractNode* srcNode_p = m_activeFactory->subNodes().at(srcNode).get();
+    AbstractNode* srcNode_p = m_activeFactory->nodes().at(srcNode);
     if (!srcNode_p) {
         qWarning() << "Invalid Source Node";
         return;
@@ -261,7 +264,7 @@ void SessionManager::disconnectNode(int srcNode, int srcPort, int dstNode, int d
         disconnectNode(srcPort_p, nullptr);
         return;
     }
-    AbstractNode* dstNode_p = m_activeFactory->subNodes().at(dstNode).get();
+    AbstractNode* dstNode_p = m_activeFactory->nodes().at(dstNode);
     if (!dstNode_p) {
         qWarning() << "Invalid Source or Destination Node";
         return;
@@ -282,7 +285,7 @@ void SessionManager::renameNode(int index, QString name)
     }
 
     // FIX: boundry check
-    AbstractNode* node = m_activeFactory->subNodes().at(index).get();
+    AbstractNode* node = m_activeFactory->nodes().at(index);
     if (!node) {
         qWarning() << "Invalid Index: " << index;
         return;
@@ -411,9 +414,9 @@ bool SessionManager::deserializeFactory(
         case NodeType::Factory: {
             QUuid factoryId = QUuid(nodeObject["factoryId"].toString());
             FactoryNode* matchingNode = nullptr;
-            for (auto& subNode : factory->subNodes()) {
+            for (auto& subNode : factory->nodes()) {
                 if (subNode->type() == NodeType::Factory) {
-                    auto* fn = static_cast<FactoryNode*>(subNode.get());
+                    auto* fn = static_cast<FactoryNode*>(subNode);
                     if (fn->factory().id() == factoryId) {
                         matchingNode = fn;
                         break;

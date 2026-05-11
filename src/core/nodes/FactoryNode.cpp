@@ -69,14 +69,9 @@ void FactoryNode::onPortDisconnected(Port& port)
 {
     // FIX: also needs to check if the edge node is also empty
     // FIX: needs to check that theport is actually this=parent
-    if (port.connectedTo.empty()) {
+    if (port.connections.empty()) {
         port.item = nullptr;
         m_portEdges.value(&port)->port()->item = nullptr;
     }
 }
 
-void FactoryNode::disconnectPort(Port* port, Port* peer, QString* err)
-{
-    // FIX: add error handling
-    AbstractNode::disconnectPort(port, peer);
-}

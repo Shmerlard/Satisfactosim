@@ -1,11 +1,13 @@
 #include "Factory.h"
+#include "Connection.h"
 #include "ExtractionNode.h"
 #include "FactoryEdgeNode.h"
 #include "FactoryNode.h"
 #include "ProductionNode.h"
 
 Factory::Factory(Factory* parent, QString name, QUuid id)
-    : m_id(id.isNull() ? QUuid::createUuid() : id)
+    : QObject(parent)
+    , m_id(id.isNull() ? QUuid::createUuid() : id)
     , m_parent(parent)
     , m_name(name)
     , m_node(nullptr)
@@ -15,24 +17,25 @@ Factory::Factory(Factory* parent, QString name, QUuid id)
 ProductionNode* Factory::createProductionNode(const ProductionRecipe& recipe, QString name)
 {
     ProductionNode* ptr = new ProductionNode(*this, recipe, name);
-    addNode(std::unique_ptr<AbstractNode>(ptr));
+    addNode(*ptr);
     return ptr;
 }
 
 ExtractionNode* Factory::createExtractionNode(const ExtractionRecipe& recipe, int tier, QString name)
 {
     ExtractionNode* ptr = new ExtractionNode(*this, recipe, tier, name);
-    addNode(std::unique_ptr<AbstractNode>(ptr));
+    addNode(*ptr);
     return ptr;
 }
 
 Factory* Factory::createFactory(QString name)
 {
-    Factory* facPtr = new Factory(this, name);
+    Factory* facPtr = new Factory(this, name, QUuid());
+    // facPtr->setParent(this);
     FactoryNode* facNodePtr = new FactoryNode(*this, *facPtr, name);
-    addNode(std::unique_ptr<AbstractNode>(facNodePtr));
+    addNode(*facNodePtr);
 
-    m_subFactories.push_back(std::unique_ptr<Factory>(facPtr));
+    m_subFactories.append(facPtr);
     return facPtr;
 }
 
@@ -43,26 +46,76 @@ FactoryEdgeNode* Factory::createFactoryEdgeNode(PortType edgeType, QString name)
         // FIX:ADD ERROR MESSAGE
     }
     FactoryEdgeNode* edge = new FactoryEdgeNode(*this, edgeType, name);
-    m_edges.push_back(edge);
-    addNode(std::unique_ptr<AbstractNode>(edge));
+    // m_edges.push_back(edge);
+    addNode(*edge);
     return edge;
 }
 
-void Factory::addNode(std::unique_ptr<AbstractNode> node)
+Connection* Factory::connect(Port& a, Port& b)
 {
-    auto it = std::find_if(m_subNodes.begin(), m_subNodes.end(), [&](const auto& n) {
-        return n->type() > node->type();
-    });
-    m_subNodes.insert(it, std::move(node));
+    // if (a.type == b.type)
+    //     return nullptr;
+    // if (&a.owner == &b.owner)
+    //     return nullptr;
+    // if (a.owner.parentFactory() != this || b.owner.parentFactory() != this)
+    //     return nullptr;
+    // if (a.isConnected(b))
+    //     return nullptr;
+    //
+    // Connection* connection = new Connection(&a, &b);
+    // m_connections.push_back(std::unique_ptr<Connection>(connection));
+    // a.connections.append(connection);
+    // b.connections.append(connection);
+    // return connection;
+    Connection* conn = a.owner.connectToPort(a, b);
+    if (conn) {
+        conn->setParent(this);
+        m_connections.append(conn);
+    }
+    return conn;
+}
+
+void Factory::disconnect(Port& a, Port& b)
+{
+    Connection* conn = a.owner.disconnectPort(a, b);
+    if (conn) {
+        m_connections.removeOne(conn);
+        delete conn;
+    }
+}
+
+
+void Factory::addNode(AbstractNode& node)
+{
+    int inserIndex = m_nodes.count();
+    for (int i = 0; i < inserIndex; i++) {
+        if (m_nodes[i]->type() > node.type()) {
+            inserIndex = i;
+            break;
+        }
+    }
+    m_nodes.insert(inserIndex, &node);
+
+    switch (node.type()) {
+    case NodeType::FactoryEdge: {
+        m_edges.append(static_cast<FactoryEdgeNode*>(&node));
+        break;
+    }
+    default:
+        break;
+    }
 }
 
 void Factory::removeNode(AbstractNode& node)
 {
-    for (auto it = m_subNodes.begin(); it != m_subNodes.end(); ++it) {
-        if (it->get() == &node) {
-            m_subNodes.erase(it);
-            return;
-        }
+    m_nodes.removeOne(&node);
+
+    switch (node.type()) {
+    case NodeType::FactoryEdge: {
+        m_edges.removeOne(&node);
+        break;
     }
-    m_edges.erase(std::remove(m_edges.begin(), m_edges.end(), &node), m_edges.end());
+    default:
+        break;
+    }
 }

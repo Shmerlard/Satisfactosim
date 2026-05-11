@@ -4,6 +4,7 @@
 #include "core/types/Types.h"
 #include <QList>
 #include <QString>
+#include <QObject>
 #include <QUuid>
 
 class AbstractNode;
@@ -11,9 +12,11 @@ class FactoryNode;
 class FactoryEdgeNode;
 class ProductionNode;
 class ExtractionNode;
+class Connection;
 struct Recipe;
 
-class Factory {
+class Factory : public QObject {
+    Q_OBJECT
 
     friend class SessionManager;
     friend class FactoryNode;
@@ -22,10 +25,12 @@ private:
     QUuid m_id;
     QString m_name;
     Factory* m_parent;
-    FactoryNode* m_node;
-    std::vector<std::unique_ptr<Factory>> m_subFactories;
-    std::vector<std::unique_ptr<AbstractNode>> m_subNodes;
-    std::vector<FactoryEdgeNode*> m_edges;
+    FactoryNode* m_node = nullptr;
+
+    QList<Factory*> m_subFactories;
+    QList<AbstractNode*> m_nodes;
+    QList<Connection*> m_connections;
+    QList<FactoryEdgeNode*> m_edges;
 
 private:
     Factory* createFactory(QString name = QString());
@@ -34,7 +39,7 @@ private:
     ProductionNode* createProductionNode(const ProductionRecipe& recipe, QString name = QString());
 
 public:
-    explicit Factory(Factory* parent, QString name, QUuid id = QUuid());
+    explicit Factory(Factory* parentFactory, QString name, QUuid id = QUuid());
     void setId(QUuid id) { m_id = id; }
     void setName(QString name) { m_name = name; }
     QUuid id() const { return m_id; }
@@ -43,10 +48,13 @@ public:
     Factory* parent() const { return m_parent; }
     FactoryNode* node() const { return m_node; } // nullptr for root
 
-    const std::vector<std::unique_ptr<Factory>>& subFactories() const { return m_subFactories; }
-    const std::vector<std::unique_ptr<AbstractNode>>& subNodes() const { return m_subNodes; }
-    const std::vector<FactoryEdgeNode*>& edges() const { return m_edges; }
+    const QList<Factory*>& subFactories() const { return m_subFactories; }
+    const QList<AbstractNode*>& nodes() const { return m_nodes; }
+    const QList<FactoryEdgeNode*>& edges() const { return m_edges; }
 
-    void addNode(std::unique_ptr<AbstractNode> node);
+    Connection* connect(Port& a, Port& b);
+    void disconnect(Port& a, Port& b);
+
+    void addNode(AbstractNode& node);
     void removeNode(AbstractNode& node);
 };
