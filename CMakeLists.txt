@@ -63,7 +63,7 @@ qt_add_qml_module(FactoryApp
     src/core/managers/CliManager.h          src/core/managers/CliManager.cpp
     src/core/managers/GameLibrary.h         src/core/managers/GameLibrary.cpp
     src/core/managers/SessionManager.h      src/core/managers/SessionManager.cpp
-            # src/core/managers/Solver.h              src/core/managers/Solver.cpp
+    src/core/managers/Solver.h              src/core/managers/Solver.cpp
 
     src/core/nodes/AbstractNode.h           src/core/nodes/AbstractNode.cpp
     src/core/nodes/Connection.h             src/core/nodes/Connection.cpp
@@ -74,29 +74,15 @@ qt_add_qml_module(FactoryApp
     src/core/nodes/MachineNode.h            src/core/nodes/MachineNode.cpp
     src/core/nodes/Port.h
     src/core/nodes/ProductionNode.h         src/core/nodes/ProductionNode.cpp
-    #
+
     src/core/types/Types.h
-    #
-    #         # GUI
+
+    # GUI
     src/gui/QmlReloader.h
-    
+
     src/gui/controllers/SceneManager.h      src/gui/controllers/SceneManager.cpp
     src/gui/controllers/SceneModel.h        src/gui/controllers/SceneModel.cpp
     src/gui/controllers/RecipeListModel.h   src/gui/controllers/RecipeListModel.cpp
-    #
-    #         src/gui/bridges/ItemBridge.h
-    #         src/gui/bridges/PortBridge.h
-    #         src/gui/bridges/MachineBridge.h
-    #         src/gui/bridges/RecipeBridge.h
-    #
-    #         src/gui/items/AbstractItem.h            src/gui/items/AbstractItem.cpp
-    #         src/gui/items/Connection.h              src/gui/items/Connection.cpp
-    #         src/gui/items/ExtractionItem.h
-    #         src/gui/items/FactoryItem.h             src/gui/items/FactoryItem.cpp
-    #         src/gui/items/ProductionItem.h          src/gui/items/ProductionItem.cpp
-    #
-    #         src/gui/models/RecipeModel.h            src/gui/models/RecipeModel.cpp
-    #         src/gui/models/SceneModel.h             src/gui/models/SceneModel.cpp
 )
 
 
@@ -105,8 +91,6 @@ target_link_libraries(FactoryApp PRIVATE
     Qt6::Charts
     Qt6::Quick
     Qt6::Qml
-    # ${CURSES_LIBRARIES}
-    # muparser::muparser
 )
 
 target_include_directories(FactoryApp PRIVATE 
@@ -114,9 +98,5 @@ target_include_directories(FactoryApp PRIVATE
     ${CMAKE_SOURCE_DIR}/src/core/managers
     ${CMAKE_SOURCE_DIR}/src/core/nodes
     ${CMAKE_SOURCE_DIR}/src/gui/controllers
-    # ${CMAKE_SOURCE_DIR}/src/gui/items
-    # ${CMAKE_SOURCE_DIR}/src/gui/models
-    # ${CMAKE_SOURCE_DIR}/src/gui/bridges
-    # ${CURSES_INCLUDE_DIRS}
 )
 

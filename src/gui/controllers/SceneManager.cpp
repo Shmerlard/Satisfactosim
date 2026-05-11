@@ -1,6 +1,8 @@
 #include "SceneManager.h"
 #include "RecipeListModel.h"
 #include "SceneModel.h"
+#include "core/nodes/Connection.h"
+#include "core/nodes/Factory.h"
 
 SceneManager::SceneManager(SessionManager* session, QObject* parent)
     : QObject(parent)
@@ -15,10 +17,20 @@ SceneManager::SceneManager(SessionManager* session, QObject* parent)
     connect(m_session, &SessionManager::nodeRemoved, this, &SceneManager::onNodeRemoved);
     connect(m_session, &SessionManager::factoryChanged, this, [this](Factory* f) {
         m_model->loadFromFactory(f);
+        loadConnections(f);
         emit factoryChanged();
     });
 
     m_model->loadFromFactory(m_session->activeFactory());
+    loadConnections(m_session->activeFactory());
+}
+
+void SceneManager::loadConnections(Factory* f)
+{
+    m_connections.clear();
+    for (Connection* c : f->connections())
+        m_connections.append(QVariant::fromValue<QObject*>(c));
+    emit connectionsChanged();
 }
 
 void SceneManager::onNodeAdded(AbstractNode* node)

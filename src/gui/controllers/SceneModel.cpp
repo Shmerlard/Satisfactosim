@@ -1,6 +1,6 @@
 #include "SceneModel.h"
-#include "core/nodes/Factory.h"
 #include "core/nodes/AbstractNode.h"
+#include "core/nodes/Factory.h"
 
 SceneModel::SceneModel(SceneManager* scene, QObject* parent)
     : QAbstractListModel(parent)
