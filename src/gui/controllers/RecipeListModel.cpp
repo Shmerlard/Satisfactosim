@@ -50,6 +50,11 @@ QVariant RecipeListModel::data(const QModelIndex& index, int role) const
         }
         return list;
     }
+    case AlternateRole: {
+        if (isExtraction)
+            return false;
+        return static_cast<ProductionRecipe*>(entry)->isAlternate;
+    }
     default:
         return QVariant();
     }
@@ -62,5 +67,6 @@ QHash<int, QByteArray> RecipeListModel::roleNames() const
     roles[ClassRole] = "className";
     roles[InputsRole] = "inputs";
     roles[OutputsRole] = "outputs";
+    roles[AlternateRole] = "isAlternate";
     return roles;
 }

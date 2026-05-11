@@ -27,14 +27,25 @@ Item {
         anchors.centerIn: parent
         spacing: 2
 
-        Text {
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: root.recipe["name"]
+        Row {
+            // anchors.centerIn:parent
+            Rectangle {
+                // anchors.centerIn: parent
+                color: "orange"
+                width: 10
+                height: 10
+                visible: root.recipe["isAlternate"]
+            }
+
+            Text {
+                // anchors.horizontalCenter: parent.horizontalCenter
+                text: root.recipe["name"]
+            }
         }
-        Text {
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: root.recipe["className"]
-        }
+        // Text {
+        //     anchors.horizontalCenter: parent.horizontalCenter
+        //     text: root.recipe["className"]
+        // }
     }
 
     // Left: inputs
@@ -73,7 +84,7 @@ Item {
                 width: 30
                 height: 30
                 color: "gray"
-                                Image {
+                Image {
                     source: modelData["iconUrl"]
                     width: parent.width
                     height: parent.height
@@ -91,8 +102,8 @@ Item {
     MouseArea {
         anchors.fill: parent
         onClicked: {
-            sceneManager.createMachineNode(root.recipe["className"], spawnX, spawnY)
-            placeMenu.close()
+            sceneManager.createMachineNode(root.recipe["className"], spawnX, spawnY);
+            placeMenu.close();
         }
     }
 }

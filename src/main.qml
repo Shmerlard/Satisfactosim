@@ -26,47 +26,47 @@ ApplicationWindow {
     //     onAccepted: SessionManager.load(file)
     // }
     //
-    // menuBar: MenuBar {
-    //     Menu {
-    //         title: "File"
-    //         MenuItem {
-    //             text: "Save..."
-    //             onClicked: saveDialog.open()
-    //         }
-    //         MenuItem {
-    //             text: "Open..."
-    //             onClicked: openDialog.open()
-    //         }
-    //         MenuSeparator {}
-    //         MenuItem {
-    //             text: "Exit"
-    //             onClicked: Qt.quit()
-    //         }
-    //     }
-    //     Menu {
-    //         title: "Factory"
-    //         MenuItem {
-    //             text: "Go to Root"
-    //             onClicked: SessionManager.goToRoot()
-    //         }
-    //         MenuItem {
-    //             text: "Go Up"
-    //             enabled: SessionManager.activeFactory !== SessionManager.rootFactory
-    //             onClicked: SessionManager.goParentFactory()
-    //         }
-    //     }
-    //     Menu {
-    //         title: "View"
-    //         MenuItem {
-    //             text: "Reload UI (F5)"
-    //             onClicked: reloadTimer.start()
-    //         }
-    //         MenuItem {
-    //             text: "Reset Zoom"
-    //             // Assuming you expose a way to reach the workspace
-    //         }
-    //     }
-    // }
+    menuBar: MenuBar {
+        Menu {
+            title: "File"
+            MenuItem {
+                text: "Save..."
+                onClicked: saveDialog.open()
+            }
+            MenuItem {
+                text: "Open..."
+                onClicked: openDialog.open()
+            }
+            MenuSeparator {}
+            MenuItem {
+                text: "Exit"
+                onClicked: Qt.quit()
+            }
+        }
+        Menu {
+            title: "Factory"
+            MenuItem {
+                text: "Go to Root"
+                onClicked: SessionManager.goToRoot()
+            }
+            MenuItem {
+                text: "Go Up"
+                enabled: SessionManager.activeFactory !== SessionManager.rootFactory
+                onClicked: SessionManager.goParentFactory()
+            }
+        }
+        Menu {
+            title: "View"
+            MenuItem {
+                text: "Reload UI (F5)"
+                onClicked: reloadTimer.start()
+            }
+            MenuItem {
+                text: "Reset Zoom"
+                // Assuming you expose a way to reach the workspace
+            }
+        }
+    }
     // footer: Rectangle {
     //     height: 24
     //     color: "#2b2b2b"

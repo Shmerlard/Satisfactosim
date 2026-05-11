@@ -194,7 +194,7 @@ void GameLibrary::parseRecipes()
         ProductionRecipe* r = new ProductionRecipe();
 
         r->recipeClass = obj["Class"].toString();
-        r->recipeName = obj["DisplayName"].toString();
+        r->recipeName = obj["DisplayName"].toString().remove("Alternate:");
         r->isAlternate = obj["Alternate"].toBool();
         r->recipeTime = obj["ManufactoringDuration"].toString().toDouble();
 
