@@ -179,7 +179,15 @@ Item {
     // grabs scroll events before the Flickable's internal handler does.
     Item {
         anchors.fill: flickable
-
+        Button {
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            text: "Test"
+            onClicked: notification.show("test message")
+        }
+        Notification {
+            id: notification
+        }
         Rectangle {
             id: backButton
             visible: !sceneManager.isRootFactory

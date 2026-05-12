@@ -114,9 +114,12 @@ void SessionManager::enterParentFactory()
 // ---------- CONNECTIONS ---------------
 void SessionManager::connectNode(Port& src, Port& dst)
 {
-    Connection * conn = src.owner.parentFactory()->connect(src, dst);
+    QString err;
+    Connection * conn = src.owner.parentFactory()->connect(src, dst, &err);
     if (conn)
         emit nodeConnected(&src.owner, &dst.owner);
+    else
+        emit operationFailed(err);
 }
 
 void SessionManager::connectNode(int srcNode, int srcPort, int dstNode, int dstPort, Factory* f)
