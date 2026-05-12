@@ -10,6 +10,10 @@ class Port;
 class Connection : public QObject {
     Q_OBJECT;
 
+    Q_PROPERTY(QObject* srcNode READ srcNodeObj CONSTANT)
+    Q_PROPERTY(QObject* dstNode READ dstNodeObj CONSTANT)
+    Q_PROPERTY(int srcPortIdx READ srcPortIdx CONSTANT)
+    Q_PROPERTY(int dstPortIdx READ dstPortIdx CONSTANT)
 private:
     Port* m_src = nullptr;
     Port* m_dst = nullptr;
@@ -24,4 +28,9 @@ public:
     void disconnect(Port* port);
     Port* getPeer(Port& port);
     QJsonObject getJsonObject();
+
+    QObject* srcNodeObj() const;
+    QObject* dstNodeObj() const;
+    int srcPortIdx() const;
+    int dstPortIdx() const;
 };

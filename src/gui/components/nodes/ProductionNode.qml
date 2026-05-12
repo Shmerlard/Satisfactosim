@@ -8,7 +8,7 @@ Item {
     property int modelIndex: -1
     property Item contentContainer: null
 
-    implicitWidth: inputsCol.implicitWidth + nameText.implicitWidth + outputsCol.implicitWidth + 40
+    implicitWidth: inputsCol.implicitWidth + centerCol.implicitWidth + outputsCol.implicitWidth + 40
     implicitHeight: Math.max(50, mainLayout.implicitHeight)
 
     Rectangle {
@@ -47,8 +47,14 @@ Item {
                 // onStatusChanged: console.log("icon status:", status, "source:", source)
             }
             Text {
+                id: machineNameText
+                text: root.nodeData ? root.nodeData.name : ""
+                Layout.alignment: Qt.AlignHCenter
+                color: "white"
+            }
+            Text {
                 id: nameText
-                // text: root.nodeData ? root.nodeData.name : ""
+                Layout.alignment: Qt.AlignHCenter
                 text: root.nodeData ? root.nodeData.machineName : ""
                 color: "white"
             }

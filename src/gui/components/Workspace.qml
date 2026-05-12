@@ -1,7 +1,9 @@
 import QtQuick
+import QtQuick.Shapes
 import QtQuick.Controls
 import FACTORY_QT
 import "./menus"
+import "./nodes"
 
 Item {
     id: root
@@ -87,7 +89,13 @@ Item {
             scale: root.zoomScale
 
             transformOrigin: Item.TopLeft
+            Repeater {
+                model: sceneManager.connections
+                delegate : Connection {
+                    conn: modelData
 
+                }
+            }
             Rectangle {
                 anchors.fill: parent
                 color: "transparent"
@@ -99,19 +107,25 @@ Item {
                         x: nodeData ? nodeData.posX : 0
                         y: nodeData ? nodeData.posY : 0
                         source: {
-                            if (!nodeData) return ""
+                            if (!nodeData)
+                                return "";
                             switch (nodeData.nodeType) {
-                                case 1: return "nodes/EdgeNode.qml"
-                                case 2: return "nodes/FactoryNode.qml"
-                                case 3: return "nodes/ExtractionNode.qml"
-                                case 4: return "nodes/ProductionNode.qml"
-                                default: return ""
+                            case 1:
+                                return "nodes/EdgeNode.qml";
+                            case 2:
+                                return "nodes/FactoryNode.qml";
+                            case 3:
+                                return "nodes/ExtractionNode.qml";
+                            case 4:
+                                return "nodes/ProductionNode.qml";
+                            default:
+                                return "";
                             }
                         }
                         onLoaded: {
-                            item.nodeData = nodeData
-                            item.contentContainer = sceneContainer
-                            item.modelIndex = index
+                            item.nodeData = nodeData;
+                            item.contentContainer = sceneContainer;
+                            item.modelIndex = index;
                         }
                     }
                 }
@@ -143,8 +157,8 @@ Item {
                     width: backButton.width
                     height: backButton.height
                     function contains(p) {
-                        var r = width / 2
-                        return (p.x - r) * (p.x - r) + (p.y - r) * (p.y - r) <= r * r
+                        var r = width / 2;
+                        return (p.x - r) * (p.x - r) + (p.y - r) * (p.y - r) <= r * r;
                     }
                 }
                 onClicked: sceneManager.enterParentFactory()
@@ -163,11 +177,11 @@ Item {
 
             onClicked: mouse => {
                 if (mouse.button == Qt.RightButton) {
-                    placeMenu.x = mouse.x
-                    placeMenu.y = mouse.y
-                    placeMenu.spawnX = root.mouseContentX
-                    placeMenu.spawnY = root.mouseContentY
-                    placeMenu.open()
+                    placeMenu.x = mouse.x;
+                    placeMenu.y = mouse.y;
+                    placeMenu.spawnX = root.mouseContentX;
+                    placeMenu.spawnY = root.mouseContentY;
+                    placeMenu.open();
                 }
             }
         }

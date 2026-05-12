@@ -55,8 +55,10 @@ public:
     const QList<Connection*>& connections() const { return m_connections; }
     const QList<FactoryEdgeNode*>& edges() const { return m_edges; }
 
-    Connection* connect(Port& a, Port& b);
-    void disconnect(Port& a, Port& b);
+    Connection* connect(Port& a, Port& b, QString* err = nullptr);
+    void disconnect(Port& a, Port& b, QString* err = nullptr);
+    // Connection* disconnectPort(Port& port, Port& peer, QString* err = nullptr);
+    // Connection* connectToPort(Port& src, Port& dst, QString* err = nullptr);
 
     void addNode(AbstractNode& node);
     void removeNode(AbstractNode& node);

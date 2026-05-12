@@ -74,10 +74,9 @@ public:
 signals:
     void operationFailed(const QString& reason);
     void nodeAdded(AbstractNode* node);
-    void nodeConnected();
-    void nodeDisconnected();
-    void portsConnected(AbstractNode* srcNode, int srcPortIdx, AbstractNode* dstNode, int dstPortIdx);
     void nodeRemoved(AbstractNode* node);
+    void nodeConnected(AbstractNode* src, AbstractNode* dst);
+    void nodeDisconnected(AbstractNode* src, AbstractNode* dst);
     void factoryChanged(Factory* factory);
     void solved();
 
@@ -88,8 +87,9 @@ public:
         return inst;
     }
 
-    static SessionManager* create(QQmlEngine*, QJSEngine*)
+    static SessionManager* create(QQmlEngine* engine, QJSEngine*)
     {
+        engine->setObjectOwnership(&get(), QQmlEngine::CppOwnership);
         return &get();
     }
 };

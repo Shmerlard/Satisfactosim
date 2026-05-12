@@ -61,37 +61,66 @@ FactoryNode* Factory::createFactoryNode(Factory* targetFactory, QString name)
     return node;
 }
 
-Connection* Factory::connect(Port& a, Port& b)
+Connection* Factory::connect(Port& a, Port& b, QString* err)
 {
-    // if (a.type == b.type)
-    //     return nullptr;
-    // if (&a.owner == &b.owner)
-    //     return nullptr;
-    // if (a.owner.parentFactory() != this || b.owner.parentFactory() != this)
-    //     return nullptr;
-    // if (a.isConnected(b))
-    //     return nullptr;
-    //
-    // Connection* connection = new Connection(&a, &b);
-    // m_connections.push_back(std::unique_ptr<Connection>(connection));
-    // a.connections.append(connection);
-    // b.connections.append(connection);
-    // return connection;
-    Connection* conn = a.owner.connectToPort(a, b);
-    if (conn) {
-        conn->setParent(this);
-        m_connections.append(conn);
+    QString _dummy;
+    if (!err)
+        err = &_dummy;
+    if (&a.owner == &b.owner) {
+        *err = "source and destination belong to the same node!";
+        return nullptr;
     }
-    return conn;
+    if (a.type == b.type) {
+        *err = "source and destination are the same type!";
+        return nullptr;
+    }
+    if (b.isConnected(a)) {
+        *err = "source and destination are already connected!";
+        return nullptr;
+    }
+    if (!b.item && !a.item) {
+        *err = "cannot connect 2 empty items";
+        return nullptr;
+    }
+
+    if (!b.item)
+        b.item = a.item;
+    else if (!a.item)
+        a.item = b.item;
+    else if (b.item != a.item) {
+        *err = "cannot connect two different items ports";
+        return nullptr;
+    }
+
+    Connection* connection = new Connection(&a, &b);
+    connection->setParent(this);
+    m_connections.append(connection);
+
+    a.connections.append(connection);
+    b.connections.append(connection);
+    a.owner.onPortConnected(a);
+    b.owner.onPortConnected(b);
+    err->clear();
+    return connection;
 }
 
-void Factory::disconnect(Port& a, Port& b)
+void Factory::disconnect(Port& a, Port& b, QString* err)
 {
-    Connection* conn = a.owner.disconnectPort(a, b);
-    if (conn) {
-        m_connections.removeOne(conn);
-        delete conn;
+    QString _dummy;
+    if (!err)
+        err = &_dummy;
+
+    Connection* conn = a.connection(b);
+    if (!conn) {
+        *err = "Ports are not connected";
+        return;
     }
+    a.connections.removeOne(conn);
+    b.connections.removeOne(conn);
+    a.owner.onPortDisconnected(a);
+    b.owner.onPortDisconnected(b);
+    m_connections.removeOne(conn);
+    delete conn;
 }
 
 void Factory::addNode(AbstractNode& node)

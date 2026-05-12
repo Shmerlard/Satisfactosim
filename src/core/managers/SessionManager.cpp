@@ -114,7 +114,9 @@ void SessionManager::enterParentFactory()
 // ---------- CONNECTIONS ---------------
 void SessionManager::connectNode(Port& src, Port& dst)
 {
-    src.owner.parentFactory()->connect(src, dst);
+    Connection * conn = src.owner.parentFactory()->connect(src, dst);
+    if (conn)
+        emit nodeConnected(&src.owner, &dst.owner);
 }
 
 void SessionManager::connectNode(int srcNode, int srcPort, int dstNode, int dstPort, Factory* f)
@@ -135,15 +137,15 @@ void SessionManager::connectNode(int srcNode, int srcPort, int dstNode, int dstP
     connectNode(*srcPort_p, *dstPort_p);
 }
 
-void SessionManager::disconnectNode(Port& src, Port& dest)
+void SessionManager::disconnectNode(Port& src, Port& dst)
 {
     QString err;
-    src.owner.disconnectPort(src, dest, &err);
+    src.owner.parentFactory()->disconnect(src, dst, &err);
     if (!err.isEmpty()) {
         emit operationFailed(err);
         return;
     }
-    emit nodeDisconnected();
+    emit nodeDisconnected(&src.owner, &dst.owner);
 }
 
 void SessionManager::disconnectNode(int srcNode, int srcPort, int dstNode, int dstPort)

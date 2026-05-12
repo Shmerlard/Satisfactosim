@@ -1,11 +1,16 @@
 #include "Connection.h"
-#include "core/nodes/Port.h"
 #include "AbstractNode.h"
+#include "core/nodes/Port.h"
 
 Connection::Connection(Port* src, Port* dst)
-    : m_src(src)
-    , m_dst(dst)
 {
+    if (src->type == PortType::Output) {
+        m_src = src;
+        m_dst = dst;
+    } else {
+        m_src = dst;
+        m_dst = src;
+    }
 }
 
 void Connection::addMidPoint(int index)
@@ -30,4 +35,24 @@ QJsonObject Connection::getJsonObject()
     obj["from"] = QJsonArray { m_src->owner.index(), m_src->owner.getPortIndex(*m_src) };
     obj["to"] = QJsonArray { m_dst->owner.index(), m_dst->owner.getPortIndex(*m_dst) };
     return obj;
+}
+//
+QObject* Connection::srcNodeObj() const
+{
+    return &m_src->owner;
+}
+
+QObject* Connection::dstNodeObj() const
+{
+    return &m_dst->owner;
+}
+
+int Connection::srcPortIdx() const
+{
+    return m_src->owner.getPortIndex(*m_src, false);
+}
+
+int Connection::dstPortIdx() const
+{
+    return m_dst->owner.getPortIndex(*m_dst, false);
 }

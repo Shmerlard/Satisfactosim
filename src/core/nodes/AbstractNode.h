@@ -68,9 +68,9 @@ public:
     // ---------- PORTS ---------------
     void deletePorts();
     void disconnectAllPorts();
-    Connection* disconnectPort(Port& port, Port& peer, QString* err = nullptr);
-    Connection* connectToPort(Port& src, Port& dst, QString* err = nullptr);
-    int getPortIndex(Port& port) const;
+    // Connection* disconnectPort(Port& port, Port& peer, QString* err = nullptr);
+    // Connection* connectToPort(Port& src, Port& dst, QString* err = nullptr);
+    int getPortIndex(Port& port, bool isOffset = true) const;
     Port* getPortFromIndex(int index) const;
 
     virtual void onPortConnected(Port& port) { };

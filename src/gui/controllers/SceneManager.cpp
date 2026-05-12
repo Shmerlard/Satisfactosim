@@ -20,6 +20,12 @@ SceneManager::SceneManager(SessionManager* session, QObject* parent)
         loadConnections(f);
         emit factoryChanged();
     });
+    connect(m_session, &SessionManager::nodeConnected, this, [this](AbstractNode*, AbstractNode*) {
+        loadConnections(m_session->activeFactory());
+    });
+    connect(m_session, &SessionManager::nodeDisconnected, this, [this](AbstractNode*, AbstractNode*) {
+        loadConnections(m_session->activeFactory());
+    });
 
     m_model->loadFromFactory(m_session->activeFactory());
     loadConnections(m_session->activeFactory());
@@ -45,7 +51,6 @@ void SceneManager::onNodeRemoved(AbstractNode* node)
 
 void SceneManager::enterFactory(AbstractNode* factoryNode)
 {
-    // qDebug() << factoryNode->posX();
     if (factoryNode->type() != NodeType::Factory)
         return;
     FactoryNode* factoryNode_p = static_cast<FactoryNode*>(factoryNode);
@@ -78,12 +83,11 @@ void SceneManager::createMachineNode(const QString recipe, double x, double y)
     const Recipe* recipe_p = GameLibrary::get().getRecipeByClass(recipe);
     if (auto* p = dynamic_cast<const ProductionRecipe*>(recipe_p)) {
         node = m_session->createProductionNode(*p);
-    } else if ( auto* p = dynamic_cast<const ExtractionRecipe*>(recipe_p)) {
+    } else if (auto* p = dynamic_cast<const ExtractionRecipe*>(recipe_p)) {
         node = m_session->createExtractionNode(*p);
     } else {
         return;
     }
     node->setPosX(x);
     node->setPosY(y);
-
 }
