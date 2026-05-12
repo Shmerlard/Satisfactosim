@@ -32,18 +32,12 @@ Item {
 
         Connections {
             target: root
-            function onZoomScaleChanged() {
-                gridCanvas.requestPaint();
-            }
+            function onZoomScaleChanged() { gridCanvas.requestPaint() }
         }
         Connections {
             target: flickable
-            function onContentXChanged() {
-                gridCanvas.requestPaint();
-            }
-            function onContentYChanged() {
-                gridCanvas.requestPaint();
-            }
+            function onContentXChanged() { gridCanvas.requestPaint() }
+            function onContentYChanged() { gridCanvas.requestPaint() }
         }
 
         onPaint: {
@@ -58,16 +52,10 @@ Item {
             ctx.lineWidth = 1;
 
             for (var x = startX; x <= width; x += cellSize) {
-                ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, height);
-                ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
             }
             for (var y = startY; y <= height; y += cellSize) {
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(width, y);
-                ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
             }
         }
     }
@@ -77,7 +65,6 @@ Item {
         anchors.fill: parent
         contentWidth: root.sceneSize * root.zoomScale
         contentHeight: root.sceneSize * root.zoomScale
-
         boundsBehavior: Flickable.StopAtBounds
         clip: true
 
@@ -88,42 +75,38 @@ Item {
             scale: root.zoomScale
             transformOrigin: Item.TopLeft
 
+            // --- drag state ---
+            property string dragMode: ""       // "node" | "port" | "marquee"
+            property var dragLoaders: []        // [{loader, offsetX, offsetY}]
+            property var dragSourcePort: null
+
+            // --- port connection ---
             property var pendingConn: null
             property var pendingTarget: null
             property real pendingMouseX: 0
             property real pendingMouseY: 0
+
+            // --- registries ---
             property var portItems: []
 
-            function startPortDrag(nodeIdx, portIdx, startX, startY) {
-                pendingConn = {
-                    srcNodeIdx: nodeIdx,
-                    srcPortIdx: portIdx,
-                    startX: startX,
-                    startY: startY
-                };
-                pendingMouseX = startX;
-                pendingMouseY = startY;
-            }
+            // --- marquee ---
+            property real marqueeStartX: 0
+            property real marqueeStartY: 0
+            property real marqueeEndX: 0
+            property real marqueeEndY: 0
+
             function endPortDrag() {
                 if (pendingConn && pendingTarget) {
-                    sceneManager.connectNodes(pendingConn.srcNodeIdx, pendingConn.srcPortIdx, pendingTarget.nodeIndex, pendingTarget.portIndex);
+                    sceneManager.connectNodes(
+                        pendingConn.srcNodeIdx, pendingConn.srcPortIdx,
+                        pendingTarget.nodeIndex, pendingTarget.portIndex
+                    );
                 }
                 pendingConn = null;
                 pendingTarget = null;
             }
-            // function endPortDrag(mouseX, mouseY) {
-            //     if (pendingConn && pendingTarget) {
-            //         // console.log("endPortDrag at", mouseX, mouseY);
-            //         var target = sceneManager.portAtPosition(mouseX, mouseY);
-            //         console.log("target:", JSON.stringify(target));
-            //         if (target && target.nodeIndex !== undefined) {
-            //             console.log("connecting", pendingConn.srcNodeIdx, pendingConn.srcPortIdx, "->", target.nodeIndex, target.portIndex);
-            //             sceneManager.connectNodes(pendingConn.srcNodeIdx, pendingConn.srcPortIdx, target.nodeIndex, target.portIndex);
-            //         }
-            //     }
-            //     pendingConn = null;
-            // }
 
+            // pending connection line
             Shape {
                 visible: sceneContainer.pendingConn !== null
                 z: 5
@@ -131,13 +114,164 @@ Item {
                     strokeColor: "white"
                     strokeWidth: 2
                     fillColor: "transparent"
-                    // startX: pendingConn ? pendingConn.startX : 0
-                    // startY: pendingConn ? pendingConn.startY : 0
                     startX: sceneContainer.pendingConn ? sceneContainer.pendingConn.startX : 0
                     startY: sceneContainer.pendingConn ? sceneContainer.pendingConn.startY : 0
                     PathLine {
                         x: sceneContainer.pendingMouseX
                         y: sceneContainer.pendingMouseY
+                    }
+                }
+            }
+
+            // marquee rectangle
+            Rectangle {
+                visible: sceneContainer.dragMode === "marquee"
+                x: Math.min(sceneContainer.marqueeStartX, sceneContainer.marqueeEndX)
+                y: Math.min(sceneContainer.marqueeStartY, sceneContainer.marqueeEndY)
+                width: Math.abs(sceneContainer.marqueeEndX - sceneContainer.marqueeStartX)
+                height: Math.abs(sceneContainer.marqueeEndY - sceneContainer.marqueeStartY)
+                color: "#224fc3f7"
+                border.color: "#4fc3f7"
+                border.width: 1
+                z: 10
+            }
+
+            MouseArea {
+                id: sceneMouseArea
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                hoverEnabled: true
+                preventStealing: true
+
+                onPressed: mouse => {
+                    if (mouse.button === Qt.RightButton) {
+                        var screenPt = sceneMouseArea.mapToItem(flickable, mouse.x, mouse.y);
+                        placeMenu.x = screenPt.x;
+                        placeMenu.y = screenPt.y;
+                        placeMenu.spawnX = mouse.x;
+                        placeMenu.spawnY = mouse.y;
+                        placeMenu.open();
+                        return;
+                    }
+
+                    // 1. ports take priority
+                    for (var i = 0; i < sceneContainer.portItems.length; i++) {
+                        var port = sceneContainer.portItems[i];
+                        var localPt = sceneMouseArea.mapToItem(port, mouse.x, mouse.y);
+                        if (port.contains(localPt)) {
+                            var cp = port.connectionPoint();
+                            sceneContainer.pendingConn = {
+                                srcNodeIdx: port.portData.nodeIndex,
+                                srcPortIdx: port.portData.portIndex,
+                                startX: cp.x,
+                                startY: cp.y
+                            };
+                            sceneContainer.pendingMouseX = cp.x;
+                            sceneContainer.pendingMouseY = cp.y;
+                            sceneContainer.pendingTarget = null;
+                            sceneContainer.dragSourcePort = port;
+                            sceneContainer.dragMode = "port";
+                            return;
+                        }
+                    }
+
+                    // 2. nodes
+                    for (var j = 0; j < nodesRepeater.count; j++) {
+                        var loader = nodesRepeater.itemAt(j);
+                        if (mouse.x >= loader.x && mouse.x <= loader.x + loader.width &&
+                            mouse.y >= loader.y && mouse.y <= loader.y + loader.height) {
+                            sceneContainer.dragMode = "node";
+                            var isSelected = loader.item && loader.item.selected;
+                            var loaders = [];
+                            if (isSelected) {
+                                for (var k = 0; k < nodesRepeater.count; k++) {
+                                    var l = nodesRepeater.itemAt(k);
+                                    if (l.item && l.item.selected)
+                                        loaders.push({ loader: l, offsetX: mouse.x - l.nodeData.posX, offsetY: mouse.y - l.nodeData.posY });
+                                }
+                            } else {
+                                loaders.push({ loader: loader, offsetX: mouse.x - loader.nodeData.posX, offsetY: mouse.y - loader.nodeData.posY });
+                            }
+                            sceneContainer.dragLoaders = loaders;
+                            return;
+                        }
+                    }
+
+                    // 3. empty space: shift = marquee, else clear selection + pan
+                    if (mouse.modifiers & Qt.ShiftModifier) {
+                        sceneContainer.dragMode = "marquee";
+                        sceneContainer.marqueeStartX = mouse.x;
+                        sceneContainer.marqueeStartY = mouse.y;
+                        sceneContainer.marqueeEndX = mouse.x;
+                        sceneContainer.marqueeEndY = mouse.y;
+                    } else {
+                        for (var c = 0; c < nodesRepeater.count; c++) {
+                            var l = nodesRepeater.itemAt(c);
+                            if (l.item) l.item.selected = false;
+                        }
+                        mouse.accepted = false;
+                    }
+                }
+
+                onPositionChanged: mouse => {
+                    root.mouseContentX = Math.floor(mouse.x);
+                    root.mouseContentY = Math.floor(mouse.y);
+
+                    var mode = sceneContainer.dragMode;
+                    if (mode === "port") {
+                        sceneContainer.pendingMouseX = mouse.x;
+                        sceneContainer.pendingMouseY = mouse.y;
+                        sceneContainer.pendingTarget = null;
+                        for (var i = 0; i < sceneContainer.portItems.length; i++) {
+                            var port = sceneContainer.portItems[i];
+                            if (port === sceneContainer.dragSourcePort) continue;
+                            var localPt = sceneMouseArea.mapToItem(port, mouse.x, mouse.y);
+                            if (port.contains(localPt)) {
+                                sceneContainer.pendingTarget = port.portData;
+                                break;
+                            }
+                        }
+                    } else if (mode === "node") {
+                        for (var d = 0; d < sceneContainer.dragLoaders.length; d++) {
+                            var entry = sceneContainer.dragLoaders[d];
+                            entry.loader.nodeData.posX = mouse.x - entry.offsetX;
+                            entry.loader.nodeData.posY = mouse.y - entry.offsetY;
+                        }
+                    } else if (mode === "marquee") {
+                        sceneContainer.marqueeEndX = mouse.x;
+                        sceneContainer.marqueeEndY = mouse.y;
+                    }
+                }
+
+                onReleased: mouse => {
+                    if (sceneContainer.dragMode === "port") {
+                        sceneContainer.endPortDrag();
+                    } else if (sceneContainer.dragMode === "marquee") {
+                        var x1 = Math.min(sceneContainer.marqueeStartX, sceneContainer.marqueeEndX);
+                        var y1 = Math.min(sceneContainer.marqueeStartY, sceneContainer.marqueeEndY);
+                        var x2 = Math.max(sceneContainer.marqueeStartX, sceneContainer.marqueeEndX);
+                        var y2 = Math.max(sceneContainer.marqueeStartY, sceneContainer.marqueeEndY);
+                        for (var i = 0; i < nodesRepeater.count; i++) {
+                            var loader = nodesRepeater.itemAt(i);
+                            var inside = loader.x < x2 && loader.x + loader.width > x1 &&
+                                         loader.y < y2 && loader.y + loader.height > y1;
+                            if (loader.item) loader.item.selected = inside;
+                        }
+                    }
+                    sceneContainer.dragMode = "";
+                    sceneContainer.dragLoaders = [];
+                    sceneContainer.dragSourcePort = null;
+                }
+
+                onDoubleClicked: mouse => {
+                    for (var i = 0; i < nodesRepeater.count; i++) {
+                        var loader = nodesRepeater.itemAt(i);
+                        if (mouse.x >= loader.x && mouse.x <= loader.x + loader.width &&
+                            mouse.y >= loader.y && mouse.y <= loader.y + loader.height) {
+                            if (loader.nodeData && loader.nodeData.nodeType === 2)
+                                sceneManager.enterFactory(loader.nodeData);
+                            return;
+                        }
                     }
                 }
             }
@@ -154,23 +288,18 @@ Item {
                 id: nodesRepeater
                 model: sceneManager.model
                 delegate: Loader {
+                    id: nodeLoader
                     property var nodeData: model["nodeData"]
                     x: nodeData ? nodeData.posX : 0
                     y: nodeData ? nodeData.posY : 0
                     source: {
-                        if (!nodeData)
-                            return "";
+                        if (!nodeData) return "";
                         switch (nodeData.nodeType) {
-                        case 1:
-                            return "nodes/EdgeNode.qml";
-                        case 2:
-                            return "nodes/FactoryNode.qml";
-                        case 3:
-                            return "nodes/ExtractionNode.qml";
-                        case 4:
-                            return "nodes/ProductionNode.qml";
-                        default:
-                            return "";
+                        case 1: return "nodes/EdgeNode.qml";
+                        case 2: return "nodes/FactoryNode.qml";
+                        case 3: return "nodes/ExtractionNode.qml";
+                        case 4: return "nodes/ProductionNode.qml";
+                        default: return "";
                         }
                     }
                     onLoaded: {
@@ -183,48 +312,17 @@ Item {
         }
     }
 
+    // screen-space overlays
     Item {
         id: gui
         anchors.fill: flickable
-        Notification {
-            id: notification
-        }
-        BackButton {
-            id: backButton
-        }
+
+        Notification { id: notification }
+        BackButton { id: backButton }
         MousePos {
             id: mousePos
             mouseContentX: root.mouseContentX
             mouseContentY: root.mouseContentY
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            acceptedButtons: Qt.RightButton | Qt.LeftButton
-            hoverEnabled: true
-
-            onPositionChanged: mouse => {
-                root.mouseContentX = Math.floor((mouse.x + flickable.contentX) / root.zoomScale);
-                root.mouseContentY = Math.floor((mouse.y + flickable.contentY) / root.zoomScale);
-            }
-
-            onPressed: mouse => {
-                if (mouse.button === Qt.LeftButton)
-                    mouse.accepted = false;
-            }
-            onClicked: mouse => {
-                if (mouse.button == Qt.RightButton) {
-                    placeMenu.x = mouse.x;
-                    placeMenu.y = mouse.y;
-                    placeMenu.spawnX = root.mouseContentX;
-                    placeMenu.spawnY = root.mouseContentY;
-                    placeMenu.open();
-                }
-            // if (mouse.button == Qt.LeftButton) {
-            //     mouse.accepted = false;
-            //     return;
-            // }
-            }
         }
 
         WheelHandler {
@@ -236,12 +334,9 @@ Item {
 
                 if (newScale !== oldScale) {
                     let actualFactor = newScale / oldScale;
-
-                    let mouseX = (flickable.contentX + point.position.x);
-                    let mouseY = (flickable.contentY + point.position.y);
-
+                    let mouseX = flickable.contentX + point.position.x;
+                    let mouseY = flickable.contentY + point.position.y;
                     root.zoomScale = newScale;
-
                     let maxX = root.sceneSize * newScale - flickable.width;
                     let maxY = root.sceneSize * newScale - flickable.height;
                     flickable.contentX = Math.max(0, Math.min((mouseX * actualFactor) - point.position.x, maxX));

@@ -114,6 +114,7 @@ void SceneManager::connectNodes(int srcNodeIdx, int srcPortIdx, int dstNodeIdx, 
     m_session->connectNode(srcNodeIdx, srcPortIdx, dstNodeIdx, dstPortIdx);
 }
 
+
 QVariantMap SceneManager::portAtPosition(qreal x, qreal y, qreal tolerance)
 {
     for (AbstractNode* node : m_session->activeFactory()->nodes()) {

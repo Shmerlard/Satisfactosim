@@ -4,11 +4,11 @@ import QtQuick.Layouts
 Item {
     id: root
 
-    // onNodeDataChanged: console.log(root.nodeData.machineIcon, "\n")
-    // onNodeDataChanged: console.log(root.nodeData.machineName, "\n")
     property var nodeData
     property int modelIndex: -1
     property Item contentContainer: null
+    property bool selected: false
+    property bool hovered: false
 
     implicitWidth: nameText.implicitWidth + outputsCol.implicitWidth + 40
     implicitHeight: Math.max(50, mainLayout.implicitHeight)
@@ -17,8 +17,8 @@ Item {
         id: background
         anchors.fill: parent
         color: "#1a2e1a"
-        border.color: "#27ae60"
-        border.width: 1
+        border.color: selected ? "#4fc3f7" : "#27ae60"
+        border.width: selected ? 2 : 1
         radius: 10
     }
     RowLayout {
@@ -26,10 +26,7 @@ Item {
         anchors.fill: parent
         anchors.margins: 0
 
-        // Component.onCompleted: console.log(root.nodeData)
-        Item {
-            Layout.fillWidth: true
-        }
+        Item { Layout.fillWidth: true }
         ColumnLayout {
             id: centerCol
             Image {
@@ -44,9 +41,7 @@ Item {
                 color: "white"
             }
         }
-        Item {
-            Layout.fillWidth: true
-        }
+        Item { Layout.fillWidth: true }
         ColumnLayout {
             id: outputsCol
             Repeater {
@@ -58,41 +53,6 @@ Item {
                     contentContainer: root.contentContainer
                 }
             }
-        }
-    }
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        preventStealing: true
-        acceptedButtons: Qt.LeftButton | Qt.RightButton   // ← add RightButton
-
-        property real lastX: 0
-        property real lastY: 0
-
-        onPressed: mouse => {
-            if (mouse.button === Qt.RightButton)
-                return;
-
-            var localPos = mapToItem(outputsCol, mouse.x, mouse.y);
-            if (outputsCol.contains(localPos)) {
-                mouse.accepted = false;
-                return;
-            }
-                // set the lastx and y for drag
-            if (!root.contentContainer || !root.nodeData)
-                return;
-            var pt = mouseArea.mapToItem(root.contentContainer, mouse.x, mouse.y);
-            lastX = pt.x - root.nodeData.posX;
-            lastY = pt.y - root.nodeData.posY;
-        }
-
-        onPositionChanged: mouse => {
-            if (!(pressedButtons & Qt.LeftButton) || !root.contentContainer || !root.nodeData)
-                return;
-            var pt = mouseArea.mapToItem(root.contentContainer, mouse.x, mouse.y);
-            root.nodeData.posX = pt.x - lastX;
-            root.nodeData.posY = pt.y - lastY;
         }
     }
 }

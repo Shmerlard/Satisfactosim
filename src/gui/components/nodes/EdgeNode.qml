@@ -7,6 +7,8 @@ Item {
     property var nodeData
     property int modelIndex: -1
     property Item contentContainer: null
+    property bool selected: false
+    property bool hovered: false
 
     implicitWidth: inputsCol.implicitWidth + nameText.implicitWidth + outputsCol.implicitWidth + 40
     implicitHeight: Math.max(50, mainLayout.implicitHeight)
@@ -15,8 +17,8 @@ Item {
         id: background
         anchors.fill: parent
         color: "yellow"
-        border.color: "black"
-        border.width: 1
+        border.color: selected ? "#4fc3f7" : "black"
+        border.width: selected ? 2 : 1
         radius: 10
     }
     RowLayout {
@@ -36,9 +38,7 @@ Item {
                 }
             }
         }
-        Item {
-            Layout.fillWidth: true
-        }
+        Item { Layout.fillWidth: true }
         ColumnLayout {
             id: centerCol
             Image {
@@ -49,13 +49,10 @@ Item {
             }
             Text {
                 id: nameText
-                // text: root.nodeData ? root.nodeData.name : ""
                 text: root.nodeData ? root.nodeData.itemName : ""
             }
         }
-        Item {
-            Layout.fillWidth: true
-        }
+        Item { Layout.fillWidth: true }
         ColumnLayout {
             id: outputsCol
             Repeater {
@@ -69,33 +66,4 @@ Item {
             }
         }
     }
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        preventStealing: true
-        acceptedButtons: Qt.LeftButton | Qt.RightButton   // ← add RightButton
-
-        property real lastX: 0
-        property real lastY: 0
-
-        onPressed: mouse => {
-            if (mouse.button === Qt.RightButton)
-                return;
-            if (!root.contentContainer || !root.nodeData)
-                return;
-            var pt = mouseArea.mapToItem(root.contentContainer, mouse.x, mouse.y);
-            lastX = pt.x - root.nodeData.posX;
-            lastY = pt.y - root.nodeData.posY;
-        }
-
-        onPositionChanged: mouse => {
-            if (!(pressedButtons & Qt.LeftButton) || !root.contentContainer || !root.nodeData)
-                return;
-            var pt = mouseArea.mapToItem(root.contentContainer, mouse.x, mouse.y);
-            root.nodeData.posX = pt.x - lastX;
-            root.nodeData.posY = pt.y - lastY;
-        }
-    }
 }
-

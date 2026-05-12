@@ -7,15 +7,18 @@ Item {
     property var nodeData
     property int modelIndex: -1
     property Item contentContainer: null
+    property bool selected: false
+    property bool hovered: false
 
     implicitWidth: mainLayout.width + 10
     implicitHeight: mainLayout.height + 10
+
     Rectangle {
         id: background
         anchors.fill: parent
         color: "#2d1e3d"
-        border.color: "#8e44ad"
-        border.width: 1
+        border.color: selected ? "#4fc3f7" : "#8e44ad"
+        border.width: selected ? 2 : 1
         radius: 10
     }
     RowLayout {
@@ -32,7 +35,6 @@ Item {
                 }
             }
         }
-
         ColumnLayout {
             Image {
                 source: "image://assets/misc/industry.png"
@@ -51,43 +53,11 @@ Item {
                 model: root.nodeData ? root.nodeData.outputs : []
                 delegate: Port {
                     portData: modelData
-                    isInput: true
+                    isInput: false
                     contentContainer: root.contentContainer
                     nodeRoot: root
                 }
             }
-        }
-
-    }
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        preventStealing: true
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
-
-        property real lastX: 0
-        property real lastY: 0
-
-        onDoubleClicked: {
-            sceneManager.enterFactory(root.nodeData)
-        }
-        onPressed: mouse => {
-            if (mouse.button === Qt.RightButton)
-                return;
-            if (!root.contentContainer || !root.nodeData)
-                return;
-            var pt = mouseArea.mapToItem(root.contentContainer, mouse.x, mouse.y);
-            lastX = pt.x - root.nodeData.posX;
-            lastY = pt.y - root.nodeData.posY;
-        }
-
-        onPositionChanged: mouse => {
-            if (!(pressedButtons & Qt.LeftButton) || !root.contentContainer || !root.nodeData)
-                return;
-            var pt = mouseArea.mapToItem(root.contentContainer, mouse.x, mouse.y);
-            root.nodeData.posX = pt.x - lastX;
-            root.nodeData.posY = pt.y - lastY;
         }
     }
 }
