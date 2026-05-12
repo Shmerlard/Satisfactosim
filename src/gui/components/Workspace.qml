@@ -13,6 +13,7 @@ Item {
     property real mouseContentY: 0
     property alias contentX: flickable.contentX
     property alias contentY: flickable.contentY
+
     PlaceMenu {
         id: placeMenu
     }
@@ -175,44 +176,19 @@ Item {
         }
     }
 
-    // Overlay item sits above the Flickable in Z-order so its WheelHandler
-    // grabs scroll events before the Flickable's internal handler does.
     Item {
+        id: gui
         anchors.fill: flickable
-        Button {
-            anchors.bottom: parent.bottom
-            anchors.right: parent.right
-            text: "Test"
-            onClicked: notification.show("test message")
-        }
         Notification {
             id: notification
         }
-        Rectangle {
+        BackButton {
             id: backButton
-            visible: !sceneManager.isRootFactory
-            width: 100
-            height: 100
-            color: "transparent"
-            Image {
-                source: "image://assets/misc/arrow-right-circle-solid.png"
-                fillMode: Image.PreserveAspectFit
-                anchors.fill: parent
-            }
-            MouseArea {
-                anchors.fill: parent
-                hoverEnabled: false
-                acceptedButtons: Qt.LeftButton
-                containmentMask: Item {
-                    width: backButton.width
-                    height: backButton.height
-                    function contains(p) {
-                        var r = width / 2;
-                        return (p.x - r) * (p.x - r) + (p.y - r) * (p.y - r) <= r * r;
-                    }
-                }
-                onClicked: sceneManager.enterParentFactory()
-            }
+        }
+        MousePos {
+            id: mousePos
+            mouseContentX: root.mouseContentX
+            mouseContentY: root.mouseContentY
         }
 
         MouseArea {
@@ -251,32 +227,11 @@ Item {
 
                     root.zoomScale = newScale;
 
-                    // Clamp against new bounds ourselves so Flickable can't
-                    // silently clamp and shift the anchor point.
                     let maxX = root.sceneSize * newScale - flickable.width;
                     let maxY = root.sceneSize * newScale - flickable.height;
                     flickable.contentX = Math.max(0, Math.min((mouseX * actualFactor) - point.position.x, maxX));
                     flickable.contentY = Math.max(0, Math.min((mouseY * actualFactor) - point.position.y, maxY));
                 }
-            }
-        }
-        Rectangle {
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.margins: 6
-            width: statusText.implicitWidth + 12
-            height: statusText.implicitHeight + 6
-            color: "#88000000"
-            radius: 4
-
-            Text {
-                id: statusText
-                anchors.centerIn: parent
-                // text: "x: " + root.mouseContentX + "  y: " + root.mouseContentY
-                text: "x: " + root.mouseContentX + "  y: " + root.mouseContentY
-                color: "white"
-                font.pixelSize: 11
-                font.family: "monospace"
             }
         }
     }
