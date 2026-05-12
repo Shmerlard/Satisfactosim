@@ -17,6 +17,16 @@ Item {
         sceneManager.setPortOffset(portData.nodeIndex, portData.portIndex, pt);
     }
     Component.onCompleted: updateOffset()
+    onContentContainerChanged: {
+        if (contentContainer)
+            contentContainer.portItems.push(root);
+    }
+    Component.onDestruction: {
+        if (contentContainer) {
+            var idx = contentContainer.portItems.indexOf(root);
+            if (idx >= 0) contentContainer.portItems.splice(idx, 1);
+        }
+    }
     onYChanged: updateOffset()
     Rectangle {
         id: background
@@ -57,11 +67,24 @@ Item {
             var pt = mapToItem(contentContainer, mouse.x, mouse.y);
             contentContainer.pendingMouseX = pt.x;
             contentContainer.pendingMouseY = pt.y;
+
+            contentContainer.pendingTarget = null;
+            for (var i = 0; i < contentContainer.portItems.length; i++) {
+                var port = contentContainer.portItems[i];
+                if (port === root) continue;
+                var localPt = mapToItem(port, mouse.x, mouse.y);
+                if (port.contains(localPt)) {
+                    contentContainer.pendingTarget = port.portData;
+                    break;
+                }
+            }
         }
 
         onReleased: mouse => {
-            var pt = mapToItem(contentContainer, mouse.x, mouse.y);
-            contentContainer.endPortDrag(pt.x, pt.y);
+            // var pt = mapToItem(contentContainer, mouse.x, mouse.y);
+            // contentContainer.endPortDrag(pt.x, pt.y);
+            root.contentContainer.endPortDrag();
         }
     }
+
 }

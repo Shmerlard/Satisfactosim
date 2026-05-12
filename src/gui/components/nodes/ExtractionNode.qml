@@ -5,7 +5,7 @@ Item {
     id: root
 
     // onNodeDataChanged: console.log(root.nodeData.machineIcon, "\n")
-    onNodeDataChanged: console.log(root.nodeData.machineName, "\n")
+    // onNodeDataChanged: console.log(root.nodeData.machineName, "\n")
     property var nodeData
     property int modelIndex: -1
     property Item contentContainer: null

@@ -86,12 +86,14 @@ Item {
             width: root.sceneSize
             height: root.sceneSize
             scale: root.zoomScale
+            transformOrigin: Item.TopLeft
+
             property var pendingConn: null
+            property var pendingTarget: null
             property real pendingMouseX: 0
             property real pendingMouseY: 0
-            // property var pendingTarget: null
+            property var portItems: []
 
-            transformOrigin: Item.TopLeft
             function startPortDrag(nodeIdx, portIdx, startX, startY) {
                 pendingConn = {
                     srcNodeIdx: nodeIdx,
@@ -102,19 +104,26 @@ Item {
                 pendingMouseX = startX;
                 pendingMouseY = startY;
             }
-
-            function endPortDrag(mouseX, mouseY) {
-                if (pendingConn) {
-                    console.log("endPortDrag at", mouseX, mouseY);
-                    var target = sceneManager.portAtPosition(mouseX, mouseY);
-                    console.log("target:", JSON.stringify(target));
-                    if (target && target.nodeIndex !== undefined) {
-                        console.log("connecting", pendingConn.srcNodeIdx, pendingConn.srcPortIdx, "->", target.nodeIndex, target.portIndex);
-                        sceneManager.connectNodes(pendingConn.srcNodeIdx, pendingConn.srcPortIdx, target.nodeIndex, target.portIndex);
-                    }
+            function endPortDrag() {
+                if (pendingConn && pendingTarget) {
+                    sceneManager.connectNodes(pendingConn.srcNodeIdx, pendingConn.srcPortIdx, pendingTarget.nodeIndex, pendingTarget.portIndex);
                 }
                 pendingConn = null;
+                pendingTarget = null;
             }
+            // function endPortDrag(mouseX, mouseY) {
+            //     if (pendingConn && pendingTarget) {
+            //         // console.log("endPortDrag at", mouseX, mouseY);
+            //         var target = sceneManager.portAtPosition(mouseX, mouseY);
+            //         console.log("target:", JSON.stringify(target));
+            //         if (target && target.nodeIndex !== undefined) {
+            //             console.log("connecting", pendingConn.srcNodeIdx, pendingConn.srcPortIdx, "->", target.nodeIndex, target.portIndex);
+            //             sceneManager.connectNodes(pendingConn.srcNodeIdx, pendingConn.srcPortIdx, target.nodeIndex, target.portIndex);
+            //         }
+            //     }
+            //     pendingConn = null;
+            // }
+
             Shape {
                 visible: sceneContainer.pendingConn !== null
                 z: 5
@@ -132,44 +141,42 @@ Item {
                     }
                 }
             }
+
             Repeater {
+                id: connectionsRepeater
                 model: sceneManager.connections
                 delegate: Connection {
                     conn: modelData
                 }
             }
-            Rectangle {
-                anchors.fill: parent
-                color: "transparent"
 
-                // Component.onCompleted: console.log(sceneManager.model["nodeData"])
-                Repeater {
-                    model: sceneManager.model
-                    delegate: Loader {
-                        property var nodeData: model["nodeData"]
-                        x: nodeData ? nodeData.posX : 0
-                        y: nodeData ? nodeData.posY : 0
-                        source: {
-                            if (!nodeData)
-                                return "";
-                            switch (nodeData.nodeType) {
-                            case 1:
-                                return "nodes/EdgeNode.qml";
-                            case 2:
-                                return "nodes/FactoryNode.qml";
-                            case 3:
-                                return "nodes/ExtractionNode.qml";
-                            case 4:
-                                return "nodes/ProductionNode.qml";
-                            default:
-                                return "";
-                            }
+            Repeater {
+                id: nodesRepeater
+                model: sceneManager.model
+                delegate: Loader {
+                    property var nodeData: model["nodeData"]
+                    x: nodeData ? nodeData.posX : 0
+                    y: nodeData ? nodeData.posY : 0
+                    source: {
+                        if (!nodeData)
+                            return "";
+                        switch (nodeData.nodeType) {
+                        case 1:
+                            return "nodes/EdgeNode.qml";
+                        case 2:
+                            return "nodes/FactoryNode.qml";
+                        case 3:
+                            return "nodes/ExtractionNode.qml";
+                        case 4:
+                            return "nodes/ProductionNode.qml";
+                        default:
+                            return "";
                         }
-                        onLoaded: {
-                            item.nodeData = nodeData;
-                            item.contentContainer = sceneContainer;
-                            item.modelIndex = index;
-                        }
+                    }
+                    onLoaded: {
+                        item.nodeData = nodeData;
+                        item.contentContainer = sceneContainer;
+                        item.modelIndex = index;
                     }
                 }
             }
@@ -193,7 +200,7 @@ Item {
 
         MouseArea {
             anchors.fill: parent
-            acceptedButtons: Qt.RightButton
+            acceptedButtons: Qt.RightButton | Qt.LeftButton
             hoverEnabled: true
 
             onPositionChanged: mouse => {
@@ -201,6 +208,10 @@ Item {
                 root.mouseContentY = Math.floor((mouse.y + flickable.contentY) / root.zoomScale);
             }
 
+            onPressed: mouse => {
+                if (mouse.button === Qt.LeftButton)
+                    mouse.accepted = false;
+            }
             onClicked: mouse => {
                 if (mouse.button == Qt.RightButton) {
                     placeMenu.x = mouse.x;
@@ -209,6 +220,10 @@ Item {
                     placeMenu.spawnY = root.mouseContentY;
                     placeMenu.open();
                 }
+            // if (mouse.button == Qt.LeftButton) {
+            //     mouse.accepted = false;
+            //     return;
+            // }
             }
         }
 
