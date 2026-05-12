@@ -24,7 +24,9 @@ Item {
         anchors.fill: parent
         anchors.margins: 0
 
-        Item { Layout.fillWidth: true }
+        Item {
+            Layout.fillWidth: true
+        }
         ColumnLayout {
             id: centerCol
             Image {
@@ -49,6 +51,7 @@ Item {
                 delegate: Port {
                     portData: modelData
                     isInput: false
+                    nodeRoot: root
                 }
             }
         }

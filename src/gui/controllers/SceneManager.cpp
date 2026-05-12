@@ -91,3 +91,20 @@ void SceneManager::createMachineNode(const QString recipe, double x, double y)
     node->setPosX(x);
     node->setPosY(y);
 }
+
+void SceneManager::setPortOffset(int nodeIndex, int portIndex, QPointF offset)
+{
+    AbstractNode* node = m_session->activeFactory()->nodes().at(nodeIndex);
+    if (!node)
+        return;
+    Port* port = node->getPortFromIndex(portIndex);
+    if (!port)
+        return;
+    port->offset = offset;
+    for (Connection* conn : port->connections) {
+        if (conn->srcPort() == port)
+            conn->setSrcOffset(offset);
+        else
+            conn->setDstOffset(offset);
+    }
+}

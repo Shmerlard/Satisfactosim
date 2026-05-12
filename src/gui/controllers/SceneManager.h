@@ -46,4 +46,5 @@ public slots:
     void enterParentFactory();
     // void createMachineNode(Recipe* recipe, double x, double y);
     void createMachineNode(const QString recipe, double x, double y);
+    void setPortOffset(int nodeIndex, int portIndex, QPointF offset);
 };

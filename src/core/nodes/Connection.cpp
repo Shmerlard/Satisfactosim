@@ -56,3 +56,22 @@ int Connection::dstPortIdx() const
 {
     return m_dst->owner.getPortIndex(*m_dst, false);
 }
+
+QPointF Connection::srcOffset()
+{
+    return m_src->offset;
+}
+QPointF Connection::dstOffset()
+{
+    return m_dst->offset;
+}
+void Connection::setSrcOffset(QPointF offset)
+{
+    m_src->offset = offset;
+    emit offsetChanged();
+}
+void Connection::setDstOffset(QPointF offset)
+{
+    m_dst->offset = offset;
+    emit offsetChanged();
+}

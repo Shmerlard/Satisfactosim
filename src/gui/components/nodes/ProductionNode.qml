@@ -30,6 +30,7 @@ Item {
                 model: root.nodeData ? root.nodeData.inputs : []
                 delegate: Port {
                     portData: modelData
+                    nodeRoot: root
                     isInput: true
                 }
             }
@@ -68,6 +69,7 @@ Item {
                 model: root.nodeData ? root.nodeData.outputs : []
                 delegate: Port {
                     portData: modelData
+                    nodeRoot: root
                     isInput: false
                 }
             }

@@ -3,6 +3,7 @@
 // #include <QString>
 #include <QList>
 #include "Connection.h"
+#include <QPointF>
 
 class AbstractNode;
 // class Connection;
@@ -39,6 +40,7 @@ struct Port {
     AbstractNode& owner;
     QList<Connection*> connections;
     float amount; // the sum of amounts from all connections
+    QPointF offset; // the offset from the node pos to the connection point pos
 
     void disconnect()
     {
