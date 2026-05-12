@@ -11,9 +11,13 @@
 FactoryEdgeNode* SessionManager::createFactoryEdgeNode(PortType edgeType, Factory* parentFactory, QString name)
 {
     Factory* f = parentFactory ? parentFactory : m_activeFactory;
-    FactoryEdgeNode* node = f->createFactoryEdgeNode(edgeType, name);
-    if (!node)
+    QString err;
+    FactoryEdgeNode* node = f->createFactoryEdgeNode(edgeType, name, &err);
+    if (!node) {
+        emit operationFailed(err);
         return nullptr;
+
+    }
     emit nodeAdded(node);
     return node;
 }

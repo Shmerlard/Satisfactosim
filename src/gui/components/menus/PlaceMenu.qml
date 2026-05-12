@@ -7,33 +7,92 @@ Popup {
     property real spawnX: 0
     property real spawnY: 0
 
-    width: 600
-    height: 300
+    width: 650
+    height: 340
     clip: true
 
     RowLayout {
         anchors.fill: parent
-        Rectangle {
-            Layout.preferredHeight: 30
-            Layout.preferredWidth: 30
-        }
+        anchors.margins: 8
+        spacing: 8
+
+        // Left panel: special node types
         ColumnLayout {
+            Layout.preferredWidth: 160
+            Layout.fillHeight: true
+            spacing: 6
+
+            Text {
+                text: "Special Nodes"
+                color: "#aaaaaa"
+                font.pixelSize: 11
+            }
+
+            TextField {
+                id: nodeNameField
+                Layout.fillWidth: true
+                placeholderText: "Name (optional)"
+                font.pixelSize: 12
+            }
+
+            Button {
+                Layout.fillWidth: true
+                text: "Sub-Factory"
+                onClicked: {
+                    sceneManager.createSubFactory(nodeNameField.text, root.spawnX, root.spawnY);
+                    nodeNameField.text = "";
+                    root.close();
+                }
+            }
+
+            Button {
+                Layout.fillWidth: true
+                text: "Input Edge"
+                onClicked: {
+                    sceneManager.createEdgeNode(true, nodeNameField.text, root.spawnX, root.spawnY);
+                    nodeNameField.text = "";
+                    root.close();
+                }
+            }
+
+            Button {
+                Layout.fillWidth: true
+                text: "Output Edge"
+                onClicked: {
+                    sceneManager.createEdgeNode(false, nodeNameField.text, root.spawnX, root.spawnY);
+                    nodeNameField.text = "";
+                    root.close();
+                }
+            }
+
+            Item { Layout.fillHeight: true }
+        }
+
+        // Divider
+        Rectangle {
+            Layout.preferredWidth: 1
+            Layout.fillHeight: true
+            color: "#444444"
+        }
+
+        // Right panel: recipe search + list
+        ColumnLayout {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            spacing: 4
+
             PlaceMenuSearchBox {}
+
             ScrollView {
-                // Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                Layout.fillWidth: false
+                Layout.fillWidth: true
                 Layout.fillHeight: true
                 clip: true
                 ScrollBar.vertical.policy: ScrollBar.AsNeeded
+
                 ColumnLayout {
                     width: parent.width
-                    Layout.alignment: Qt.AlignHCenter
-                    Rectangle {
-                        // anchors.fill: parent
-                        Layout.alignment: Qt.AlignHCenter
-                        Layout.fillWidth: true
-                        color: "yellow"
-                    }
+                    spacing: 2
+
                     Repeater {
                         model: sceneManager.recipes
 
@@ -46,10 +105,6 @@ Popup {
                     }
                 }
             }
-        }
-        Rectangle {
-            Layout.preferredHeight: 30
-            Layout.preferredWidth: 30
         }
     }
 }

@@ -92,6 +92,27 @@ void SceneManager::createMachineNode(const QString recipe, double x, double y)
     node->setPosY(y);
 }
 
+void SceneManager::createSubFactory(const QString name, double x, double y)
+{
+    Factory* child = m_session->createFactory(m_session->activeFactory(), name);
+
+    // FactoryNode* node = m_session->createFactoryNode(*m_session->activeFactory(), *child, name);
+    FactoryNode* node = child->node();
+    node->setPosX(x);
+    node->setPosY(y);
+}
+
+void SceneManager::createEdgeNode(bool isInput, const QString name, double x, double y)
+{
+    PortType edgeType = isInput ? PortType::Input : PortType::Output;
+    FactoryEdgeNode* node = m_session->createFactoryEdgeNode(edgeType, m_session->activeFactory(), name);
+    if (node) {
+        node->setPosX(x);
+        node->setPosY(y);
+
+    }
+}
+
 void SceneManager::setPortOffset(int nodeIndex, int portIndex, QPointF offset)
 {
     AbstractNode* node = m_session->activeFactory()->nodes().at(nodeIndex);
@@ -115,28 +136,28 @@ void SceneManager::connectNodes(int srcNodeIdx, int srcPortIdx, int dstNodeIdx, 
 }
 
 
-QVariantMap SceneManager::portAtPosition(qreal x, qreal y, qreal tolerance)
-{
-    for (AbstractNode* node : m_session->activeFactory()->nodes()) {
-        auto check = [&](const std::vector<std::unique_ptr<Port>>& ports) -> QVariantMap {
-            for (const auto& port : ports) {
-                qreal px = node->posX() + port->offset.x();
-                qreal py = node->posY() + port->offset.y();
-                if (qAbs(px - x) <= tolerance && qAbs(py - y) <= tolerance) {
-                    QVariantMap m;
-                    m["nodeIndex"] = node->index();
-                    m["portIndex"] = node->getPortIndex(*port);
-                    return m;
-                }
-            }
-            return {};
-        };
-        auto result = check(node->inputs());
-        if (!result.isEmpty())
-            return result;
-        result = check(node->outputs());
-        if (!result.isEmpty())
-            return result;
-    }
-    return {};
-}
+// QVariantMap SceneManager::portAtPosition(qreal x, qreal y, qreal tolerance)
+// {
+//     for (AbstractNode* node : m_session->activeFactory()->nodes()) {
+//         auto check = [&](const std::vector<std::unique_ptr<Port>>& ports) -> QVariantMap {
+//             for (const auto& port : ports) {
+//                 qreal px = node->posX() + port->offset.x();
+//                 qreal py = node->posY() + port->offset.y();
+//                 if (qAbs(px - x) <= tolerance && qAbs(py - y) <= tolerance) {
+//                     QVariantMap m;
+//                     m["nodeIndex"] = node->index();
+//                     m["portIndex"] = node->getPortIndex(*port);
+//                     return m;
+//                 }
+//             }
+//             return {};
+//         };
+//         auto result = check(node->inputs());
+//         if (!result.isEmpty())
+//             return result;
+//         result = check(node->outputs());
+//         if (!result.isEmpty())
+//             return result;
+//     }
+//     return {};
+// }

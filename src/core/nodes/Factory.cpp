@@ -42,11 +42,12 @@ Factory* Factory::createFactory(QString name, bool ignoreNode)
     return facPtr;
 }
 
-FactoryEdgeNode* Factory::createFactoryEdgeNode(PortType edgeType, QString name)
+FactoryEdgeNode* Factory::createFactoryEdgeNode(PortType edgeType, QString name, QString* err)
 {
     if (!m_parent) {
+        if (err)
+            *err = "Can't add edge node in the root factory";
         return nullptr;
-        // FIX:ADD ERROR MESSAGE
     }
     FactoryEdgeNode* edge = new FactoryEdgeNode(*this, edgeType, name);
     // m_edges.push_back(edge);
