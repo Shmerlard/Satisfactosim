@@ -122,8 +122,8 @@ void SessionManager::connectNode(Port& src, Port& dst)
 void SessionManager::connectNode(int srcNode, int srcPort, int dstNode, int dstPort, Factory* f)
 {
     Factory* selectedFactory = f ? f : m_activeFactory;
-    AbstractNode* srcNode_p = selectedFactory->nodes().at(srcNode);
-    AbstractNode* dstNode_p = selectedFactory->nodes().at(dstNode);
+    AbstractNode* srcNode_p = selectedFactory->nodes().value(srcNode);
+    AbstractNode* dstNode_p = selectedFactory->nodes().value(dstNode);
     if (!srcNode_p || !dstNode_p) {
         qWarning() << "Invalid Source or Destination Node";
         return;
@@ -150,8 +150,8 @@ void SessionManager::disconnectNode(Port& src, Port& dst)
 
 void SessionManager::disconnectNode(int srcNode, int srcPort, int dstNode, int dstPort)
 {
-    AbstractNode* srcNode_p = m_activeFactory->nodes().at(srcNode);
-    AbstractNode* dstNode_p = m_activeFactory->nodes().at(dstNode);
+    AbstractNode* srcNode_p = m_activeFactory->nodes().value(srcNode);
+    AbstractNode* dstNode_p = m_activeFactory->nodes().value(dstNode);
 
     if (!srcNode_p) {
         qWarning() << "Invalid Source Node";
@@ -185,7 +185,7 @@ void SessionManager::renameNode(int index, QString name)
         return;
     }
 
-    AbstractNode* node = nodes.at(index);
+    AbstractNode* node = nodes.value(index);
     if (!node) {
         qWarning() << "Invalid Index: " << index;
         return;

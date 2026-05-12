@@ -108,3 +108,34 @@ void SceneManager::setPortOffset(int nodeIndex, int portIndex, QPointF offset)
             conn->setDstOffset(offset);
     }
 }
+
+void SceneManager::connectNodes(int srcNodeIdx, int srcPortIdx, int dstNodeIdx, int dstPortIdx)
+{
+    m_session->connectNode(srcNodeIdx, srcPortIdx, dstNodeIdx, dstPortIdx);
+}
+
+QVariantMap SceneManager::portAtPosition(qreal x, qreal y, qreal tolerance)
+{
+    for (AbstractNode* node : m_session->activeFactory()->nodes()) {
+        auto check = [&](const std::vector<std::unique_ptr<Port>>& ports) -> QVariantMap {
+            for (const auto& port : ports) {
+                qreal px = node->posX() + port->offset.x();
+                qreal py = node->posY() + port->offset.y();
+                if (qAbs(px - x) <= tolerance && qAbs(py - y) <= tolerance) {
+                    QVariantMap m;
+                    m["nodeIndex"] = node->index();
+                    m["portIndex"] = node->getPortIndex(*port);
+                    return m;
+                }
+            }
+            return {};
+        };
+        auto result = check(node->inputs());
+        if (!result.isEmpty())
+            return result;
+        result = check(node->outputs());
+        if (!result.isEmpty())
+            return result;
+    }
+    return {};
+}

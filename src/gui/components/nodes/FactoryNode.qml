@@ -27,6 +27,8 @@ Item {
                 delegate: Port {
                     portData: modelData
                     isInput: true
+                    contentContainer: root.contentContainer
+                    nodeRoot: root
                 }
             }
         }
@@ -43,6 +45,19 @@ Item {
                 color: "white"
             }
         }
+        ColumnLayout {
+            id: outputsCol
+            Repeater {
+                model: root.nodeData ? root.nodeData.outputs : []
+                delegate: Port {
+                    portData: modelData
+                    isInput: true
+                    contentContainer: root.contentContainer
+                    nodeRoot: root
+                }
+            }
+        }
+
     }
     MouseArea {
         id: mouseArea

@@ -22,8 +22,6 @@ Item {
         color: "#1a1a1a"
     }
 
-    // Grid drawn in viewport space so it always fills the screen.
-    // Offset is computed from contentX/contentY so lines stay aligned with scene coords.
     Canvas {
         id: gridCanvas
         anchors.fill: parent
@@ -87,19 +85,63 @@ Item {
             width: root.sceneSize
             height: root.sceneSize
             scale: root.zoomScale
+            property var pendingConn: null
+            property real pendingMouseX: 0
+            property real pendingMouseY: 0
+            // property var pendingTarget: null
 
             transformOrigin: Item.TopLeft
+            function startPortDrag(nodeIdx, portIdx, startX, startY) {
+                pendingConn = {
+                    srcNodeIdx: nodeIdx,
+                    srcPortIdx: portIdx,
+                    startX: startX,
+                    startY: startY
+                };
+                pendingMouseX = startX;
+                pendingMouseY = startY;
+            }
+
+            function endPortDrag(mouseX, mouseY) {
+                if (pendingConn) {
+                    console.log("endPortDrag at", mouseX, mouseY);
+                    var target = sceneManager.portAtPosition(mouseX, mouseY);
+                    console.log("target:", JSON.stringify(target));
+                    if (target && target.nodeIndex !== undefined) {
+                        console.log("connecting", pendingConn.srcNodeIdx, pendingConn.srcPortIdx, "->", target.nodeIndex, target.portIndex);
+                        sceneManager.connectNodes(pendingConn.srcNodeIdx, pendingConn.srcPortIdx, target.nodeIndex, target.portIndex);
+                    }
+                }
+                pendingConn = null;
+            }
+            Shape {
+                visible: sceneContainer.pendingConn !== null
+                z: 5
+                ShapePath {
+                    strokeColor: "white"
+                    strokeWidth: 2
+                    fillColor: "transparent"
+                    // startX: pendingConn ? pendingConn.startX : 0
+                    // startY: pendingConn ? pendingConn.startY : 0
+                    startX: sceneContainer.pendingConn ? sceneContainer.pendingConn.startX : 0
+                    startY: sceneContainer.pendingConn ? sceneContainer.pendingConn.startY : 0
+                    PathLine {
+                        x: sceneContainer.pendingMouseX
+                        y: sceneContainer.pendingMouseY
+                    }
+                }
+            }
             Repeater {
                 model: sceneManager.connections
-                delegate : Connection {
+                delegate: Connection {
                     conn: modelData
-
                 }
             }
             Rectangle {
                 anchors.fill: parent
                 color: "transparent"
 
+                // Component.onCompleted: console.log(sceneManager.model["nodeData"])
                 Repeater {
                     model: sceneManager.model
                     delegate: Loader {
@@ -151,7 +193,7 @@ Item {
             }
             MouseArea {
                 anchors.fill: parent
-                hoverEnabled: true
+                hoverEnabled: false
                 acceptedButtons: Qt.LeftButton
                 containmentMask: Item {
                     width: backButton.width
@@ -208,6 +250,25 @@ Item {
                     flickable.contentX = Math.max(0, Math.min((mouseX * actualFactor) - point.position.x, maxX));
                     flickable.contentY = Math.max(0, Math.min((mouseY * actualFactor) - point.position.y, maxY));
                 }
+            }
+        }
+        Rectangle {
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.margins: 6
+            width: statusText.implicitWidth + 12
+            height: statusText.implicitHeight + 6
+            color: "#88000000"
+            radius: 4
+
+            Text {
+                id: statusText
+                anchors.centerIn: parent
+                // text: "x: " + root.mouseContentX + "  y: " + root.mouseContentY
+                text: "x: " + root.mouseContentX + "  y: " + root.mouseContentY
+                color: "white"
+                font.pixelSize: 11
+                font.family: "monospace"
             }
         }
     }

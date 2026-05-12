@@ -31,8 +31,7 @@ int main(int argc, char* argv[])
     CliManager cli;
     QObject::connect(&cli, &CliManager::quitRequested, app.data(), &QCoreApplication::quit);
 
-    QString appDir = QCoreApplication::applicationDirPath();
-    QString projDir = QDir::cleanPath(appDir + "/../");
+    QString projDir = QString(PROJECT_SOURCE_DIR);
 
     QScopedPointer<QQmlApplicationEngine> engine;
     QScopedPointer<QmlReloader> reloader;

@@ -93,7 +93,9 @@ target_link_libraries(FactoryApp PRIVATE
     Qt6::Qml
 )
 
-target_include_directories(FactoryApp PRIVATE 
+target_compile_definitions(FactoryApp PRIVATE PROJECT_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+
+target_include_directories(FactoryApp PRIVATE
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/src/core/managers
     ${CMAKE_SOURCE_DIR}/src/core/nodes

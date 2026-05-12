@@ -31,6 +31,8 @@ Item {
                 delegate: Port {
                     portData: modelData
                     isInput: true
+                    contentContainer: root.contentContainer
+                    nodeRoot: root
                 }
             }
         }
@@ -61,6 +63,8 @@ Item {
                 delegate: Port {
                     portData: modelData
                     isInput: false
+                    contentContainer: root.contentContainer
+                    nodeRoot: root
                 }
             }
         }

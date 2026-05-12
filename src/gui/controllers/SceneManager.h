@@ -1,9 +1,9 @@
 #pragma once
 
-#include "core/managers/SessionManager.h"
-#include "core/nodes/AbstractNode.h"
 #include "RecipeListModel.h"
 #include "SceneModel.h"
+#include "core/managers/SessionManager.h"
+#include "core/nodes/AbstractNode.h"
 
 #include <QMap>
 #include <QObject>
@@ -47,4 +47,6 @@ public slots:
     // void createMachineNode(Recipe* recipe, double x, double y);
     void createMachineNode(const QString recipe, double x, double y);
     void setPortOffset(int nodeIndex, int portIndex, QPointF offset);
+    void connectNodes(int srcNodeIdx, int srcPortIdx, int dstNodeIdx, int dstPortIdx);
+    QVariantMap portAtPosition(qreal x, qreal y, qreal tolerance = 15.0);
 };

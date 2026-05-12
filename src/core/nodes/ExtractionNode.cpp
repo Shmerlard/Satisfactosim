@@ -1,11 +1,6 @@
 #include "ExtractionNode.h"
 #include "core/types/Types.h"
 
-ExtractionNode::~ExtractionNode()
-{
-    deletePorts();
-}
-
 ExtractionNode::ExtractionNode(
     Factory& parentFactory,
     const ExtractionRecipe& recipe,
@@ -16,9 +11,15 @@ ExtractionNode::ExtractionNode(
     , m_tier(tier)
 {
     m_type = NodeType::Extraction;
-    m_recipe = &recipe;
+    // m_recipe = &recipe;
 
-    buildPortsFromRecipe();
+    // buildPortsFromRecipe();
+    setRecipe(&recipe);
+}
+
+ExtractionNode::~ExtractionNode()
+{
+    deletePorts();
 }
 
 void ExtractionNode::buildPortsFromRecipe()
@@ -30,10 +31,14 @@ void ExtractionNode::buildPortsFromRecipe()
 
 const Machine* ExtractionNode::extractor() const
 {
-    if (!recipe() || !recipe()->family || recipe()->family->tiers.isEmpty())
+    const ExtractionRecipe* r = recipe();
+    if(! r || !r->family || r->family->tiers.isEmpty())
         return nullptr;
-    int tier = qBound(0, m_tier, recipe()->family->tiers.size() - 1);
-    return recipe()->family->tiers[tier];
+    return m_machine;
+    // if (!recipe() || !recipe()->family || recipe()->family->tiers.isEmpty())
+    //     return nullptr;
+    // int tier = qBound(0, m_tier, recipe()->family->tiers.size() - 1);
+    // return recipe()->family->tiers[tier];
 }
 
 QJsonObject ExtractionNode::getJsonNode() const
@@ -87,5 +92,12 @@ const ExtractionRecipe* ExtractionNode::recipe() const
 
 void ExtractionNode::setRecipe(const ExtractionRecipe* recipe)
 {
-    // FIX: implement
+    if (m_recipe == recipe)
+        return;
+
+    m_recipe = recipe;
+    m_machine = static_cast<ExtractionMachine*>(recipe->family->tiers[m_tier]);
+    deletePorts();
+    buildPortsFromRecipe();
 }
+

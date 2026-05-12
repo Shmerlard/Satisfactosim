@@ -4,6 +4,8 @@ import QtQuick.Layouts
 Item {
     id: root
 
+    // onNodeDataChanged: console.log(root.nodeData.machineIcon, "\n")
+    onNodeDataChanged: console.log(root.nodeData.machineName, "\n")
     property var nodeData
     property int modelIndex: -1
     property Item contentContainer: null
@@ -24,6 +26,7 @@ Item {
         anchors.fill: parent
         anchors.margins: 0
 
+        // Component.onCompleted: console.log(root.nodeData)
         Item {
             Layout.fillWidth: true
         }
@@ -52,6 +55,7 @@ Item {
                     portData: modelData
                     isInput: false
                     nodeRoot: root
+                    contentContainer: root.contentContainer
                 }
             }
         }
@@ -69,6 +73,13 @@ Item {
         onPressed: mouse => {
             if (mouse.button === Qt.RightButton)
                 return;
+
+            var localPos = mapToItem(outputsCol, mouse.x, mouse.y);
+            if (outputsCol.contains(localPos)) {
+                mouse.accepted = false;
+                return;
+            }
+                // set the lastx and y for drag
             if (!root.contentContainer || !root.nodeData)
                 return;
             var pt = mouseArea.mapToItem(root.contentContainer, mouse.x, mouse.y);

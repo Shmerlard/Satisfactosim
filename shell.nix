@@ -11,8 +11,8 @@ pkgs.mkShell {
     ninja
     pkg-config
     qt6.wrapQtAppsHook
-    qtcreator
     nix-clangd
+    qtcreator
   ];
 
         buildInputs = with pkgs; [

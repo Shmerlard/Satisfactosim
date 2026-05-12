@@ -32,6 +32,7 @@ Item {
                     portData: modelData
                     nodeRoot: root
                     isInput: true
+                    contentContainer: root.contentContainer
                 }
             }
         }
@@ -71,10 +72,12 @@ Item {
                     portData: modelData
                     nodeRoot: root
                     isInput: false
+                    contentContainer: root.contentContainer
                 }
             }
         }
     }
+    // onNodeDataChanged: console.log(root.nodeData.machineLimit, "\n")
     MouseArea {
         id: mouseArea
         enabled: true

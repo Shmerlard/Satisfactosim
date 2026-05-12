@@ -2,20 +2,18 @@
 #include "MachineNode.h"
 #include "src/core/types/Types.h"
 
-
 class ProductionNode : public MachineNode {
     Q_OBJECT;
 
     friend class SessionManager;
     friend class Factory;
+
 private:
     explicit ProductionNode(
-            Factory& parentFactory,
-            const ProductionRecipe& recipe,
-            QString name = QString(),
-            QUuid id = QUuid());
-
-
+        Factory& parentFactory,
+        const ProductionRecipe& recipe,
+        QString name = QString(),
+        QUuid id = QUuid());
 
 public:
     ~ProductionNode() override;
