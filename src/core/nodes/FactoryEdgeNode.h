@@ -28,6 +28,7 @@ public:
     float portRate(const Port* port) const override;
     QJsonObject getJsonNode() const override;
     void setMirrorPort(Port& port) { m_mirrorPort = &port; }
+    Port* mirrorPort() const { return m_mirrorPort; }
 
     QString itemName() const;
 

@@ -318,7 +318,7 @@ void CliManager::processCommand(const QString& line)
         { "limit", [this](const auto& p) { handleLimit(p); } },
         { "purity", [this](const auto& p) { handlePurity(p); } },
         { "tier", [this](const auto& p) { handleTier(p); } },
-        // { "solve", [this](const auto&) { handleSolve(); } },
+        { "solve", [this](const auto&) { handleSolve(); } },
         { "rename", [this](const auto& p) { handleRename(p); } },
         { "save", [this](const auto& p) { handleSave(p); } },
         { "load", [this](const auto& p) { handleLoad(p); } },
@@ -647,6 +647,12 @@ void CliManager::handleTier(const QStringList& args)
     }
     SessionManager::get().setExtractionTier(factory->nodes().at(index), tier);
     m_out << "Tier set to " << tier << " on node " << index << "\n";
+}
+
+void CliManager::handleSolve()
+{
+    m_session->solve();
+    m_out << "Solved.\n";
 }
 
 void CliManager::handleRename(const QStringList& args)

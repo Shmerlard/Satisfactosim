@@ -569,3 +569,11 @@ AbstractNode* SessionManager::createNodeFromJson(QJsonObject j, Factory* f, QMap
 //
 //     return true;
 // }
+
+void SessionManager::solve()
+{
+    Solver solver;
+    solver.build(m_rootFactory);
+    solver.solve();
+    emit solved();
+}

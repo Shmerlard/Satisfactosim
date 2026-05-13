@@ -36,7 +36,7 @@ private:
 private:
     Factory* createFactory(QString name = QString(), bool ignoreNode = false);
     FactoryEdgeNode* createFactoryEdgeNode(PortType edgeType, QString name = QString(), QString* err = nullptr);
-    ExtractionNode* createExtractionNode(const ExtractionRecipe& recipe, int tier = 1, QString name = QString());
+    ExtractionNode* createExtractionNode(const ExtractionRecipe& recipe, int tier = 0, QString name = QString());
     ProductionNode* createProductionNode(const ProductionRecipe& recipe, QString name = QString());
     FactoryNode* createFactoryNode(Factory* targetFactory, QString name = QString());
 

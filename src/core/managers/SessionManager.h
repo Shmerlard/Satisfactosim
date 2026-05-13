@@ -6,7 +6,7 @@
 #include "core/nodes/FactoryNode.h"
 #include "core/nodes/ProductionNode.h"
 #include "core/types/Types.h"
-// #include "Solver.h"
+#include "Solver.h"
 #include <QObject>
 #include <QQmlEngine>
 #include <queue>
@@ -38,8 +38,8 @@ public:
     FactoryNode* createFactoryNode(Factory& parent, Factory& owned, QString name = QString());
     ProductionNode* createProductionNode(const ProductionRecipe& recipe, Factory* factory = nullptr, QString name = QString());
     ProductionNode* createProductionNodeByClass(const QString& rClass, Factory* factory = nullptr, QString name = QString());
-    ExtractionNode* createExtractionNode(const ExtractionRecipe& recipe, int tier = 1, Factory* factory = nullptr, QString name = QString());
-    ExtractionNode* createExtractionNodeByName(QString resourceName, int tier = 1, Factory* factory = nullptr, QString name = QString());
+    ExtractionNode* createExtractionNode(const ExtractionRecipe& recipe, int tier = 0, Factory* factory = nullptr, QString name = QString());
+    ExtractionNode* createExtractionNodeByName(QString resourceName, int tier = 0, Factory* factory = nullptr, QString name = QString());
     // ExtractionNode* createExtractionNodeByClass(QString rClass, int tier = 1, Factory* factory = nullptr, QString name = QString());
     void deleteNode(AbstractNode* node);
 
@@ -60,7 +60,7 @@ public:
     void setMachineLimit(AbstractNode* node, float limit);
     void setExtractionPurity(AbstractNode* node, NodePurity purity);
     void setExtractionTier(AbstractNode* node, int tier);
-    // Solver::Result solve();
+    void solve();
 
     // ---------- SAVE AND LOAD ---------------
     void save(const QString& path);

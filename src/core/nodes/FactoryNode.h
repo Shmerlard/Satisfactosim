@@ -19,6 +19,7 @@ private:
 
 public:
     Factory& factory() const { return m_factory; }
+    const QMap<Port*, FactoryEdgeNode*>& portEdges() const { return m_portEdges; }
 
     void onPortConnected(Port& port) override;
     void onPortDisconnected(Port& port) override;

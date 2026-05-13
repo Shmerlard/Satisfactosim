@@ -84,8 +84,8 @@ ExtractionMachine* extractionMachineFromJsonObject(const QJsonValue& value, QMap
 
     m->type = fam;
     m->tier = fam->tiers.indexOf(m); // FIX: problematic since we assume that they are inserted by order
-    m->extractCycleTime = obj["ExtractCycleTime"].toDouble();
-    m->itemsPerCycle = obj["ItemsPerCycle"].toInt();
+    m->extractCycleTime = obj["ExtractCycleTime"].toString().toDouble();
+    m->itemsPerCycle = obj["ItemsPerCycle"].toString().toInt();
     return m;
 }
 
