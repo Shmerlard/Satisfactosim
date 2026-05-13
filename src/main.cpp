@@ -25,6 +25,8 @@ int main(int argc, char* argv[])
     else
         app.reset(new QApplication(argc, argv));
 
+    QDir::setCurrent(QString(PROJECT_SOURCE_DIR));
+
     std::cout << "Loading Assets...\n";
     GameLibrary::get().loadData();
 

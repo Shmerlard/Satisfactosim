@@ -6,10 +6,44 @@ MouseArea {
     // dependencies injected from Workspace
     property var scene          // sceneContainer
     property var nodes          // nodesRepeater
+    property var conns          // connectionsRepeater
     property Item flick         // flickable
     property var menu           // placeMenu
 
     signal mouseMoved(real x, real y)
+
+    function distToSegment(px, py, ax, ay, bx, by) {
+        var dx = bx - ax, dy = by - ay;
+        var lenSq = dx * dx + dy * dy;
+        if (lenSq === 0)
+            return Math.sqrt((px - ax) * (px - ax) + (py - ay) * (py - ay));
+        var t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / lenSq));
+        var projX = ax + t * dx, projY = ay + t * dy;
+        return Math.sqrt((px - projX) * (px - projX) + (py - projY) * (py - projY));
+    }
+
+    property var _hoveredConn: null
+
+    function updateConnectionHover(mx, my) {
+        if (!conns || scene.dragMode !== "") {
+            if (_hoveredConn) { _hoveredConn.hovered = false; _hoveredConn = null; }
+            return;
+        }
+        var found = null;
+        for (var i = 0; i < conns.count; i++) {
+            var item = conns.itemAt(i);
+            if (!item || !item.conn || !item.src || !item.dst) continue;
+            var ax = item.src.posX + item.conn.srcOffset.x;
+            var ay = item.src.posY + item.conn.srcOffset.y;
+            var bx = item.dst.posX + item.conn.dstOffset.x;
+            var by = item.dst.posY + item.conn.dstOffset.y;
+            if (distToSegment(mx, my, ax, ay, bx, by) < 6) { found = item; break; }
+        }
+        if (found === _hoveredConn) return;
+        if (_hoveredConn) _hoveredConn.hovered = false;
+        if (found) found.hovered = true;
+        _hoveredConn = found;
+    }
 
     anchors.fill: parent
     acceptedButtons: Qt.LeftButton | Qt.RightButton
@@ -18,6 +52,7 @@ MouseArea {
 
     onPressed: mouse => {
         if (mouse.button === Qt.RightButton) {
+            if (_hoveredConn) return;  // double-right-click will handle deletion
             var screenPt = root.mapToItem(flick, mouse.x, mouse.y);
             menu.x = screenPt.x;
             menu.y = screenPt.y;
@@ -88,6 +123,7 @@ MouseArea {
 
     onPositionChanged: mouse => {
         root.mouseMoved(mouse.x, mouse.y);
+        updateConnectionHover(mouse.x, mouse.y);
 
         var mode = scene.dragMode;
         if (mode === "port") {
@@ -136,6 +172,14 @@ MouseArea {
     }
 
     onDoubleClicked: mouse => {
+        if (mouse.button === Qt.RightButton) {
+            if (_hoveredConn) {
+                sceneManager.deleteConnection(_hoveredConn.conn);
+                _hoveredConn = null;
+            }
+            return;
+        }
+
         for (var i = 0; i < nodes.count; i++) {
             var loader = nodes.itemAt(i);
             if (mouse.x >= loader.x && mouse.x <= loader.x + loader.width &&

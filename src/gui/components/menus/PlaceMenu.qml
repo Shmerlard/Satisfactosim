@@ -11,6 +11,12 @@ Popup {
     height: 340
     clip: true
 
+    background: Rectangle {
+        color: "#2b2b2b"
+        border.color: "#555555"
+        radius: 6
+    }
+
     RowLayout {
         anchors.fill: parent
         anchors.margins: 8

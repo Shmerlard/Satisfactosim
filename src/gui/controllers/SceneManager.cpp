@@ -135,6 +135,13 @@ void SceneManager::connectNodes(int srcNodeIdx, int srcPortIdx, int dstNodeIdx, 
     m_session->connectNode(srcNodeIdx, srcPortIdx, dstNodeIdx, dstPortIdx);
 }
 
+void SceneManager::deleteConnection(QObject* connObj)
+{
+    Connection* conn = qobject_cast<Connection*>(connObj);
+    if (!conn) return;
+    m_session->disconnectNode(*conn->srcPort(), *conn->dstPort());
+}
+
 
 // QVariantMap SceneManager::portAtPosition(qreal x, qreal y, qreal tolerance)
 // {

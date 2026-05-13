@@ -139,6 +139,7 @@ Item {
             SceneInputHandler {
                 scene: sceneContainer
                 nodes: nodesRepeater
+                conns: connectionsRepeater
                 flick: flickable
                 menu: placeMenu
                 onMouseMoved: (x, y) => {
