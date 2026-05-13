@@ -1,6 +1,8 @@
+// pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import FACTORY_QT
 
 Popup {
     id: root
@@ -24,7 +26,7 @@ Popup {
 
         // Left panel: special node types
         ColumnLayout {
-            Layout.preferredWidth: 160
+            Layout.preferredWidth: 100
             Layout.fillHeight: true
             spacing: 6
 
@@ -42,6 +44,7 @@ Popup {
             }
 
             Button {
+                // width: 3
                 Layout.fillWidth: true
                 text: "Sub-Factory"
                 onClicked: {
@@ -83,6 +86,7 @@ Popup {
 
         // Right panel: recipe search + list
         ColumnLayout {
+            id: recipeSelector
             Layout.fillWidth: true
             Layout.fillHeight: true
             spacing: 4
@@ -103,6 +107,7 @@ Popup {
                         model: sceneManager.recipes
 
                         delegate: PlaceMenuEntry {
+                            implicitWidth: recipeSelector.width
                             recipe: model
                             spawnX: root.spawnX
                             spawnY: root.spawnY

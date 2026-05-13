@@ -12,7 +12,7 @@ Item {
     property var spawnMenu
 
     implicitHeight: 40
-    implicitWidth: 500
+    implicitWidth: 450
 
     Rectangle {
         anchors.fill: parent
@@ -34,6 +34,7 @@ Item {
                 color: "orange"
                 width: 10
                 height: 10
+                radius: 4
                 visible: root.recipe["isAlternate"]
             }
 
@@ -42,10 +43,6 @@ Item {
                 text: root.recipe["name"]
             }
         }
-        // Text {
-        //     anchors.horizontalCenter: parent.horizontalCenter
-        //     text: root.recipe["className"]
-        // }
     }
 
     // Left: inputs
@@ -58,15 +55,22 @@ Item {
         Repeater {
             model: root.recipe["inputs"]
             delegate: Rectangle {
-                width: 30
-                height: 30
+                width: 32
+                height: 32
+                radius: 4
                 color: "gray"
                 Image {
                     source: modelData["iconUrl"]
                     width: parent.width
                     height: parent.height
                     fillMode: Image.PreserveAspectFit
+                    sourceSize.width: 128
+                    sourceSize.height: 128
                 }
+
+                ToolTip.visible: hoverHandler_i.hovered
+                ToolTip.text: modelData["name"]
+                HoverHandler { id: hoverHandler_i }
             }
         }
     }
@@ -83,18 +87,20 @@ Item {
             delegate: Rectangle {
                 width: 30
                 height: 30
+                radius: 4
                 color: "gray"
                 Image {
                     source: modelData["iconUrl"]
                     width: parent.width
                     height: parent.height
-                    fillMode: Image.PreserveAspectFit
+                    // fillMode: Image.PreserveAspectFit
+                    fillMode: Image.PreserveAspectCrop
+                    sourceSize.width: 128
+                    sourceSize.height: 128
                 }
-
-                // Text {
-                //     anchors.fill: parent
-                //     text: modelData["name"]
-                // }
+                ToolTip.visible: hoverHandler_o.hovered
+                ToolTip.text: modelData["name"]
+                HoverHandler { id: hoverHandler_o }
             }
         }
     }

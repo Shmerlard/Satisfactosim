@@ -41,15 +41,27 @@ Item {
         Item { Layout.fillWidth: true }
         ColumnLayout {
             id: centerCol
-            Image {
-                source: root.nodeData ? root.nodeData.machineIcon : ""
-                Layout.alignment: Qt.AlignHCenter
-                Layout.preferredHeight: 50
-                Layout.preferredWidth: 50
+            Item {}
+            Rectangle {
+                    Layout.preferredHeight: 50
+                    Layout.preferredWidth: 50
+                    color: "grey"
+                    radius: 10
+                    Layout.alignment: Qt.AlignHCenter
+                Image {
+                    source: root.nodeData ? root.nodeData.machineIcon : ""
+                    width: parent.width
+                    height: parent.height
+                }
             }
             Text {
                 text: root.nodeData ? root.nodeData.name : ""
                 Layout.alignment: Qt.AlignHCenter
+                color: "white"
+            }
+            Text {
+                Layout.alignment: Qt.AlignHCenter
+                text: root.nodeData ? root.nodeData.machineCount : ""
                 color: "white"
             }
             Text {
