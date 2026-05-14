@@ -126,14 +126,15 @@ void Factory::disconnect(Port& a, Port& b, QString* err)
 
 void Factory::addNode(AbstractNode& node)
 {
-    int inserIndex = m_nodes.count();
-    for (int i = 0; i < inserIndex; i++) {
-        if (m_nodes[i]->type() > node.type()) {
-            inserIndex = i;
-            break;
-        }
-    }
-    m_nodes.insert(inserIndex, &node);
+    // int inserIndex = m_nodes.count();
+    // for (int i = 0; i < inserIndex; i++) {
+    //     if (m_nodes[i]->type() > node.type()) {
+    //         inserIndex = i;
+    //         break;
+    //     }
+    // }
+    // m_nodes.insert(inserIndex, &node);
+    m_nodes.append(&node);
 
     switch (node.type()) {
     case NodeType::FactoryEdge: {

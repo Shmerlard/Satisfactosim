@@ -97,7 +97,7 @@ Item {
 
             function endPortDrag() {
                 if (pendingConn && pendingTarget) {
-                    sceneManager.connectNodes(
+                    SceneManager.connectNodes(
                         pendingConn.srcNodeIdx, pendingConn.srcPortIdx,
                         pendingTarget.nodeIndex, pendingTarget.portIndex
                     );
@@ -148,9 +148,19 @@ Item {
                 }
             }
 
+            Connections {
+                target: SceneManager
+                function onFactoryChanged() {
+                    sceneContainer.dragLoaders = []
+                    sceneContainer.dragMode = ""
+                    sceneContainer.pendingConn = null
+                    sceneContainer.pendingTarget = null
+                }
+            }
+
             Repeater {
                 id: connectionsRepeater
-                model: sceneManager.connections
+                model: SceneManager.connections
                 delegate: Connection {
                     conn: modelData
                 }
@@ -158,7 +168,7 @@ Item {
 
             Repeater {
                 id: nodesRepeater
-                model: sceneManager.model
+                model: SceneManager.model
                 delegate: Loader {
                     id: nodeLoader
                     property var nodeData: model["nodeData"]
@@ -179,6 +189,17 @@ Item {
                         item.contentContainer = sceneContainer;
                         item.modelIndex = index;
                     }
+
+                    TapHandler {
+                        acceptedButtons: Qt.RightButton
+                        onTapped: (eventPoint) => {
+                            var pos = mapToItem(gui, eventPoint.position.x, eventPoint.position.y)
+                            nodePopup.nodeData = nodeData
+                            nodePopup.x = pos.x
+                            nodePopup.y = pos.y
+                            nodePopup.open()
+                        }
+                    }
                 }
             }
         }
@@ -191,6 +212,7 @@ Item {
 
         Notification { id: notification }
         BackButton { id: backButton }
+        NodePopup { id: nodePopup }
         MousePos {
             id: mousePos
             mouseContentX: root.mouseContentX

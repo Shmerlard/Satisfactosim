@@ -54,64 +54,6 @@ void AbstractNode::disconnectAllPorts()
         port->disconnect();
 }
 
-// Connection* AbstractNode::disconnectPort(Port& port, Port& peer, QString* err)
-// {
-//     QString _dummy;
-//     if (!err)
-//         err = &_dummy;
-//
-//     Connection* conn = port.connection(peer);
-//     if (!conn) {
-//         *err = "Ports are not connected";
-//         return nullptr;
-//     }
-//     port.connections.removeOne(conn);
-//     peer.connections.removeOne(conn);
-//     port.owner.onPortDisconnected(port);
-//     peer.owner.onPortDisconnected(peer);
-//     return conn;
-// }
-
-// Connection* AbstractNode::connectToPort(Port& src, Port& dst, QString* err)
-// {
-//     QString _dummy;
-//     if (!err)
-//         err = &_dummy;
-//     if (&dst.owner == &src.owner) {
-//         *err = "source and destination belong to the same node!";
-//         return nullptr;
-//     }
-//     if (dst.type == src.type) {
-//         *err = "source and destination are the same type!";
-//         return nullptr;
-//     }
-//     if (src.isConnected(dst)) {
-//         *err = "source and destination are already connected!";
-//         return nullptr;
-//     }
-//     if (!src.item && !dst.item) {
-//         *err = "cannot connect 2 empty items";
-//         return nullptr;
-//     }
-//
-//     if (!src.item)
-//         src.item = dst.item;
-//     else if (!dst.item)
-//         dst.item = src.item;
-//     else if (src.item != dst.item) {
-//         *err = "cannot connect two different items ports";
-//         return nullptr;
-//     }
-//
-//     Connection* connection = new Connection(&src, &dst);
-//     src.connections.append(connection);
-//     dst.connections.append(connection);
-//     dst.owner.onPortConnected(dst);
-//     src.owner.onPortConnected(src);
-//     err->clear();
-//     return connection;
-// }
-
 int AbstractNode::getPortIndex(Port& port, bool isOffset) const
 {
     for (int i = 0; i < m_inputs.size(); i++)

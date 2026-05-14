@@ -4,10 +4,10 @@
 #include "core/nodes/Connection.h"
 #include "core/nodes/Factory.h"
 
-SceneManager::SceneManager(SessionManager* session, QObject* parent)
+SceneManager::SceneManager(QObject* parent)
     : QObject(parent)
 {
-    m_session = (!session) ? &SessionManager::get() : session;
+    m_session = &SessionManager::get();
     m_model = new SceneModel(this, this);
     m_recipeModel = new RecipeListModel(this);
     m_recipeFilterModel = new RecipeFilterModel(this);
@@ -26,6 +26,7 @@ SceneManager::SceneManager(SessionManager* session, QObject* parent)
     connect(m_session, &SessionManager::nodeDisconnected, this, [this](AbstractNode*, AbstractNode*) {
         loadConnections(m_session->activeFactory());
     });
+    // connect(m_session, &SessionManager::machineLimitChanged, this, &SceneManager::onMachineLimitChanged);
 
     m_model->loadFromFactory(m_session->activeFactory());
     loadConnections(m_session->activeFactory());
@@ -63,6 +64,10 @@ void SceneManager::enterParentFactory()
     m_session->enterParentFactory();
 }
 
+void SceneManager::enterRootFactory() 
+{
+    m_session->enterRootFactory();
+}
 // void SceneManager::createMachineNode(Recipe* recipe, double x, double y)
 // {
 //     AbstractNode* node = nullptr;
@@ -109,7 +114,14 @@ void SceneManager::createEdgeNode(bool isInput, const QString name, double x, do
     if (node) {
         node->setPosX(x);
         node->setPosY(y);
+    }
+}
 
+void SceneManager::deleteNode(AbstractNode* node)
+{
+    if (node) {
+        m_session->deleteNode(node);
+        // emit noded
     }
 }
 
@@ -138,10 +150,10 @@ void SceneManager::connectNodes(int srcNodeIdx, int srcPortIdx, int dstNodeIdx, 
 void SceneManager::deleteConnection(QObject* connObj)
 {
     Connection* conn = qobject_cast<Connection*>(connObj);
-    if (!conn) return;
+    if (!conn)
+        return;
     m_session->disconnectNode(*conn->srcPort(), *conn->dstPort());
 }
-
 
 // QVariantMap SceneManager::portAtPosition(qreal x, qreal y, qreal tolerance)
 // {

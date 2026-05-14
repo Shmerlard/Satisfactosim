@@ -1,8 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
-
-import QtQuick
+import FACTORY_QT
 
 Item {
     id: root
@@ -108,7 +107,7 @@ Item {
     MouseArea {
         anchors.fill: parent
         onClicked: {
-            sceneManager.createMachineNode(root.recipe["className"], spawnX, spawnY);
+            SceneManager.createMachineNode(root.recipe["className"], spawnX, spawnY);
             placeMenu.close();
         }
     }

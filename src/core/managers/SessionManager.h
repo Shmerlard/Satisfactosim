@@ -32,7 +32,6 @@ public:
     Factory* rootFactory() const { return m_rootFactory; }
     Factory* activeFactory() const { return m_activeFactory; }
 
-public:
     // ---------- NODE CREATION ---------------
     FactoryEdgeNode* createFactoryEdgeNode(PortType edgeType, Factory* factory = nullptr, QString name = QString());
     FactoryNode* createFactoryNode(Factory& parent, Factory& owned, QString name = QString());
@@ -78,6 +77,8 @@ signals:
     void nodeConnected(AbstractNode* src, AbstractNode* dst);
     void nodeDisconnected(AbstractNode* src, AbstractNode* dst);
     void factoryChanged(Factory* factory);
+    // void machineLimitChanged(MachineNode* node);
+    // void machineCountChanged(MachineNode* node); // FIX: not implemented yet
     void solved();
 
 public:

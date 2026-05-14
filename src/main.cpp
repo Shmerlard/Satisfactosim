@@ -1,7 +1,6 @@
 #include "core/managers/AssetManager.h"
 #include "core/managers/CliManager.h"
 #include "core/managers/GameLibrary.h"
-#include "core/managers/SessionManager.h"
 #include "gui/controllers/SceneManager.h"
 #include <QApplication>
 #include <QDir>
@@ -37,15 +36,13 @@ int main(int argc, char* argv[])
 
     QScopedPointer<QQmlApplicationEngine> engine;
     QScopedPointer<QmlReloader> reloader;
-    QScopedPointer<SceneManager> sceneManager;
     if (!headless) {
+        SceneManager::get(); // ensure singleton is initialized before QML loads
         AssetManager::get().loadAssets();
         engine.reset(new QQmlApplicationEngine());
         engine->addImageProvider("assets", new AssetImageProvider());
         reloader.reset(new QmlReloader(engine.data()));
-        sceneManager.reset(new SceneManager(&SessionManager::get()));
         engine->rootContext()->setContextProperty("reloader", reloader.data());
-        engine->rootContext()->setContextProperty("sceneManager", sceneManager.data());
         engine->addImportPath(projDir);
         engine->addImportPath(projDir + "/src");
         auto paths = engine->importPathList();

@@ -23,7 +23,7 @@ class AbstractNode : public QObject {
     Q_OBJECT;
     Q_PROPERTY(double posX READ posX WRITE setPosX NOTIFY posChanged)
     Q_PROPERTY(double posY READ posY WRITE setPosY NOTIFY posChanged)
-    Q_PROPERTY(QString name READ name NOTIFY nameChanged)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(int nodeType READ nodeTypeInt CONSTANT)
     Q_PROPERTY(QVariantList inputs  READ inputsQml  NOTIFY portsChanged)
     Q_PROPERTY(QVariantList outputs READ outputsQml NOTIFY portsChanged)

@@ -7,10 +7,13 @@
 
 #include <QMap>
 #include <QObject>
+#include <QQmlEngine>
 #include <QVariantList>
 
 class SceneManager : public QObject {
     Q_OBJECT;
+    QML_ELEMENT;
+    QML_SINGLETON;
 
     Q_PROPERTY(SceneModel* model READ model CONSTANT);
     Q_PROPERTY(RecipeFilterModel* recipes READ recipes CONSTANT);
@@ -24,8 +27,19 @@ private:
     RecipeFilterModel* m_recipeFilterModel = nullptr;
     QVariantList m_connections;
 
+    explicit SceneManager(QObject* parent = nullptr);
+
 public:
-    explicit SceneManager(SessionManager* session, QObject* parent = nullptr);
+    static SceneManager& get()
+    {
+        static SceneManager inst;
+        return inst;
+    }
+    static SceneManager* create(QQmlEngine* engine, QJSEngine*)
+    {
+        engine->setObjectOwnership(&get(), QQmlEngine::CppOwnership);
+        return &get();
+    }
     SceneModel* model() const { return m_model; }
     RecipeFilterModel* recipes() const { return m_recipeFilterModel; }
     bool isRootFactory() const { return m_session->activeFactory() == m_session->rootFactory(); }
@@ -44,10 +58,12 @@ public slots:
 
     void enterFactory(AbstractNode* factoryNode);
     void enterParentFactory();
+    void enterRootFactory();
     // void createMachineNode(Recipe* recipe, double x, double y);
     void createMachineNode(const QString recipe, double x, double y);
     void createSubFactory(const QString name, double x, double y);
     void createEdgeNode(bool isInput, const QString name, double x, double y);
+    void deleteNode(AbstractNode* node);
     void deleteConnection(QObject* connObj);
     void setPortOffset(int nodeIndex, int portIndex, QPointF offset);
     void connectNodes(int srcNodeIdx, int srcPortIdx, int dstNodeIdx, int dstPortIdx);

@@ -203,14 +203,19 @@ void SessionManager::renameNode(int index, QString name)
 
 void SessionManager::setMachineLimit(AbstractNode* node, float limit)
 {
-    if (auto* mn = dynamic_cast<MachineNode*>(node))
+    if (auto* mn = dynamic_cast<MachineNode*>(node)) {
         mn->setMachineLimit(limit);
+        // emit machineLimitChanged(mn);
+    }
 }
 
 void SessionManager::setExtractionPurity(AbstractNode* node, NodePurity purity)
 {
-    if (auto* en = dynamic_cast<ExtractionNode*>(node))
+    if (auto* en = dynamic_cast<ExtractionNode*>(node)) {
         en->setPurity(purity);
+        // emit machineLimitChanged(mn);
+
+    }
 }
 
 void SessionManager::setExtractionTier(AbstractNode* node, int tier)

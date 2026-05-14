@@ -6,7 +6,7 @@ Item {
 
     Rectangle {
         id: backButton
-        visible: !sceneManager.isRootFactory
+        visible: !SceneManager.isRootFactory
         width: 100
         height: 100
         color: "transparent"
@@ -27,7 +27,7 @@ Item {
                     return (p.x - r) * (p.x - r) + (p.y - r) * (p.y - r) <= r * r;
                 }
             }
-            onClicked: sceneManager.enterParentFactory()
+            onClicked: SceneManager.enterParentFactory()
         }
     }
 }

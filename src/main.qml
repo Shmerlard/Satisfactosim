@@ -10,32 +10,16 @@ ApplicationWindow {
     height: 800
     visible: true
 
-    // Platform.FileDialog {
-    //     id: saveDialog
-    //     title: "Save Factory"
-    //     fileMode: Platform.FileDialog.SaveFile
-    //     nameFilters: ["Factory files (*.json)", "All files (*)"]
-    //     onAccepted: SessionManager.save(file)
-    // }
-    //
-    // Platform.FileDialog {
-    //     id: openDialog
-    //     title: "Open Factory"
-    //     fileMode: Platform.FileDialog.OpenFile
-    //     nameFilters: ["Factory files (*.json)", "All files (*)"]
-    //     onAccepted: SessionManager.load(file)
-    // }
-    //
     menuBar: MenuBar {
         Menu {
             title: "File"
             MenuItem {
                 text: "Save..."
-                onClicked: saveDialog.open()
+                // onClicked: saveDialog.open()
             }
             MenuItem {
                 text: "Open..."
-                onClicked: openDialog.open()
+                // onClicked: openDialog.open()
             }
             MenuSeparator {}
             MenuItem {
@@ -47,12 +31,16 @@ ApplicationWindow {
             title: "Factory"
             MenuItem {
                 text: "Go to Root"
-                onClicked: SessionManager.goToRoot()
+                // onClicked: SessionManager.goToRoot()
+                onClicked: SceneManager.enterRootFactory()
+
             }
             MenuItem {
                 text: "Go Up"
-                enabled: SessionManager.activeFactory !== SessionManager.rootFactory
-                onClicked: SessionManager.goParentFactory()
+                enabled: !SceneManager.isRootFactory
+                // onClicked: SessionManager.goParentFactory()
+                // onClicked: SessionManager.enterParentFactory()
+                onClicked: SceneManager.enterParentFactory()
             }
         }
         Menu {

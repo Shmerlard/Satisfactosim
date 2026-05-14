@@ -35,3 +35,9 @@ QString MachineNode::machineName() const
         return QString();
     return m_machine->machineName;
 }
+
+void MachineNode::setMachineLimit(float limit) 
+{
+    m_machineLimit = limit; 
+    emit machineLimitChanged();
+}

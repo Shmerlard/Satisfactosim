@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Layouts
 
@@ -17,8 +19,8 @@ Item {
         id: background
         anchors.fill: parent
         color: "#1e2838"
-        border.color: selected ? "#4fc3f7" : "#e8a020"
-        border.width: selected ? 2 : 1
+        border.color: root.selected ? "#4fc3f7" : "#e8a020"
+        border.width: root.selected ? 2 : 1
         radius: 10
     }
     RowLayout {
@@ -31,6 +33,7 @@ Item {
             Repeater {
                 model: root.nodeData ? root.nodeData.inputs : []
                 delegate: Port {
+                    required property var modelData
                     portData: modelData
                     nodeRoot: root
                     isInput: true
@@ -61,7 +64,7 @@ Item {
             }
             Text {
                 Layout.alignment: Qt.AlignHCenter
-                text: root.nodeData ? root.nodeData.machineCount : ""
+                text: root.nodeData ? root.nodeData.machineLimit : "DD"
                 color: "white"
             }
             Text {
@@ -76,6 +79,7 @@ Item {
             Repeater {
                 model: root.nodeData ? root.nodeData.outputs : []
                 delegate: Port {
+                    required property var modelData
                     portData: modelData
                     nodeRoot: root
                     isInput: false

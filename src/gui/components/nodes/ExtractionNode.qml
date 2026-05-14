@@ -36,6 +36,11 @@ Item {
                 Layout.preferredWidth: 50
             }
             Text {
+                id: amountText
+                text: root.nodeData ? root.nodeData.machineCount : ""
+                color: "white"
+            }
+            Text {
                 id: nameText
                 text: root.nodeData ? root.nodeData.machineName : ""
                 color: "white"

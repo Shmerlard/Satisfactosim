@@ -1,5 +1,9 @@
+// pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Layouts
+// import Bridge
+import FACTORY_QT
 
 Item {
     id: root
@@ -19,7 +23,7 @@ Item {
         if (!nodeRoot) return;
         var pt = isInput ? mapToItem(nodeRoot, 0, mainLayout.y + mainLayout.height / 2)
                          : mapToItem(nodeRoot, width, mainLayout.y + mainLayout.height / 2);
-        sceneManager.setPortOffset(portData.nodeIndex, portData.portIndex, pt);
+        SceneManager.setPortOffset(portData.nodeIndex, portData.portIndex, pt);
     }
 
     Component.onCompleted: updateOffset()
@@ -50,7 +54,7 @@ Item {
             fillMode: Image.PreserveAspectFit
         }
         Text {
-            text: root.isInput ? "INPUT" : "OUTPUT"
+            text: root.portData.amount
             color: "white"
         }
     }

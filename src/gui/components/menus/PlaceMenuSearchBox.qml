@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import FACTORY_QT
 
 TextField {
     id: searchBox
@@ -19,6 +20,6 @@ TextField {
     }
 
     onTextChanged: {
-        sceneManager.recipes.setFilterString(text);
+        SceneManager.recipes.setFilterString(text);
     }
 }

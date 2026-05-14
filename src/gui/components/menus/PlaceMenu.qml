@@ -48,7 +48,7 @@ Popup {
                 Layout.fillWidth: true
                 text: "Sub-Factory"
                 onClicked: {
-                    sceneManager.createSubFactory(nodeNameField.text, root.spawnX, root.spawnY);
+                    SceneManager.createSubFactory(nodeNameField.text, root.spawnX, root.spawnY);
                     nodeNameField.text = "";
                     root.close();
                 }
@@ -58,7 +58,7 @@ Popup {
                 Layout.fillWidth: true
                 text: "Input Edge"
                 onClicked: {
-                    sceneManager.createEdgeNode(true, nodeNameField.text, root.spawnX, root.spawnY);
+                    SceneManager.createEdgeNode(true, nodeNameField.text, root.spawnX, root.spawnY);
                     nodeNameField.text = "";
                     root.close();
                 }
@@ -68,7 +68,7 @@ Popup {
                 Layout.fillWidth: true
                 text: "Output Edge"
                 onClicked: {
-                    sceneManager.createEdgeNode(false, nodeNameField.text, root.spawnX, root.spawnY);
+                    SceneManager.createEdgeNode(false, nodeNameField.text, root.spawnX, root.spawnY);
                     nodeNameField.text = "";
                     root.close();
                 }
@@ -104,7 +104,7 @@ Popup {
                     spacing: 2
 
                     Repeater {
-                        model: sceneManager.recipes
+                        model: SceneManager.recipes
 
                         delegate: PlaceMenuEntry {
                             implicitWidth: recipeSelector.width

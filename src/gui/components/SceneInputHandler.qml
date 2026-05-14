@@ -1,4 +1,5 @@
 import QtQuick
+import FACTORY_QT
 
 MouseArea {
     id: root
@@ -174,7 +175,7 @@ MouseArea {
     onDoubleClicked: mouse => {
         if (mouse.button === Qt.RightButton) {
             if (_hoveredConn) {
-                sceneManager.deleteConnection(_hoveredConn.conn);
+                SceneManager.deleteConnection(_hoveredConn.conn);
                 _hoveredConn = null;
             }
             return;
@@ -185,7 +186,7 @@ MouseArea {
             if (mouse.x >= loader.x && mouse.x <= loader.x + loader.width &&
                 mouse.y >= loader.y && mouse.y <= loader.y + loader.height) {
                 if (loader.nodeData && loader.nodeData.nodeType === 2)
-                    sceneManager.enterFactory(loader.nodeData);
+                    SceneManager.enterFactory(loader.nodeData);
                 return;
             }
         }
