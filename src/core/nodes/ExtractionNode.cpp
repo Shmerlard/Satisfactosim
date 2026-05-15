@@ -11,9 +11,7 @@ ExtractionNode::ExtractionNode(
     , m_tier(tier)
 {
     m_type = NodeType::Extraction;
-    // m_recipe = &recipe;
-
-    // buildPortsFromRecipe();
+    m_machineLimit = 1;
     setRecipe(&recipe);
 }
 

@@ -19,6 +19,7 @@ Item {
         id: background
         anchors.fill: parent
         color: "#1e2838"
+        // color: "yellow"
         border.color: root.selected ? "#4fc3f7" : "#e8a020"
         border.width: root.selected ? 2 : 1
         radius: 10
