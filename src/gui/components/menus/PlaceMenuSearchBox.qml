@@ -5,6 +5,7 @@ import FACTORY_QT
 
 ColumnLayout {
     spacing: 4
+    property int currentMode: 0
 
     TextField {
         id: searchBox
@@ -67,10 +68,13 @@ ColumnLayout {
             delegate: Button {
                 required property var modelData
                 checkable: true
-                checked: modelData.mode === 0  // "All" checked by default
+                checked: currentMode === modelData.mode
                 text: modelData.label
                 ButtonGroup.group: portFilterGroup
-                onClicked: SceneManager.recipes.setFilterMode(modelData.mode)
+                onClicked: {
+                    currentMode = modelData.mode;
+                    SceneManager.recipes.setFilterMode(modelData.mode);
+                }
 
                 background: Rectangle {
                     color: parent.checked ? "#4fc3f7" : "#2a2a2a"

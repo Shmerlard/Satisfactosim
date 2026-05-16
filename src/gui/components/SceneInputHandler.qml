@@ -27,22 +27,32 @@ MouseArea {
 
     function updateConnectionHover(mx, my) {
         if (!conns || scene.dragMode !== "") {
-            if (_hoveredConn) { _hoveredConn.hovered = false; _hoveredConn = null; }
+            if (_hoveredConn) {
+                _hoveredConn.hovered = false;
+                _hoveredConn = null;
+            }
             return;
         }
         var found = null;
         for (var i = 0; i < conns.count; i++) {
             var item = conns.itemAt(i);
-            if (!item || !item.conn || !item.src || !item.dst) continue;
+            if (!item || !item.conn || !item.src || !item.dst)
+                continue;
             var ax = item.src.posX + item.conn.srcOffset.x;
             var ay = item.src.posY + item.conn.srcOffset.y;
             var bx = item.dst.posX + item.conn.dstOffset.x;
             var by = item.dst.posY + item.conn.dstOffset.y;
-            if (distToSegment(mx, my, ax, ay, bx, by) < 6) { found = item; break; }
+            if (distToSegment(mx, my, ax, ay, bx, by) < 6) {
+                found = item;
+                break;
+            }
         }
-        if (found === _hoveredConn) return;
-        if (_hoveredConn) _hoveredConn.hovered = false;
-        if (found) found.hovered = true;
+        if (found === _hoveredConn)
+            return;
+        if (_hoveredConn)
+            _hoveredConn.hovered = false;
+        if (found)
+            found.hovered = true;
         _hoveredConn = found;
     }
 
@@ -53,9 +63,10 @@ MouseArea {
 
     onPressed: mouse => {
         if (mouse.button === Qt.RightButton) {
-            if (_hoveredConn) return;  // double-right-click will handle deletion
+            if (_hoveredConn)
+                return;  // double-right-click will handle deletion
             var screenPt = root.mapToItem(flick, mouse.x, mouse.y);
-            menu.x = Math.min(screenPt.x, flick.width  - menu.width);
+            menu.x = Math.min(screenPt.x, flick.width - menu.width);
             menu.y = Math.min(screenPt.y, flick.height - menu.height);
             menu.spawnX = mouse.x;
             menu.spawnY = mouse.y;
@@ -87,8 +98,7 @@ MouseArea {
         // 2. nodes
         for (var j = 0; j < nodes.count; j++) {
             var loader = nodes.itemAt(j);
-            if (mouse.x >= loader.x && mouse.x <= loader.x + loader.width &&
-                mouse.y >= loader.y && mouse.y <= loader.y + loader.height) {
+            if (mouse.x >= loader.x && mouse.x <= loader.x + loader.width && mouse.y >= loader.y && mouse.y <= loader.y + loader.height) {
                 scene.dragMode = "node";
                 var isSelected = loader.item && loader.item.selected;
                 var loaders = [];
@@ -96,10 +106,18 @@ MouseArea {
                     for (var k = 0; k < nodes.count; k++) {
                         var l = nodes.itemAt(k);
                         if (l.item && l.item.selected)
-                            loaders.push({ loader: l, offsetX: mouse.x - l.nodeData.posX, offsetY: mouse.y - l.nodeData.posY });
+                            loaders.push({
+                                loader: l,
+                                offsetX: mouse.x - l.nodeData.posX,
+                                offsetY: mouse.y - l.nodeData.posY
+                            });
                     }
                 } else {
-                    loaders.push({ loader: loader, offsetX: mouse.x - loader.nodeData.posX, offsetY: mouse.y - loader.nodeData.posY });
+                    loaders.push({
+                        loader: loader,
+                        offsetX: mouse.x - loader.nodeData.posX,
+                        offsetY: mouse.y - loader.nodeData.posY
+                    });
                 }
                 scene.dragLoaders = loaders;
                 return;
@@ -116,7 +134,8 @@ MouseArea {
         } else {
             for (var c = 0; c < nodes.count; c++) {
                 var n = nodes.itemAt(c);
-                if (n.item) n.item.selected = false;
+                if (n.item)
+                    n.item.selected = false;
             }
             mouse.accepted = false;
         }
@@ -133,7 +152,8 @@ MouseArea {
             scene.pendingTarget = null;
             for (var i = 0; i < scene.portItems.length; i++) {
                 var port = scene.portItems[i];
-                if (port === scene.dragSourcePort) continue;
+                if (port === scene.dragSourcePort)
+                    continue;
                 var localPt = root.mapToItem(port, mouse.x, mouse.y);
                 if (port.contains(localPt)) {
                     scene.pendingTarget = port.portData;
@@ -154,7 +174,18 @@ MouseArea {
 
     onReleased: mouse => {
         if (scene.dragMode === "port") {
-            scene.endPortDrag();
+            if (scene.pendingTarget) {
+                scene.endPortDrag();
+            } else {
+                var src = scene.dragSourcePort;
+                var screenPt = root.mapToItem(flick, mouse.x, mouse.y);
+                menu.x = Math.min(screenPt.x, flick.width - menu.width);
+                menu.y = Math.min(screenPt.y, flick.height - menu.height);
+                menu.spawnX = mouse.x;
+                menu.spawnY = mouse.y;
+                menu.openForPort(src.portData, src.isInput);
+                menu.open();
+            }
         } else if (scene.dragMode === "marquee") {
             var x1 = Math.min(scene.marqueeStartX, scene.marqueeEndX);
             var y1 = Math.min(scene.marqueeStartY, scene.marqueeEndY);
@@ -162,14 +193,16 @@ MouseArea {
             var y2 = Math.max(scene.marqueeStartY, scene.marqueeEndY);
             for (var i = 0; i < nodes.count; i++) {
                 var loader = nodes.itemAt(i);
-                var inside = loader.x < x2 && loader.x + loader.width > x1 &&
-                             loader.y < y2 && loader.y + loader.height > y1;
-                if (loader.item) loader.item.selected = inside;
+                var inside = loader.x < x2 && loader.x + loader.width > x1 && loader.y < y2 && loader.y + loader.height > y1;
+                if (loader.item)
+                    loader.item.selected = inside;
             }
         }
         scene.dragMode = "";
         scene.dragLoaders = [];
         scene.dragSourcePort = null;
+        scene.pendingConn = null;
+        scene.pendingTarget = null;
     }
 
     onDoubleClicked: mouse => {
@@ -183,8 +216,7 @@ MouseArea {
 
         for (var i = 0; i < nodes.count; i++) {
             var loader = nodes.itemAt(i);
-            if (mouse.x >= loader.x && mouse.x <= loader.x + loader.width &&
-                mouse.y >= loader.y && mouse.y <= loader.y + loader.height) {
+            if (mouse.x >= loader.x && mouse.x <= loader.x + loader.width && mouse.y >= loader.y && mouse.y <= loader.y + loader.height) {
                 if (loader.nodeData && loader.nodeData.nodeType === 2)
                     SceneManager.enterFactory(loader.nodeData);
                 return;

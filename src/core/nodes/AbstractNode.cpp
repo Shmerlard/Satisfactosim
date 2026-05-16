@@ -92,6 +92,7 @@ QVariantList AbstractNode::inputsQml() const
         map["amount"] = p->amount;
         map["portIndex"] = idx++;
         map["nodeIndex"] = index();
+        map["itemName"] = p->item ? p->item->itemName : "";
         list.append(map);
     }
     return list;
@@ -107,6 +108,8 @@ QVariantList AbstractNode::outputsQml() const
         map["amount"] = p->amount;
         map["portIndex"] = idx++;
         map["nodeIndex"] = index();
+        map["itemName"] = p->item ? p->item->itemName : "";
+        // map["isInput"] = p->type == PortType::Input;
         list.append(map);
     }
     return list;

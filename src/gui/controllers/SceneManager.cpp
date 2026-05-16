@@ -4,6 +4,7 @@
 #include "core/nodes/Connection.h"
 #include "core/nodes/Factory.h"
 #include "core/nodes/MachineNode.h"
+#include "core/nodes/Port.h"
 
 SceneManager::SceneManager(QObject* parent)
     : QObject(parent)
@@ -83,7 +84,7 @@ void SceneManager::enterRootFactory()
 //     node->setPosY(y);
 //
 // }
-void SceneManager::createMachineNode(const QString recipe, double x, double y)
+AbstractNode* SceneManager::createMachineNode(const QString recipe, double x, double y)
 {
     AbstractNode* node = nullptr;
     const Recipe* recipe_p = GameLibrary::get().getRecipeByClass(recipe);
@@ -92,10 +93,11 @@ void SceneManager::createMachineNode(const QString recipe, double x, double y)
     } else if (auto* p = dynamic_cast<const ExtractionRecipe*>(recipe_p)) {
         node = m_session->createExtractionNode(*p);
     } else {
-        return;
+        return nullptr;
     }
     node->setPosX(x);
     node->setPosY(y);
+    return node;
 }
 
 void SceneManager::createSubFactory(const QString name, double x, double y)
@@ -146,6 +148,27 @@ void SceneManager::setPortOffset(int nodeIndex, int portIndex, QPointF offset)
 void SceneManager::connectNodes(int srcNodeIdx, int srcPortIdx, int dstNodeIdx, int dstPortIdx)
 {
     m_session->connectNode(srcNodeIdx, srcPortIdx, dstNodeIdx, dstPortIdx);
+}
+
+void SceneManager::createAndConnectMachineNode(const QString recipe, double x, double y, int srcNodeIdx, int srcPortIdx)
+{
+    Factory* factory = m_session->activeFactory();
+    Port* srcPort = factory->nodes().at(srcNodeIdx)->getPortFromIndex(srcPortIdx);
+    if (!srcPort || !srcPort->item)
+        return;
+
+    AbstractNode* newNode = createMachineNode(recipe, x, y);
+    if (!newNode)
+        return;
+
+    PortType targetType = srcPort->type == PortType::Output ? PortType::Input : PortType::Output;
+    auto& targetPorts = targetType == PortType::Input ? newNode->inputs() : newNode->outputs();
+    for (auto& port : targetPorts) {
+        if (port->item == srcPort->item) {
+            m_session->connectNode(*srcPort, *port);
+            return;
+        }
+    }
 }
 
 void SceneManager::setMachineLimit(AbstractNode* node, float limit)

@@ -9,6 +9,7 @@ Item {
     property real spawnX: 0
     property real spawnY: 0
     property var spawnMenu
+    property var sourcePort: null
 
     implicitHeight: 40
     implicitWidth: 450
@@ -107,7 +108,14 @@ Item {
     MouseArea {
         anchors.fill: parent
         onClicked: {
-            SceneManager.createMachineNode(root.recipe["className"], spawnX, spawnY);
+            if (root.sourcePort) {
+                SceneManager.createAndConnectMachineNode(
+                    root.recipe["className"], spawnX, spawnY,
+                    root.sourcePort.nodeIndex, root.sourcePort.portIndex
+                );
+            } else {
+                SceneManager.createMachineNode(root.recipe["className"], spawnX, spawnY);
+            }
             placeMenu.close();
         }
     }

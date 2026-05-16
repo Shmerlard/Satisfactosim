@@ -60,7 +60,8 @@ public slots:
     void enterParentFactory();
     void enterRootFactory();
     // void createMachineNode(Recipe* recipe, double x, double y);
-    void createMachineNode(const QString recipe, double x, double y);
+    AbstractNode* createMachineNode(const QString recipe, double x, double y);
+    void createAndConnectMachineNode(const QString recipe, double x, double y, int srcNodeIdx, int srcPortIdx);
     void createSubFactory(const QString name, double x, double y);
     void createEdgeNode(bool isInput, const QString name, double x, double y);
     void deleteNode(AbstractNode* node);

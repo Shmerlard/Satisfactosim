@@ -8,6 +8,28 @@ Popup {
     id: root
     property real spawnX: 0
     property real spawnY: 0
+    property var sourcePort: null   // set when opened by port drag
+
+    function openForPort(portData, isInput) {
+        sourcePort = {
+            nodeIndex: portData.nodeIndex,
+            portIndex: portData.portIndex,
+            isInput:   isInput
+        };
+        // dragging from output → want recipes consuming this item (Inputs=1)
+        // dragging from input  → want recipes producing this item (Outputs=2)
+        var mode = isInput ? 2 : 1;
+        SceneManager.recipes.setFilterString(portData.itemName);
+        SceneManager.recipes.setFilterMode(mode);
+        searchBox.currentMode = mode;
+    }
+
+    onClosed: {
+        sourcePort = null;
+        SceneManager.recipes.setFilterString("");
+        SceneManager.recipes.setFilterMode(0);
+        searchBox.currentMode = 0;
+    }
 
     width: 650
     height: 340
@@ -91,7 +113,7 @@ Popup {
             Layout.fillHeight: true
             spacing: 4
 
-            PlaceMenuSearchBox {}
+            PlaceMenuSearchBox { id: searchBox }
 
             ScrollView {
                 Layout.fillWidth: true
@@ -112,6 +134,7 @@ Popup {
                             spawnX: root.spawnX
                             spawnY: root.spawnY
                             spawnMenu: root
+                            sourcePort: root.sourcePort
                         }
                     }
                 }
