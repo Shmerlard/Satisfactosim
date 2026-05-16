@@ -29,7 +29,7 @@ class AbstractNode : public QObject {
     Q_PROPERTY(double posY READ posY WRITE setPosY NOTIFY posChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(int nodeType READ nodeTypeInt CONSTANT)
-    Q_PROPERTY(QVariantList inputs  READ inputsQml  NOTIFY portsChanged)
+    Q_PROPERTY(QVariantList inputs READ inputsQml NOTIFY portsChanged)
     Q_PROPERTY(QVariantList outputs READ outputsQml NOTIFY portsChanged)
 
 protected:
@@ -47,7 +47,6 @@ protected:
     std::vector<std::unique_ptr<Port>> m_outputs;
 
 public:
-
 public:
     virtual ~AbstractNode() = default; // FIXME: may need improvement
 
@@ -72,10 +71,9 @@ public:
     // ---------- PORTS ---------------
     void deletePorts();
     void disconnectAllPorts();
-    // Connection* disconnectPort(Port& port, Port& peer, QString* err = nullptr);
-    // Connection* connectToPort(Port& src, Port& dst, QString* err = nullptr);
     int getPortIndex(Port& port, bool isOffset = true) const;
     Port* getPortFromIndex(int index) const;
+    bool isMachineNode() const { return m_type == NodeType::Extraction || m_type == NodeType::Production; }
 
     virtual void onPortConnected(Port& port) { };
     virtual void onPortDisconnected(Port& port) { };
@@ -89,7 +87,6 @@ public:
     void setPos(QPointF pos);
     void setPosX(double x);
     void setPosY(double y);
-
 
 signals:
     void posChanged();

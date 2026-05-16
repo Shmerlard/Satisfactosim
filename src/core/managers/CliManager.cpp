@@ -153,13 +153,13 @@ void printNode(QTextStream& out, AbstractNode* node, Factory* factory)
                             .arg(r->producedIn ? r->producedIn->basePowerConsumption : 0.f, 0, 'f', 0);
         }
         QString limitStr = n->machineLimit() >= 0
-            ? QString("  [limit: %1]").arg(n->machineLimit(), 0, 'f', 2)
+            ? QString("  [limit: %1]").arg(boost::rational_cast<double>(n->machineLimit()), 0, 'f', 2)
             : QString();
         header = QString("┌─ [%1] %2  \"%3\"  x%4%5\n│  recipe : %6%7")
                      .arg(idx)
                      .arg(machineName)
                      .arg(n->name())
-                     .arg(n->machineCount(), 0, 'f', 2)
+                     .arg(boost::rational_cast<double>(n->machineCount()), 0, 'f', 2)
                      .arg(limitStr)
                      .arg(recipeName)
                      .arg(cycleInfo);
@@ -174,14 +174,14 @@ void printNode(QTextStream& out, AbstractNode* node, Factory* factory)
             { NodePurity::Pure, "Pure" },
         };
         QString limitStr = n->machineLimit() >= 0
-            ? QString("  [limit: %1]").arg(n->machineLimit(), 0, 'f', 2)
+            ? QString("  [limit: %1]").arg(boost::rational_cast<double>(n->machineLimit()), 0, 'f', 2)
             : QString();
         header = QString("┌─ [%1] %2  \"%3\"  x%4%5\n│  resource : %6  purity: %7")
                      .arg(idx)
                      // .arg(n->getExtractorName())
                      .arg(n->machineName())
                      .arg(n->name())
-                     .arg(n->machineCount(), 0, 'f', 2)
+                     .arg(boost::rational_cast<double>(n->machineCount()), 0, 'f', 2)
                      .arg(limitStr)
                      .arg(n->recipe() ? n->recipe()->resource->itemName : "none")
                      .arg(purityNames.value(n->purity()));

@@ -48,7 +48,7 @@ Frac ExtractionNode::portRate(const Port* port) const
     const auto* machine = dynamic_cast<const ExtractionMachine*>(extractor());
     if (!machine)
         return Frac(0);
-    Frac base = Frac (machine->itemsPerCycle * 4, (int)(machine->extractCycleTime * 4));
+    Frac base = Frac (machine->itemsPerCycle * 4, (int)(machine->extractCycleTime * 4)) * Frac(60);
     const ExtractionRecipe* r = recipe();
     if (r && r->resource && (r->resource->form == Form::Liquid || r->resource->form == Form::Gas))
         base /= 1000;

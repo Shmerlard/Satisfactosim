@@ -3,19 +3,31 @@
 #include <QList>
 #include <QMap>
 #include <vector>
+#include "core/types/Types.h"
 // #include <Eigen/Core>
 // #include <Eigen/SparseCore>
 
+class MachineNode;
 class AbstractNode;
 class Connection;
 class Factory;
 
+// using Island = QList<AbstractNode*>;
+
+struct Equation {
+    QMap<MachineNode*, Frac> coefficients;
+    Frac rhs;
+
+    int varCount() { return coefficients.size(); }
+    bool contains(MachineNode* node) { return coefficients.contains(node); }
+};
+
 class Solver {
 private:
-    QMap<AbstractNode*, int> m_map;
-    int m_numVars;
-    // Eigen::SparseMatrix<double> m_matrix;
-    // Eigen::VectorXd m_b;
+    // QList<Island> m_map;
+    QList<MachineNode*> m_nodes;
+    QList<Equation> m_equations;
+    QMap<MachineNode*, QList<Equation*>> m_nodeEquations;
 
 public:
     void build(Factory* root);

@@ -9,15 +9,17 @@ MachineNode::MachineNode(
     float machineLimit,
     QUuid id)
     : AbstractNode(parentFactory, name, id)
-    , m_machineCount(machineCount)
-    , m_machineLimit(machineLimit)
+    // , m_machineCount(machineCount)
+    // , m_machineLimit(machineLimit)
 {
+    m_machineLimit = Frac((int)(machineLimit * 100), 100);
+    m_machineCount = Frac((int)(machineCount * 100), 100);
 }
 
 QJsonObject MachineNode::getJsonNode() const
 {
     QJsonObject obj = AbstractNode::getJsonNode();
-    obj["machineLimit"] = m_machineLimit;
+    obj["machineLimit"] = boost::rational_cast<double>(m_machineLimit);
     obj["recipe"] = recipe() ? recipe()->recipeClass : "";
     return obj;
 }
@@ -38,6 +40,7 @@ QString MachineNode::machineName() const
 
 void MachineNode::setMachineLimit(float limit) 
 {
-    m_machineLimit = limit; 
+    // m_machineLimit = limit; 
+    m_machineLimit = Frac((int)(limit * 100), 100);
     emit machineLimitChanged();
 }

@@ -12,8 +12,8 @@ class MachineNode : public AbstractNode {
 
     Q_PROPERTY(QString machineName READ machineName NOTIFY recipeChanged)
     Q_PROPERTY(QString machineIcon READ machineIcon NOTIFY recipeChanged)
-    Q_PROPERTY(float machineCount READ machineCount NOTIFY machineCountChanged)
-    Q_PROPERTY(float machineLimit READ machineLimit NOTIFY machineLimitChanged)
+    Q_PROPERTY(float machineCount READ machineCountFloat NOTIFY machineCountChanged)
+    Q_PROPERTY(float machineLimit READ machineLimitFloat NOTIFY machineLimitChanged)
 
     friend class Solver;
 
@@ -27,22 +27,24 @@ protected:
 
     const Machine* m_machine = nullptr;
     const Recipe* m_recipe = nullptr;
-    float m_machineCount = -1;
-    float m_machineLimit = -1;
+    Frac m_machineCount = -1;
+    Frac m_machineLimit = -1;
 
     virtual void buildPortsFromRecipe() = 0;
     virtual const Recipe* recipe() const { return m_recipe; }
 
 public:
     QString machineName() const;
-    float machineCount() const { return m_machineCount; }
-    float machineLimit() const { return m_machineLimit; }
+    Frac machineCount() const { return m_machineCount; }
+    Frac machineLimit() const { return m_machineLimit; }
+    float machineCountFloat() const { return boost::rational_cast<float>(m_machineCount); }
+    float machineLimitFloat() const { return boost::rational_cast<float>(m_machineLimit); }
     virtual QString machineIcon() const;
     void setMachineLimit(float limit);
     QJsonObject getJsonNode() const override;
 
 private:
-    void setMachineCount(float count) { m_machineCount = count; } // only the solver can set the count
+    void setMachineCount(Frac count) { m_machineCount = count; } // only the solver can set the count
 
 signals:
     void recipeChanged();
