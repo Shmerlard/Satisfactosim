@@ -21,14 +21,18 @@ Popup {
         var mode = isInput ? 2 : 1;
         SceneManager.recipes.setFilterString(portData.itemName);
         SceneManager.recipes.setFilterMode(mode);
+        SceneManager.recipes.setSearchRecipeName(false);
         searchBox.currentMode = mode;
+        searchBox.recipeNameEnabled = false;
     }
 
     onClosed: {
         sourcePort = null;
         SceneManager.recipes.setFilterString("");
         SceneManager.recipes.setFilterMode(0);
+        SceneManager.recipes.setSearchRecipeName(true);
         searchBox.currentMode = 0;
+        searchBox.recipeNameEnabled = true;
     }
 
     width: 650

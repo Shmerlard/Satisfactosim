@@ -148,6 +148,21 @@ void Factory::addNode(AbstractNode& node)
 
 void Factory::removeNode(AbstractNode& node)
 {
+    auto disconnectPorts = [&](const std::vector<std::unique_ptr<Port>>& ports) {
+        for (const auto& port : ports) {
+            for (Connection* conn : QList<Connection*>(port->connections)) {
+                Port* peer = conn->getPeer(*port);
+                port->connections.removeOne(conn);
+                peer->connections.removeOne(conn);
+                peer->owner.onPortDisconnected(*peer);
+                m_connections.removeOne(conn);
+                delete conn;
+            }
+        }
+    };
+    disconnectPorts(node.inputs());
+    disconnectPorts(node.outputs());
+
     m_nodes.removeOne(&node);
 
     switch (node.type()) {

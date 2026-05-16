@@ -32,8 +32,8 @@ Port* Connection::getPeer(Port& port)
 QJsonObject Connection::getJsonObject()
 {
     QJsonObject obj;
-    obj["from"] = QJsonArray { m_src->owner.index(), m_src->owner.getPortIndex(*m_src) };
-    obj["to"] = QJsonArray { m_dst->owner.index(), m_dst->owner.getPortIndex(*m_dst) };
+    obj["from"] = QJsonArray { m_src->owner.index(), m_src->item ? m_src->item->itemClass : "" };
+    obj["to"]   = QJsonArray { m_dst->owner.index(), m_dst->item ? m_dst->item->itemClass : "" };
     return obj;
 }
 //

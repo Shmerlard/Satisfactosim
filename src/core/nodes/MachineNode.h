@@ -42,6 +42,7 @@ public:
     virtual QString machineIcon() const;
     void setMachineLimit(float limit);
     QJsonObject getJsonNode() const override;
+    void notifySolved() override { emit portsChanged(); emit machineCountChanged(); }
 
 private:
     void setMachineCount(Frac count) { m_machineCount = count; } // only the solver can set the count

@@ -121,6 +121,48 @@ Popup {
                 }
                 ButtonGroup { id: purityGroup }
             }
+
+            // --- tier (only if more than one tier exists) ---
+            Text {
+                visible: nodeData && nodeData.tierCount > 1
+                text: "Mark"
+                color: "#aaa"
+                font.pixelSize: 11
+            }
+            RowLayout {
+                visible: nodeData && nodeData.tierCount > 1
+                Layout.fillWidth: true
+                spacing: 4
+
+                Repeater {
+                    model: nodeData ? nodeData.tierCount : 0
+                    delegate: Button {
+                        required property int index
+                        Layout.fillWidth: true
+                        text: "Mk." + (index + 1)
+                        checkable: true
+                        checked: nodeData && nodeData.tier === index
+                        ButtonGroup.group: tierGroup
+                        onClicked: if (nodeData) nodeData.tier = index
+
+                        background: Rectangle {
+                            color: parent.checked ? "#e8a020" : "#2a3a4a"
+                            border.color: parent.checked ? "#e8a020" : "#555"
+                            border.width: 1
+                            radius: 4
+                        }
+                        contentItem: Text {
+                            text: parent.text
+                            color: parent.checked ? "#1a1a1a" : "#aaaaaa"
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            font.pixelSize: 11
+                            font.bold: parent.checked
+                        }
+                    }
+                }
+                ButtonGroup { id: tierGroup }
+            }
         }
 
         Rectangle { Layout.fillWidth: true; height: 1; color: "#444" }

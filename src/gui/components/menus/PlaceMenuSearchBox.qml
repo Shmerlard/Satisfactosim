@@ -6,6 +6,7 @@ import FACTORY_QT
 ColumnLayout {
     spacing: 4
     property int currentMode: 0
+    property bool recipeNameEnabled: true
 
     TextField {
         id: searchBox
@@ -35,7 +36,8 @@ ColumnLayout {
             id: recipeNameBtn
             text: "Recipe Name"
             checkable: true
-            checked: true
+            checked: recipeNameEnabled
+            enabled: recipeNameEnabled
             onCheckedChanged: SceneManager.recipes.setSearchRecipeName(checked)
 
             background: Rectangle {

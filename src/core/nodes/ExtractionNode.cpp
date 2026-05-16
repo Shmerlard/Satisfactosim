@@ -72,6 +72,17 @@ const ExtractionRecipe* ExtractionNode::recipe() const
     return static_cast<const ExtractionRecipe*>(m_recipe);
 }
 
+void ExtractionNode::setTierInt(int t)
+{
+    const ExtractionRecipe* r = recipe();
+    if (!r || !r->family || t < 0 || t >= r->family->tiers.size())
+        return;
+    m_tier = t;
+    m_machine = r->family->tiers[m_tier];
+    emit tierChanged();
+    emit recipeChanged();
+}
+
 void ExtractionNode::setRecipe(const ExtractionRecipe* recipe)
 {
     if (m_recipe == recipe)

@@ -87,6 +87,7 @@ public:
     void setPos(QPointF pos);
     void setPosX(double x);
     void setPosY(double y);
+    virtual void notifySolved() { emit portsChanged(); }
 
 signals:
     void posChanged();

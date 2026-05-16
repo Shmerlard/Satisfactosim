@@ -1,5 +1,6 @@
 #include "SessionManager.h"
 #include "GameLibrary.h"
+#include "core/nodes/ExtractionNode.h"
 #include "core/nodes/ProductionNode.h"
 #include "src/core/nodes/Factory.h"
 #include <QDir>
@@ -321,11 +322,30 @@ void SessionManager::load(const QString& path)
 
         for (auto connArr : fObject["connections"].toArray()) {
             QJsonObject conn = connArr.toObject();
-            int fromNodeIdx = conn["from"].toArray()[0].toInt();
-            int fromPortIdx = conn["from"].toArray()[1].toInt();
-            int toNodeIdx   = conn["to"].toArray()[0].toInt();
-            int toPortIdx   = conn["to"].toArray()[1].toInt();
-            connectNode(fromNodeIdx, fromPortIdx, toNodeIdx, toPortIdx, f);
+            int fromNodeIdx       = conn["from"].toArray()[0].toInt();
+            QString fromItemClass = conn["from"].toArray()[1].toString();
+            int toNodeIdx         = conn["to"].toArray()[0].toInt();
+            QString toItemClass   = conn["to"].toArray()[1].toString();
+
+            AbstractNode* fromNode = f->nodes().value(fromNodeIdx);
+            AbstractNode* toNode   = f->nodes().value(toNodeIdx);
+            if (!fromNode || !toNode) {
+                qWarning() << "Connection references unknown node";
+                continue;
+            }
+
+            Port* srcPort = nullptr;
+            for (auto& p : fromNode->outputs())
+                if (p->item && p->item->itemClass == fromItemClass) { srcPort = p.get(); break; }
+            Port* dstPort = nullptr;
+            for (auto& p : toNode->inputs())
+                if (p->item && p->item->itemClass == toItemClass) { dstPort = p.get(); break; }
+
+            if (!srcPort || !dstPort) {
+                qWarning() << "Connection: could not find ports for items" << fromItemClass << "->" << toItemClass;
+                continue;
+            }
+            connectNode(*srcPort, *dstPort);
         }
     }
 
@@ -406,14 +426,19 @@ AbstractNode* SessionManager::createNodeFromJson(QJsonObject j, Factory* f, QMap
         int tier = j["tier"].toInt();
         QString recipeName = j["recipe"].toString();
         const ExtractionRecipe* recipe = GameLibrary::get().getExtRecipeByClass(recipeName);
-        node = f->createExtractionNode(*recipe, tier, name);
+        ExtractionNode* en = f->createExtractionNode(*recipe, tier, name);
+        en->setPurity(purity);
+        en->setMachineLimit(machineLimit);
+        node = en;
         break;
     }
     case NodeType::Production: {
         float machineLimit = j["machineLimit"].toDouble();
         QString recipeName = j["recipe"].toString();
         const ProductionRecipe* recipe = static_cast<const ProductionRecipe*>(GameLibrary::get().getRecipeByClass(recipeName));
-        node = f->createProductionNode(*recipe, name);
+        ProductionNode* pn = f->createProductionNode(*recipe, name);
+        pn->setMachineLimit(machineLimit);
+        node = pn;
         break;
     }
     default:
@@ -581,5 +606,7 @@ void SessionManager::solve()
     Solver solver;
     solver.build(m_rootFactory);
     solver.solve();
+    for (AbstractNode* node : m_rootFactory->nodes())
+        node->notifySolved();
     emit solved();
 }
