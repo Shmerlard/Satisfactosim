@@ -84,17 +84,42 @@ Popup {
             spacing: 4
 
             Text { text: "Purity"; color: "#aaa"; font.pixelSize: 11 }
-            // TODO: purity selector (Impure / Normal / Pure)
-
-            Text { text: "Tier"; color: "#aaa"; font.pixelSize: 11 }
-            TextField {
-                id: tierField
+            RowLayout {
                 Layout.fillWidth: true
-                placeholderText: "tier..."
-                inputMethodHints: Qt.ImhDigitsOnly
-                background: Rectangle { color: "#2a3a4a"; radius: 4 }
-                color: "white"
-                // onAccepted: { /* TODO */ root.close() }
+                spacing: 4
+
+                Repeater {
+                    model: [
+                        { label: "Impure", value: 0 },
+                        { label: "Normal", value: 1 },
+                        { label: "Pure",   value: 2 }
+                    ]
+                    delegate: Button {
+                        required property var modelData
+                        Layout.fillWidth: true
+                        text: modelData.label
+                        checkable: true
+                        checked: nodeData && nodeData.purity === modelData.value
+                        ButtonGroup.group: purityGroup
+                        onClicked: if (nodeData) nodeData.purity = modelData.value
+
+                        background: Rectangle {
+                            color: parent.checked ? "#e8a020" : "#2a3a4a"
+                            border.color: parent.checked ? "#e8a020" : "#555"
+                            border.width: 1
+                            radius: 4
+                        }
+                        contentItem: Text {
+                            text: parent.text
+                            color: parent.checked ? "#1a1a1a" : "#aaaaaa"
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            font.pixelSize: 11
+                            font.bold: parent.checked
+                        }
+                    }
+                }
+                ButtonGroup { id: purityGroup }
             }
         }
 

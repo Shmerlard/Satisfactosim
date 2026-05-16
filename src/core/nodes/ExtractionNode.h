@@ -5,6 +5,7 @@
 
 class ExtractionNode : public MachineNode {
     Q_OBJECT;
+    Q_PROPERTY(int purity READ purityInt WRITE setPurityInt NOTIFY purityChanged)
 
     friend class SessionManager;
     friend class Factory;
@@ -26,13 +27,16 @@ public:
     ~ExtractionNode() override;
     const Machine* extractor() const;
     NodePurity purity() const { return m_purity; }
-    void setPurity(NodePurity purity) { m_purity = purity; }
+    int purityInt() const { return static_cast<int>(m_purity); }
+    void setPurity(NodePurity p) { m_purity = p; emit purityChanged(); }
+    void setPurityInt(int p) { setPurity(static_cast<NodePurity>(p)); }
     int tier() const { return m_tier; }
 
     void setRecipe(const ExtractionRecipe* recipe);
     const ExtractionRecipe* recipe() const override;
     Frac portRate(const Port* port) const override;
     QJsonObject getJsonNode() const override;
-    // QString getExtractorName() const; // FIX: remove
 
+signals:
+    void purityChanged();
 };
