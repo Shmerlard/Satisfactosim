@@ -20,6 +20,8 @@ pkgs.mkShell {
             qt6.qtdeclarative
             qt6.qtimageformats
             qt6.qtcharts
+            eigen_3_4_0
+            boost
             libGL
             muparser
             ncurses

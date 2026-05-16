@@ -53,14 +53,15 @@ QJsonObject ProductionNode::getJsonNode() const
     return obj;
 }
 
-float ProductionNode::portRate(const Port* port) const
+Frac ProductionNode::portRate(const Port* port) const
 {
-    if (!recipe() || recipe()->recipeTime <= 0.0f)
-        return 0.0f;
-    float perCycle = port->type == PortType::Input
-        ? recipe()->inputs.value(port->item, 0.0f)
-        : recipe()->outputs.value(port->item, 0.0f);
-    return perCycle / recipe()->recipeTime * 60.0f;
+    if (!recipe() || recipe()->recipeTime <= 0)
+        return Frac(0);
+    Frac perCycle = (port->type == PortType::Input)
+        ? recipe()->inputs.value(port->item, Frac(0))
+        : recipe()->outputs.value(port->item, Frac(0));
+    return perCycle / recipe()->recipeTime * 60;
+    // FIX: might be better to just move it to Port and read from there
 }
 
 Machine* ProductionNode::machine() const
@@ -69,16 +70,6 @@ Machine* ProductionNode::machine() const
         return nullptr;
     return recipe()->producedIn;
 }
-
-// QString ProductionNode::machineName() const
-// {
-//     return machine() ? machine()->machineName : "No Machine";
-// }
-//
-// QString ProductionNode::getMachineIcon() const
-// {
-//     return machine() ? machine()->iconPath : "";
-// }
 
 const ProductionRecipe* ProductionNode::recipe() const
 {

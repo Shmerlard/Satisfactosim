@@ -24,9 +24,10 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets Charts Quick Qml)
-find_package(muparser REQUIRED)
-
-find_package(Curses REQUIRED)
+find_package(Boost CONFIG REQUIRED)
+# find_package(Eigen3 REQUIRED NO_MODULE)
+# find_package(muparser REQUIRED)
+# find_package(Curses REQUIRED)
 
 qt_policy(SET QTP0004 NEW)
 
@@ -91,6 +92,8 @@ target_link_libraries(FactoryApp PRIVATE
     Qt6::Charts
     Qt6::Quick
     Qt6::Qml
+    # Eigen3::Eigen
+    Boost::boost
 )
 
 target_compile_definitions(FactoryApp PRIVATE PROJECT_SOURCE_DIR="${CMAKE_SOURCE_DIR}")

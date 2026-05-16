@@ -41,6 +41,9 @@ public:
     void setMachineLimit(float limit);
     QJsonObject getJsonNode() const override;
 
+private:
+    void setMachineCount(float count) { m_machineCount = count; } // only the solver can set the count
+
 signals:
     void recipeChanged();
     void machineLimitChanged();

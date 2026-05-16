@@ -7,6 +7,10 @@
 #include <QUuid>
 #include <QVariantList>
 #include <QVariantMap>
+// #include "boost/rational.hpp"
+#include "core/types/Types.h"
+
+// using Frac = boost::rational<int64_t>;
 
 class Connection;
 class Factory;
@@ -63,7 +67,7 @@ public:
     // ---------- MISC ---------------
     virtual QJsonObject getJsonNode() const;
     int index() const;
-    virtual float portRate(const Port* port) const = 0;
+    virtual Frac portRate(const Port* port) const = 0;
 
     // ---------- PORTS ---------------
     void deletePorts();

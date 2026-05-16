@@ -12,10 +12,10 @@ FactoryNode::FactoryNode(
     targetFactory.m_node = this;
 }
 
-float FactoryNode::portRate(const Port* port) const
+Frac FactoryNode::portRate(const Port* port) const
 {
     // FIX: implement
-    return 0.f;
+    return Frac(0);
 }
 
 QJsonObject FactoryNode::getJsonNode() const

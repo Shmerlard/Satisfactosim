@@ -196,7 +196,8 @@ void GameLibrary::parseRecipes()
         r->recipeClass = obj["Class"].toString();
         r->recipeName = obj["DisplayName"].toString().remove("Alternate:");
         r->isAlternate = obj["Alternate"].toBool();
-        r->recipeTime = obj["ManufactoringDuration"].toString().toDouble();
+        float recipeTimeF = obj["ManufactoringDuration"].toString().toDouble();
+        r->recipeTime = Frac((int)(recipeTimeF * 10) , 10);
 
         m_recipes.insert(r->recipeClass, r);
 
@@ -213,7 +214,7 @@ void GameLibrary::parseRecipes()
             QJsonObject ingObj = ing.toObject();
             QString ingClass = ingObj["Item"].toString();
             Item* item = m_items.value(ingClass);
-            float ingAmount = ingObj["Amount"].toDouble();
+            int ingAmount = ingObj["Amount"].toInt();
 
             if (item) {
                 if (item->form == Form::Liquid || item->form == Form::Gas)
@@ -229,7 +230,7 @@ void GameLibrary::parseRecipes()
             QJsonObject prodObj = prod.toObject();
             QString prodClass = prodObj["Item"].toString();
             Item* item = m_items.value(prodClass);
-            float prodAmount = prodObj["Amount"].toDouble();
+            Frac prodAmount = prodObj["Amount"].toInt();
             if (item) {
                 if (item->form == Form::Liquid || item->form == Form::Gas)
                     prodAmount /= 1000;

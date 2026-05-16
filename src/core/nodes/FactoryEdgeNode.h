@@ -25,7 +25,7 @@ public:
     PortType edgeType() const { return m_edgeType; }
     void onPortConnected(Port& port) override;
     void onPortDisconnected(Port& port) override;
-    float portRate(const Port* port) const override;
+    Frac portRate(const Port* port) const override;
     QJsonObject getJsonNode() const override;
     void setMirrorPort(Port& port) { m_mirrorPort = &port; }
     Port* mirrorPort() const { return m_mirrorPort; }

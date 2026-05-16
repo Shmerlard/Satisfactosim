@@ -9,6 +9,8 @@
 #include <QtQml>
 #include <QCoreApplication>
 #include <iostream>
+// #include <Eigen/Core>
+#include <iostream>
 
 int main(int argc, char* argv[])
 {

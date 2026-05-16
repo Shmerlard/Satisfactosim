@@ -43,29 +43,29 @@ QJsonObject ExtractionNode::getJsonNode() const
     return obj;
 }
 
-float ExtractionNode::portRate(const Port* port) const
+Frac ExtractionNode::portRate(const Port* port) const
 {
     const auto* machine = dynamic_cast<const ExtractionMachine*>(extractor());
     if (!machine)
-        return 0.0f;
-    float base = (float)machine->itemsPerCycle / machine->extractCycleTime * 60.0f;
+        return Frac(0);
+    Frac base = Frac (machine->itemsPerCycle * 4, (int)(machine->extractCycleTime * 4));
     const ExtractionRecipe* r = recipe();
     if (r && r->resource && (r->resource->form == Form::Liquid || r->resource->form == Form::Gas))
-        base /= 1000.0f;
+        base /= 1000;
     switch (m_purity) {
     case NodePurity::Impure:
-        return base * 0.5f;
+        return base * Frac(1, 2);
     case NodePurity::Pure:
-        return base * 2.0f;
+        return base * Frac(1, 2);
     default:
         return base;
     }
 }
 
-QString ExtractionNode::getExtractorName() const
-{
-    return extractor() ? extractor()->machineName : "No Machine";
-}
+// QString ExtractionNode::getExtractorName() const
+// {
+//     return extractor() ? extractor()->machineName : "No Machine";
+// }
 
 const ExtractionRecipe* ExtractionNode::recipe() const
 {

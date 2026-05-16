@@ -24,7 +24,7 @@ public:
     void onPortConnected(Port& port) override;
     void onPortDisconnected(Port& port) override;
     Port* addEdgePort(FactoryEdgeNode* edge);
-    float portRate(const Port* port) const override;
+    Frac portRate(const Port* port) const override;
 
     QJsonObject getJsonNode() const override;
 };

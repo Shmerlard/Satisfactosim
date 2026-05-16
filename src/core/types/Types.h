@@ -4,12 +4,15 @@
 #include <QMap>
 #include <QObject>
 #include <QString>
+#include "boost/rational.hpp"
 
 struct Machine;
 struct Recipe;
 struct ExtractionRecipe;
 struct ProductionRecipe;
 struct MachineFamily;
+
+using Frac = boost::rational<int32_t>;
 
 enum class NodePurity { Impure, Normal, Pure };
 enum class Form { Solid, Liquid, Gas };
@@ -86,16 +89,16 @@ struct Recipe {
     QString recipeClass;
     QString recipeName;
 
-    QMap<Item*, float> outputs;
+    QMap<Item*, Frac> outputs;
     virtual ~Recipe() = 0;
 };
 inline Recipe::~Recipe() = default;
 
 struct ProductionRecipe : Recipe {
     bool isAlternate = false;
-    float recipeTime;
+    Frac recipeTime;
     Machine* producedIn;
-    QMap<Item*, float> inputs;
+    QMap<Item*, Frac> inputs;
 };
 
 struct ExtractionRecipe : Recipe {

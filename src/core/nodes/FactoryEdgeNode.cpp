@@ -16,9 +16,10 @@ FactoryEdgeNode::FactoryEdgeNode(
     parentFactory.node()->addEdgePort(this);
 }
 
-float FactoryEdgeNode::portRate(const Port* port) const
+Frac FactoryEdgeNode::portRate(const Port* port) const
 {
-    return 0.f;
+    // FIX: implement
+    return Frac(0);
 }
 
 void FactoryEdgeNode::onPortConnected(Port& port)

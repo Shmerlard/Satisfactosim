@@ -149,7 +149,7 @@ void printNode(QTextStream& out, AbstractNode* node, Factory* factory)
             if (r->producedIn)
                 machineName = r->producedIn->machineName;
             cycleInfo = QString("  (%1s, %2MW)")
-                            .arg(r->recipeTime, 0, 'f', 1)
+                            .arg(boost::rational_cast<double>(r->recipeTime), 0, 'f', 1)
                             .arg(r->producedIn ? r->producedIn->basePowerConsumption : 0.f, 0, 'f', 0);
         }
         QString limitStr = n->machineLimit() >= 0
@@ -178,7 +178,8 @@ void printNode(QTextStream& out, AbstractNode* node, Factory* factory)
             : QString();
         header = QString("┌─ [%1] %2  \"%3\"  x%4%5\n│  resource : %6  purity: %7")
                      .arg(idx)
-                     .arg(n->getExtractorName())
+                     // .arg(n->getExtractorName())
+                     .arg(n->machineName())
                      .arg(n->name())
                      .arg(n->machineCount(), 0, 'f', 2)
                      .arg(limitStr)
