@@ -3,6 +3,7 @@
 #include "SceneModel.h"
 #include "core/nodes/Connection.h"
 #include "core/nodes/Factory.h"
+#include "core/nodes/MachineNode.h"
 
 SceneManager::SceneManager(QObject* parent)
     : QObject(parent)
@@ -145,6 +146,18 @@ void SceneManager::setPortOffset(int nodeIndex, int portIndex, QPointF offset)
 void SceneManager::connectNodes(int srcNodeIdx, int srcPortIdx, int dstNodeIdx, int dstPortIdx)
 {
     m_session->connectNode(srcNodeIdx, srcPortIdx, dstNodeIdx, dstPortIdx);
+}
+
+void SceneManager::setMachineLimit(AbstractNode* node, float limit)
+{
+    MachineNode* machine = dynamic_cast<MachineNode*>(node);
+    if (machine)
+        machine->setMachineLimit(limit);
+}
+
+void SceneManager::solve()
+{
+    m_session->solve();
 }
 
 void SceneManager::deleteConnection(QObject* connObj)

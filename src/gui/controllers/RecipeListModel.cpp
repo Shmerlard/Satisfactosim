@@ -60,6 +60,33 @@ QVariant RecipeListModel::data(const QModelIndex& index, int role) const
     }
 }
 
+bool RecipeFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const
+{
+    if (m_filterText.isEmpty())
+        return true;
+
+    auto get = [&](int role) {
+        return sourceModel()->data(sourceModel()->index(sourceRow, 0, sourceParent), role);
+    };
+
+    auto itemNamesMatch = [&](const QVariant& roleData) {
+        for (const QVariant& v : roleData.toList()) {
+            if (v.toMap().value("name").toString().contains(m_filterText, Qt::CaseInsensitive))
+                return true;
+        }
+        return false;
+    };
+
+    if (m_searchRecipeName && get(RecipeListModel::NameRole).toString().contains(m_filterText, Qt::CaseInsensitive))
+        return true;
+    if (m_mode != Outputs && itemNamesMatch(get(RecipeListModel::InputsRole)))
+        return true;
+    if (m_mode != Inputs && itemNamesMatch(get(RecipeListModel::OutputsRole)))
+        return true;
+
+    return false;
+}
+
 QHash<int, QByteArray> RecipeListModel::roleNames() const
 {
     QHash<int, QByteArray> roles;

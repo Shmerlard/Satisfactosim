@@ -12,7 +12,11 @@ Popup {
     padding: 14
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
-    onOpened: renameField.clear // FIX: doesnt clear
+    onOpened: {
+        renameField.clear() // FIX: doesnt clear
+        limitField.text = nodeData && (nodeData.nodeType === 3 || nodeData.nodeType === 4)
+            ? String(nodeData.machineLimit) : ""
+    }
 
     background: Rectangle {
         color: "#1e2838"
@@ -61,11 +65,15 @@ Popup {
             TextField {
                 id: limitField
                 Layout.fillWidth: true
-                placeholderText: nodeData ? String(nodeData.machineLimit) : ""
+                placeholderText: "no limit"
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
                 background: Rectangle { color: "#2a3a4a"; radius: 4 }
                 color: "white"
-                // onAccepted: { /* TODO */ root.close() }
+                onEditingFinished: {
+                    let val = parseFloat(text)
+                    if (!isNaN(val))
+                        SceneManager.setMachineLimit(nodeData, val)
+                }
             }
         }
 

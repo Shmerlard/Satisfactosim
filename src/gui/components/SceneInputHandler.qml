@@ -55,8 +55,8 @@ MouseArea {
         if (mouse.button === Qt.RightButton) {
             if (_hoveredConn) return;  // double-right-click will handle deletion
             var screenPt = root.mapToItem(flick, mouse.x, mouse.y);
-            menu.x = screenPt.x;
-            menu.y = screenPt.y;
+            menu.x = Math.min(screenPt.x, flick.width  - menu.width);
+            menu.y = Math.min(screenPt.y, flick.height - menu.height);
             menu.spawnX = mouse.x;
             menu.spawnY = mouse.y;
             menu.open();

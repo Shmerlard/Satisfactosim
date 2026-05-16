@@ -219,6 +219,14 @@ Item {
             mouseContentY: root.mouseContentY
         }
 
+        Button {
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottomMargin: 16
+            text: "Solve"
+            onClicked: SceneManager.solve()
+        }
+
         WheelHandler {
             acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
             onWheel: event => {

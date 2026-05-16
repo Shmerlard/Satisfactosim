@@ -32,16 +32,26 @@ class RecipeFilterModel : public QSortFilterProxyModel {
     Q_OBJECT;
 
 public:
+    enum FilterMode { All, Inputs, Outputs };
+
     explicit RecipeFilterModel(QObject* parent = nullptr)
         : QSortFilterProxyModel(parent)
     {
         setFilterCaseSensitivity(Qt::CaseInsensitive);
-        setFilterRole(Qt::UserRole + 1);
     }
 
+protected:
+    bool filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const override;
+
+private:
+    QString m_filterText;
+    FilterMode m_mode = All;
+    bool m_searchRecipeName = true;
+
+    void refilter() { beginFilterChange(); endFilterChange(); }
+
 public slots:
-    void setFilterString(const QString& text)
-    {
-        setFilterFixedString(text);
-    }
+    void setFilterString(const QString& text)  { m_filterText = text;                        refilter(); }
+    void setFilterMode(int mode)               { m_mode = static_cast<FilterMode>(mode);     refilter(); }
+    void setSearchRecipeName(bool enabled)     { m_searchRecipeName = enabled;               refilter(); }
 };
