@@ -1,11 +1,16 @@
 #include "GaussianSolver.h"
-#include <QDebug>
+#include "src/core/managers/SessionManager.h"
 #include "src/core/nodes/AbstractNode.h"
 #include "src/core/nodes/Connection.h"
 #include "src/core/nodes/Factory.h"
 #include "src/core/nodes/MachineNode.h"
+#include <QDebug>
 #include <QQueue>
 #include <QSet>
+
+GaussianSolver::GaussianSolver(SessionManager* session)
+    : AbstractSolver(session, session)
+{}
 
 // --- row operations ---
 
@@ -61,13 +66,27 @@ std::vector<int> GaussianSolver::gaussianEliminate(Matrix& mat, int numVars)
     return pivotColForRow;
 }
 
-// --- reset ---
+// --- onLoad / reset ---
 
-void GaussianSolver::reset()
+void GaussianSolver::onLoad()
+{
+    connect(m_session, &SessionManager::machineLimitChanged, this, [this]() {
+        solve();
+        m_session->notifySolved();
+    });
+}
+
+void GaussianSolver::clear()
 {
     m_nodes.clear();
     m_islands.clear();
     m_islandEquations.clear();
+}
+
+void GaussianSolver::reset()
+{
+    disconnect(m_session, nullptr, this, nullptr);
+    clear();
 }
 
 // --- build ---

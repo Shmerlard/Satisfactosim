@@ -173,9 +173,8 @@ void SceneManager::createAndConnectMachineNode(const QString recipe, double x, d
 
 void SceneManager::setMachineLimit(AbstractNode* node, float limit)
 {
-    MachineNode* machine = dynamic_cast<MachineNode*>(node);
-    if (machine)
-        machine->setMachineLimit(limit);
+    if (node->isMachineNode())
+        m_session->setMachineLimit(node, limit);
 }
 
 void SceneManager::solve()

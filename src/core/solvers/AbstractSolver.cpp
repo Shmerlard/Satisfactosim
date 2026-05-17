@@ -1,10 +1,17 @@
 #include "AbstractSolver.h"
 #include "GaussianSolver.h"
 
-std::unique_ptr<AbstractSolver> AbstractSolver::create(SolverType type)
+AbstractSolver::AbstractSolver(SessionManager* session, QObject* parent)
+    : QObject(parent)
+    , m_session(session)
+{
+}
+
+AbstractSolver* AbstractSolver::create(SolverType type, SessionManager* session)
 {
     switch (type) {
-    case SolverType::Gaussian: return std::make_unique<GaussianSolver>();
+    case SolverType::Gaussian:
+        return new GaussianSolver(session);
     }
     return nullptr;
 }

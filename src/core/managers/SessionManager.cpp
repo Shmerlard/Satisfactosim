@@ -206,7 +206,7 @@ void SessionManager::setMachineLimit(AbstractNode* node, float limit)
 {
     if (auto* mn = dynamic_cast<MachineNode*>(node)) {
         mn->setMachineLimit(limit);
-        // emit machineLimitChanged(mn);
+        emit machineLimitChanged(mn);
     }
 }
 
@@ -266,6 +266,8 @@ void SessionManager::load(const QString& path)
         emit operationFailed("Json Parser Error: " + parserError.errorString());
         return;
     }
+
+    m_solver->reset();
 
     QJsonObject root = doc.object();
     std::queue<std::pair<Factory*, QJsonObject>> pendingFactories;
@@ -335,6 +337,8 @@ void SessionManager::load(const QString& path)
     m_rootFactory = newRoot;
     m_activeFactory = m_rootFactory;
     emit factoryChanged(m_activeFactory);
+
+    m_solver->onLoad();
 }
 
 QJsonObject SessionManager::serializeFactory(const Factory* factory, std::queue<Factory*>& factoryQueue)
@@ -584,9 +588,14 @@ AbstractNode* SessionManager::createNodeFromJson(QJsonObject j, Factory* f, QMap
 void SessionManager::solve()
 {
     // FIX: later we will need to seperate the build, and skip it
-    m_solver->reset();
+    m_solver->clear();
     m_solver->build(m_rootFactory);
     m_solver->solve();
+    notifySolved();
+}
+
+void SessionManager::notifySolved()
+{
     for (AbstractNode* node : m_rootFactory->nodes())
         node->notifySolved();
     emit solved();

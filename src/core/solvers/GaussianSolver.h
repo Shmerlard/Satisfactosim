@@ -8,6 +8,7 @@
 
 class MachineNode;
 class Factory;
+class SessionManager;
 
 struct Equation {
     QMap<MachineNode*, Frac> coefficients;
@@ -27,6 +28,10 @@ private:
     QList<QList<Equation>> m_islandEquations;
 
 public:
+    explicit GaussianSolver(SessionManager* session);
+
+    void onLoad() override;
+    void clear() override;
     void reset() override;
     void build(Factory* root) override;
     void solve() override;

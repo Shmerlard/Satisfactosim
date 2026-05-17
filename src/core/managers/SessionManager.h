@@ -23,15 +23,24 @@ private:
         m_rootFactory = new Factory(nullptr, QString("Main Factory"));
         m_rootFactory->setParent(this);
         m_activeFactory = m_rootFactory;
+        m_solver = AbstractSolver::create(AbstractSolver::SolverType::Gaussian, this);
+        m_solver->onLoad();
     }
     Factory* m_rootFactory = nullptr;
     Factory* m_activeFactory = nullptr;
-    std::unique_ptr<AbstractSolver> m_solver = AbstractSolver::create(AbstractSolver::SolverType::Gaussian);
+    AbstractSolver* m_solver = nullptr;
 
 public:
     // ---------- GETTERS ---------------
     Factory* rootFactory() const { return m_rootFactory; }
     Factory* activeFactory() const { return m_activeFactory; }
+
+    // ---------- SOLVER ---------------
+    void setSolverType(AbstractSolver::SolverType type)
+    {
+        m_solver = AbstractSolver::create(type, this);
+        m_solver->onLoad();
+    }
 
     // ---------- NODE CREATION ---------------
     FactoryEdgeNode* createFactoryEdgeNode(PortType edgeType, Factory* factory = nullptr, QString name = QString());
@@ -61,6 +70,7 @@ public:
     void setExtractionPurity(AbstractNode* node, NodePurity purity);
     void setExtractionTier(AbstractNode* node, int tier);
     void solve();
+    void notifySolved();
 
     // ---------- SAVE AND LOAD ---------------
     void save(const QString& path);
@@ -78,7 +88,7 @@ signals:
     void nodeConnected(AbstractNode* src, AbstractNode* dst);
     void nodeDisconnected(AbstractNode* src, AbstractNode* dst);
     void factoryChanged(Factory* factory);
-    // void machineLimitChanged(MachineNode* node);
+    void machineLimitChanged(MachineNode* node);
     // void machineCountChanged(MachineNode* node); // FIX: not implemented yet
     void solved();
 
