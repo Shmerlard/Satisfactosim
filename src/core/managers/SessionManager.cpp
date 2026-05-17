@@ -323,29 +323,10 @@ void SessionManager::load(const QString& path)
         for (auto connArr : fObject["connections"].toArray()) {
             QJsonObject conn = connArr.toObject();
             int fromNodeIdx       = conn["from"].toArray()[0].toInt();
-            QString fromItemClass = conn["from"].toArray()[1].toString();
+            int fromPortIdx       = conn["from"].toArray()[1].toInt();
             int toNodeIdx         = conn["to"].toArray()[0].toInt();
-            QString toItemClass   = conn["to"].toArray()[1].toString();
-
-            AbstractNode* fromNode = f->nodes().value(fromNodeIdx);
-            AbstractNode* toNode   = f->nodes().value(toNodeIdx);
-            if (!fromNode || !toNode) {
-                qWarning() << "Connection references unknown node";
-                continue;
-            }
-
-            Port* srcPort = nullptr;
-            for (auto& p : fromNode->outputs())
-                if (p->item && p->item->itemClass == fromItemClass) { srcPort = p.get(); break; }
-            Port* dstPort = nullptr;
-            for (auto& p : toNode->inputs())
-                if (p->item && p->item->itemClass == toItemClass) { dstPort = p.get(); break; }
-
-            if (!srcPort || !dstPort) {
-                qWarning() << "Connection: could not find ports for items" << fromItemClass << "->" << toItemClass;
-                continue;
-            }
-            connectNode(*srcPort, *dstPort);
+            int toPortIdx         = conn["to"].toArray()[1].toInt();
+            connectNode(fromNodeIdx, fromPortIdx, toNodeIdx, toPortIdx, f);
         }
     }
 

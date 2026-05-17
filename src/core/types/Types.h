@@ -11,8 +11,10 @@ struct Recipe;
 struct ExtractionRecipe;
 struct ProductionRecipe;
 struct MachineFamily;
+struct Item;
 
 using Frac = boost::rational<int32_t>;
+using ItemList = std::vector<std::pair<Item*, Frac>>;
 
 enum class NodePurity { Impure, Normal, Pure };
 enum class Form { Solid, Liquid, Gas };
@@ -89,7 +91,7 @@ struct Recipe {
     QString recipeClass;
     QString recipeName;
 
-    QMap<Item*, Frac> outputs;
+    ItemList outputs;
     virtual ~Recipe() = 0;
 };
 inline Recipe::~Recipe() = default;
@@ -98,7 +100,8 @@ struct ProductionRecipe : Recipe {
     bool isAlternate = false;
     Frac recipeTime;
     Machine* producedIn;
-    QMap<Item*, Frac> inputs;
+    // QMap<Item*, Frac> inputs;
+    ItemList inputs;
 };
 
 struct ExtractionRecipe : Recipe {

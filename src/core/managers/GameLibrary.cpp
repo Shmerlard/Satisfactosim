@@ -219,7 +219,7 @@ void GameLibrary::parseRecipes()
             if (item) {
                 if (item->form == Form::Liquid || item->form == Form::Gas)
                     ingAmount /= 1000;
-                r->inputs.insert(item, ingAmount);
+                r->inputs.emplace_back(item, ingAmount);
                 item->usedIn.append(r);
             } else {
                 qWarning() << "NO SUCH ITEM: " << ingClass;
@@ -235,7 +235,7 @@ void GameLibrary::parseRecipes()
                 if (item->form == Form::Liquid || item->form == Form::Gas)
                     prodAmount /= 1000;
 
-                r->outputs.insert(item, prodAmount);
+                r->outputs.emplace_back(item, prodAmount);
                 item->producedBy.append(r);
             } else {
                 qWarning() << "NO SUCH ITEM: " << prodClass;
@@ -257,7 +257,7 @@ void GameLibrary::parseExtractionRecipes()
             r->recipeName = allowedResource->itemName;
             r->family = family;
             r->resource = allowedResource;
-            r->outputs.insert(allowedResource, 1); // FIX: 1 is not right here
+            r->outputs.emplace_back(allowedResource, 1); // FIX: 1 is not right here
             m_extractionRecipes.insert(r->recipeClass, r);
             m_recipes.insert(r->recipeClass, r);
             allowedResource->producedBy.append(r);

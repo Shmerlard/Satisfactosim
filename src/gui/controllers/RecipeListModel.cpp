@@ -33,8 +33,8 @@ QVariant RecipeListModel::data(const QModelIndex& index, int role) const
         if (auto* pr = dynamic_cast<ProductionRecipe*>(entry)) {
             for (auto it = pr->inputs.begin(); it != pr->inputs.end(); ++it) {
                 QVariantMap map;
-                map["name"] = it.key()->itemName;
-                map["iconUrl"] = "image://assets/item/" + it.key()->itemClass;
+                map["name"] = it->first->itemName;
+                map["iconUrl"] = "image://assets/item/" + it->first->itemClass;
                 list.append(map);
             }
         }
@@ -44,8 +44,8 @@ QVariant RecipeListModel::data(const QModelIndex& index, int role) const
         QVariantList list;
         for (auto it = entry->outputs.begin(); it != entry->outputs.end(); ++it) {
             QVariantMap map;
-            map["name"] = it.key()->itemName;
-            map["iconUrl"] = "image://assets/item/" + it.key()->itemClass;
+            map["name"] = it->first->itemName;
+            map["iconUrl"] = "image://assets/item/" + it->first->itemClass;
             list.append(map);
         }
         return list;

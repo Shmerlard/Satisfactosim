@@ -65,6 +65,11 @@ Item {
             }
             Text {
                 Layout.alignment: Qt.AlignHCenter
+                text: root.nodeData ? root.nodeData.machineCount : "DD"
+                color: "white"
+            }
+            Text {
+                Layout.alignment: Qt.AlignHCenter
                 text: root.nodeData ? root.nodeData.machineLimit : "DD"
                 color: "white"
             }

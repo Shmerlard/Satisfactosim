@@ -19,16 +19,11 @@ void ProductionNode::buildPortsFromRecipe()
     if (!recipe())
         return;
 
-    auto inIt = recipe()->inputs.constBegin();
-    while (inIt != recipe()->inputs.constEnd()) {
-        m_inputs.push_back(std::make_unique<Port>(*this, inIt.key(), PortType::Input));
-        ++inIt;
-    }
-    auto outIt = recipe()->outputs.constBegin();
-    while (outIt != recipe()->outputs.constEnd()) {
-        m_outputs.push_back(std::make_unique<Port>(*this, outIt.key(), PortType::Output));
-        ++outIt;
-    }
+    for (auto in : recipe()->inputs)
+        m_inputs.push_back(std::make_unique<Port>(*this, in.first, PortType::Input));
+
+    for (auto out : recipe()->outputs)
+        m_outputs.push_back(std::make_unique<Port>(*this, out.first, PortType::Output));
 }
 
 ProductionNode::~ProductionNode()
@@ -57,9 +52,9 @@ Frac ProductionNode::portRate(const Port* port) const
 {
     if (!recipe() || recipe()->recipeTime <= 0)
         return Frac(0);
-    Frac perCycle = (port->type == PortType::Input)
-        ? recipe()->inputs.value(port->item, Frac(0))
-        : recipe()->outputs.value(port->item, Frac(0));
+    const auto& list = (port->type == PortType::Input) ? recipe()->inputs : recipe()->outputs;
+    auto it = std::find_if(list.begin(), list.end(), [&](const auto& p) { return p.first == port->item; });
+    Frac perCycle = (it != list.end()) ? it->second : Frac(0);
     return perCycle / recipe()->recipeTime * 60;
     // FIX: might be better to just move it to Port and read from there
 }
