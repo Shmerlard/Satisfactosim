@@ -11,6 +11,7 @@ Item {
     property bool hovered: false
 
     readonly property string machineCount: nodeData ? nodeData.machineCount.toFixed(2) : "NAME"
+    readonly property string machineLimit: nodeData ? nodeData.machineLimit : ""
     // implicitWidth: nameText.implicitWidth + outputsCol.implicitWidth + 40
     // implicitHeight: Math.max(50, mainLayout.implicitHeight)
     implicitWidth: 150
@@ -43,7 +44,7 @@ Item {
             }
             Text {
                 id: amountText
-                text: root.machineCount
+                text: root.machineCount + "/" + root.machineLimit
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: "white"
             }

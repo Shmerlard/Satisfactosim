@@ -13,9 +13,10 @@ Popup {
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
     onOpened: {
-        renameField.clear() // FIX: doesnt clear
+        // renameField.clear() // FIX: doesnt clear
         limitField.text = nodeData && (nodeData.nodeType === 3 || nodeData.nodeType === 4)
             ? String(nodeData.machineLimit) : ""
+        renameField.text = nodeData ? nodeData.name : ""
     }
 
     background: Rectangle {

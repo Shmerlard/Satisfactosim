@@ -20,7 +20,8 @@ enum class NodeType : uint8_t {
     FactoryEdge,
     Factory,
     Extraction,
-    Production
+    Production,
+    Splitter
 };
 
 class AbstractNode : public QObject {
