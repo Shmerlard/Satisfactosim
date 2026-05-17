@@ -10,8 +10,11 @@ Item {
     property bool selected: false
     property bool hovered: false
 
-    implicitWidth: nameText.implicitWidth + outputsCol.implicitWidth + 40
-    implicitHeight: Math.max(50, mainLayout.implicitHeight)
+    readonly property string machineCount: nodeData ? nodeData.machineCount.toFixed(2) : "NAME"
+    // implicitWidth: nameText.implicitWidth + outputsCol.implicitWidth + 40
+    // implicitHeight: Math.max(50, mainLayout.implicitHeight)
+    implicitWidth: 150
+    implicitHeight: 100
 
     Rectangle {
         id: background
@@ -21,34 +24,44 @@ Item {
         border.width: selected ? 2 : 1
         radius: 10
     }
-    RowLayout {
+    Item {
         id: mainLayout
         anchors.fill: parent
         anchors.margins: 0
 
-        Item { Layout.fillWidth: true }
-        ColumnLayout {
+        // --------------- CENTER ------------------
+        Column {
             id: centerCol
+
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
             Image {
                 source: root.nodeData ? root.nodeData.machineIcon : ""
-                Layout.alignment: Qt.AlignHCenter
-                Layout.preferredHeight: 50
-                Layout.preferredWidth: 50
+                width: 50
+                height: 50
+                anchors.horizontalCenter: parent.horizontalCenter
             }
             Text {
                 id: amountText
-                text: root.nodeData ? root.nodeData.machineCount : ""
+                text: root.machineCount
+                anchors.horizontalCenter: parent.horizontalCenter
                 color: "white"
             }
             Text {
                 id: nameText
                 text: root.nodeData ? root.nodeData.machineName : ""
+                anchors.horizontalCenter: parent.horizontalCenter
                 color: "white"
             }
         }
-        Item { Layout.fillWidth: true }
-        ColumnLayout {
+
+        // --------------- OUTPUTS ------------------
+        Column {
             id: outputsCol
+
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            spacing: 5
             Repeater {
                 model: root.nodeData ? root.nodeData.outputs : []
                 delegate: Port {

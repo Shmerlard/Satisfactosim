@@ -14,16 +14,13 @@ Item {
 
     readonly property string machineCount: nodeData ? nodeData.machineCount.toFixed(2) : "NAME"
 
-    // implicitWidth: inputsCol.implicitWidth + centerCol.implicitWidth + outputsCol.implicitWidth + 40
     implicitWidth: 200
     implicitHeight: 150
-    // implicitHeight: Math.max(50, mainLayout.implicitHeight)
 
     Rectangle {
         id: background
         anchors.fill: parent
         color: "#1e2838"
-        // color: "yellow"
         border.color: root.selected ? "#4fc3f7" : "#e8a020"
         border.width: root.selected ? 2 : 1
         radius: 10
@@ -33,22 +30,28 @@ Item {
         anchors.fill: parent
         anchors.margins: 0
 
-        Column {
+        // --------------- INPUT ------------------
+        Item {
             id: inputsCol
             anchors.left: parent.left
-            anchors.verticalCenter: parent.verticalCenter
-            spacing: 5
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            width: childrenRect.width
+
             Repeater {
                 model: root.nodeData ? root.nodeData.inputs : []
                 delegate: Port {
                     required property var modelData
+                    required property int index
                     portData: modelData
                     nodeRoot: root
                     isInput: true
                     contentContainer: root.contentContainer
+                    y: 50 * (index + 1) - height / 2
                 }
             }
         }
+        // --------------- CENTER ------------------
         Column {
             id: centerCol
             anchors.horizontalCenter: parent.horizontalCenter
@@ -71,7 +74,6 @@ Item {
             }
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
-                // text: root.nodeData ? root.nodeData.machineCount : "DD"
                 text: root.machineCount
                 color: "white"
             }
@@ -87,21 +89,25 @@ Item {
         }
 
 
-        Column {
+        // --------------- OUTPUTS ------------------
+        Item {
             id: outputsCol
             anchors.right: parent.right
-            anchors.verticalCenter: parent.verticalCenter
-            spacing: 5
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            width: childrenRect.width
 
             Repeater {
                 model: root.nodeData ? root.nodeData.outputs : []
                 delegate: Port {
                     required property var modelData
+                    required property int index
                     anchors.right: parent.right
                     portData: modelData
                     nodeRoot: root
                     isInput: false
                     contentContainer: root.contentContainer
+                    y: 50 * (index + 1) - height / 2
                 }
             }
         }
