@@ -12,8 +12,12 @@ Item {
     property bool selected: false
     property bool hovered: false
 
-    implicitWidth: inputsCol.implicitWidth + centerCol.implicitWidth + outputsCol.implicitWidth + 40
-    implicitHeight: Math.max(50, mainLayout.implicitHeight)
+    readonly property string machineCount: nodeData ? nodeData.machineCount.toFixed(2) : "NAME"
+
+    // implicitWidth: inputsCol.implicitWidth + centerCol.implicitWidth + outputsCol.implicitWidth + 40
+    implicitWidth: 200
+    implicitHeight: 150
+    // implicitHeight: Math.max(50, mainLayout.implicitHeight)
 
     Rectangle {
         id: background
@@ -24,13 +28,16 @@ Item {
         border.width: root.selected ? 2 : 1
         radius: 10
     }
-    RowLayout {
+    Item {
         id: mainLayout
         anchors.fill: parent
         anchors.margins: 0
 
-        ColumnLayout {
+        Column {
             id: inputsCol
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+            spacing: 5
             Repeater {
                 model: root.nodeData ? root.nodeData.inputs : []
                 delegate: Port {
@@ -42,16 +49,15 @@ Item {
                 }
             }
         }
-        Item { Layout.fillWidth: true }
-        ColumnLayout {
+        Column {
             id: centerCol
-            Item {}
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
             Rectangle {
-                    Layout.preferredHeight: 50
-                    Layout.preferredWidth: 50
-                    color: "grey"
-                    radius: 10
-                    Layout.alignment: Qt.AlignHCenter
+                width: 50
+                height: 50
+                color: "grey"
+                radius: 10
                 Image {
                     source: root.nodeData ? root.nodeData.machineIcon : ""
                     width: parent.width
@@ -60,32 +66,38 @@ Item {
             }
             Text {
                 text: root.nodeData ? root.nodeData.name : ""
-                Layout.alignment: Qt.AlignHCenter
+                anchors.horizontalCenter: parent.horizontalCenter
                 color: "white"
             }
             Text {
-                Layout.alignment: Qt.AlignHCenter
-                text: root.nodeData ? root.nodeData.machineCount : "DD"
+                anchors.horizontalCenter: parent.horizontalCenter
+                // text: root.nodeData ? root.nodeData.machineCount : "DD"
+                text: root.machineCount
                 color: "white"
             }
             Text {
-                Layout.alignment: Qt.AlignHCenter
+                anchors.horizontalCenter: parent.horizontalCenter
                 text: root.nodeData ? root.nodeData.machineLimit : "DD"
                 color: "white"
             }
             Text {
-                Layout.alignment: Qt.AlignHCenter
                 text: root.nodeData ? root.nodeData.machineName : ""
                 color: "white"
             }
         }
-        Item { Layout.fillWidth: true }
-        ColumnLayout {
+
+
+        Column {
             id: outputsCol
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            spacing: 5
+
             Repeater {
                 model: root.nodeData ? root.nodeData.outputs : []
                 delegate: Port {
                     required property var modelData
+                    anchors.right: parent.right
                     portData: modelData
                     nodeRoot: root
                     isInput: false
