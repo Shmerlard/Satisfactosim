@@ -18,12 +18,13 @@ struct Equation {
 };
 
 using Matrix = std::vector<std::vector<Frac>>;
+using Island = QList<MachineNode*>;
 
 class GaussianSolver : public AbstractSolver {
 private:
     QList<MachineNode*> m_nodes;
-    QList<Equation> m_equations;
-    QMap<MachineNode*, QList<Equation*>> m_nodeEquations;
+    QList<Island> m_islands;
+    QList<QList<Equation>> m_islandEquations;
 
 public:
     void reset() override;
