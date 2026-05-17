@@ -584,9 +584,9 @@ AbstractNode* SessionManager::createNodeFromJson(QJsonObject j, Factory* f, QMap
 void SessionManager::solve()
 {
     // FIX: later we will need to seperate the build, and skip it
-    Solver solver;
-    solver.build(m_rootFactory);
-    solver.solve();
+    m_solver->reset();
+    m_solver->build(m_rootFactory);
+    m_solver->solve();
     for (AbstractNode* node : m_rootFactory->nodes())
         node->notifySolved();
     emit solved();

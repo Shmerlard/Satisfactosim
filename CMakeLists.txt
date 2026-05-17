@@ -64,7 +64,8 @@ qt_add_qml_module(FactoryApp
     src/core/managers/CliManager.h          src/core/managers/CliManager.cpp
     src/core/managers/GameLibrary.h         src/core/managers/GameLibrary.cpp
     src/core/managers/SessionManager.h      src/core/managers/SessionManager.cpp
-    src/core/managers/Solver.h              src/core/managers/Solver.cpp
+    src/core/solvers/AbstractSolver.h       src/core/solvers/AbstractSolver.cpp
+    src/core/solvers/GaussianSolver.h       src/core/solvers/GaussianSolver.cpp
 
     src/core/nodes/AbstractNode.h           src/core/nodes/AbstractNode.cpp
     src/core/nodes/Connection.h             src/core/nodes/Connection.cpp
@@ -102,6 +103,7 @@ target_include_directories(FactoryApp PRIVATE
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/src/core/managers
     ${CMAKE_SOURCE_DIR}/src/core/nodes
+    ${CMAKE_SOURCE_DIR}/src/core/solvers
     ${CMAKE_SOURCE_DIR}/src/gui/controllers
 )
 

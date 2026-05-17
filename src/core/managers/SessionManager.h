@@ -6,7 +6,7 @@
 #include "core/nodes/FactoryNode.h"
 #include "core/nodes/ProductionNode.h"
 #include "core/types/Types.h"
-#include "Solver.h"
+#include "core/solvers/AbstractSolver.h"
 #include <QObject>
 #include <QQmlEngine>
 #include <queue>
@@ -26,6 +26,7 @@ private:
     }
     Factory* m_rootFactory = nullptr;
     Factory* m_activeFactory = nullptr;
+    std::unique_ptr<AbstractSolver> m_solver = AbstractSolver::create(AbstractSolver::SolverType::Gaussian);
 
 public:
     // ---------- GETTERS ---------------

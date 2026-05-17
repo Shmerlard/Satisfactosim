@@ -15,7 +15,7 @@ class MachineNode : public AbstractNode {
     Q_PROPERTY(float machineCount READ machineCountFloat NOTIFY machineCountChanged)
     Q_PROPERTY(float machineLimit READ machineLimitFloat NOTIFY machineLimitChanged)
 
-    friend class Solver;
+    friend class GaussianSolver;
 
 protected:
     explicit MachineNode(
