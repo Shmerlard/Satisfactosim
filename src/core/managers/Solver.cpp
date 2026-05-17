@@ -2,12 +2,64 @@
 #include "src/core/nodes/AbstractNode.h"
 #include "src/core/nodes/Connection.h"
 #include "src/core/nodes/Factory.h"
-#include "src/core/nodes/FactoryEdgeNode.h"
-#include "src/core/nodes/FactoryNode.h"
 #include "src/core/nodes/MachineNode.h"
 #include <QQueue>
 #include <QSet>
-#include <cmath>
+
+// --- row operations ---
+
+static std::vector<Frac> operator*(const std::vector<Frac>& row, Frac scalar)
+{
+    std::vector<Frac> result = row;
+    for (auto& v : result)
+        v *= scalar;
+    return result;
+}
+
+static std::vector<Frac> operator-(const std::vector<Frac>& a, const std::vector<Frac>& b)
+{
+    std::vector<Frac> result = a;
+    for (int i = 0; i < (int)a.size(); ++i)
+        result[i] -= b[i];
+    return result;
+}
+
+std::vector<int> Solver::gaussianEliminate(Matrix& mat, int numVars)
+{
+    int numRows = mat.size();
+    int pivotRow = 0;
+    std::vector<int> pivotColForRow(numRows, -1);
+
+    for (int col = 0; col < numVars && pivotRow < numRows; ++col) {
+        // find first nonzero in this column at or below pivotRow
+        int found = -1;
+        for (int row = pivotRow; row < numRows; ++row) {
+            if (mat[row][col] != Frac(0)) {
+                found = row;
+                break;
+            }
+        }
+        if (found == -1)
+            continue;
+
+        std::swap(mat[found], mat[pivotRow]);
+        pivotColForRow[pivotRow] = col;
+
+        // normalize pivot row so pivot = 1
+        mat[pivotRow] = mat[pivotRow] * (Frac(1) / mat[pivotRow][col]);
+
+        // eliminate this column in all other rows
+        for (int row = 0; row < numRows; ++row) {
+            if (row == pivotRow || mat[row][col] == Frac(0))
+                continue;
+            mat[row] = mat[row] - mat[pivotRow] * mat[row][col];
+        }
+
+        ++pivotRow;
+    }
+
+    return pivotColForRow;
+}
 
 void Solver::build(Factory* root)
 {
@@ -41,79 +93,71 @@ void Solver::build(Factory* root)
 
 void Solver::solve()
 {
-    QMap<MachineNode*, Frac> limits;
-    for (auto* node : m_nodes)
-        if (node->machineLimit() >= 0)
-            limits.insert(node, node->machineLimit());
-    if (limits.isEmpty())
+    int numVars = m_nodes.size();
+    int numEqs = m_equations.size();
+    if (numVars == 0 || numEqs == 0)
         return;
 
-    QMap<MachineNode*, Frac> globalCounts;
+    // --- build dense matrix [A | b] ---
+    Matrix mat(numEqs, std::vector<Frac>(numVars + 1, Frac(0)));
+    for (int i = 0; i < numEqs; ++i) {
+        for (auto it = m_equations[i].coefficients.begin(); it != m_equations[i].coefficients.end(); ++it)
+            mat[i][m_nodes.indexOf(it.key())] = it.value();
+        mat[i][numVars] = m_equations[i].rhs;
+    }
 
-    for (MachineNode* startCandidate : limits.keys()) {
-        QMap<MachineNode*, Frac> counts;
-        MachineNode* startNode = startCandidate;
-        bool restarted = true;
+    // --- solve ---
+    std::vector<int> pivotColForRow = gaussianEliminate(mat, numVars);
 
-        while (restarted) {
-            restarted = false;
-            counts.clear();
+    // --- identify pivot and free columns ---
+    QSet<int> pivotCols;
+    for (int r = 0; r < numEqs; ++r)
+        if (pivotColForRow[r] != -1)
+            pivotCols.insert(pivotColForRow[r]);
 
-            QList<Equation> equations = m_equations;
-            QMap<MachineNode*, QList<int>> nodeEqIdx;
-            for (int i = 0; i < equations.size(); ++i)
-                for (MachineNode* node : equations[i].coefficients.keys())
-                    nodeEqIdx[node].append(i);
-
-            counts[startNode] = limits[startNode];
-            QQueue<MachineNode*> queue;
-            queue.enqueue(startNode);
-
-            while (!queue.isEmpty() && !restarted) {
-                MachineNode* current = queue.dequeue();
-                Frac currentCount = counts[current];
-                QMap<MachineNode*, Frac> pending;
-
-                for (int idx : nodeEqIdx[current]) {
-                    Equation& eq = equations[idx];
-                    if (!eq.coefficients.contains(current))
-                        continue;
-                    eq.rhs -= eq.coefficients[current] * currentCount;
-                    eq.coefficients.remove(current);
-                    if (eq.coefficients.isEmpty())
-                        continue;
-                    if (eq.coefficients.size() == 1) {
-                        MachineNode* other = eq.coefficients.firstKey();
-                        if (counts.contains(other))
-                            continue;
-                        Frac derived = eq.rhs / eq.coefficients[other];
-                        if (!pending.contains(other) || derived < pending[other])
-                            pending[other] = derived;
-                    }
-                }
-
-                for (auto it = pending.begin(); it != pending.end() && !restarted; ++it) {
-                    MachineNode* other = it.key();
-                    Frac derived = it.value();
-                    if (limits.contains(other) && derived > limits[other]) {
-                        startNode = other;
-                        restarted = true;
-                        break;
-                    }
-                    counts[other] = derived;
-                    queue.enqueue(other);
-                }
-            }
-        }
-
-        // merge into globalCounts taking the minimum (most constrained value wins)
-        for (auto it = counts.begin(); it != counts.end(); ++it) {
-            if (!globalCounts.contains(it.key()) || it.value() < globalCounts[it.key()])
-                globalCounts[it.key()] = it.value();
+    // set the first free variable to 1
+    QMap<MachineNode*, Frac> counts;
+    for (int col = 0; col < numVars; ++col) {
+        if (!pivotCols.contains(col)) {
+            counts[m_nodes[col]] = Frac(1);
+            break;
         }
     }
 
-    for (auto it = globalCounts.begin(); it != globalCounts.end(); ++it) {
+    // back-substitute: each pivot row gives pivot_var = rhs - sum(free * coeff)
+    for (int r = 0; r < numEqs; ++r) {
+        int pc = pivotColForRow[r];
+        if (pc == -1)
+            continue;
+        Frac val = mat[r][numVars];
+        for (int col = 0; col < numVars; ++col) {
+            if (col == pc || mat[r][col] == Frac(0))
+                continue;
+            if (counts.contains(m_nodes[col]))
+                val -= mat[r][col] * counts[m_nodes[col]];
+        }
+        counts[m_nodes[pc]] = val;
+    }
+
+    // scale to match limits
+    Frac scale(1);
+    bool hasLimit = false;
+    for (auto* node : m_nodes) {
+        if (node->machineLimit() < 0)
+            continue;
+        if (!counts.contains(node) || counts[node] == Frac(0))
+            continue;
+        Frac needed = Frac(node->machineLimit()) / counts[node];
+        if (!hasLimit || needed < scale) {
+            scale = needed;
+            hasLimit = true;
+        }
+    }
+    if (hasLimit)
+        for (auto& count : counts)
+            count *= scale;
+    // --- apply to nodes ---
+    for (auto it = counts.begin(); it != counts.end(); ++it) {
         MachineNode* node = it.key();
         Frac count = it.value();
         node->m_machineCount = count;

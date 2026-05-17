@@ -22,9 +22,10 @@ struct Equation {
     bool contains(MachineNode* node) { return coefficients.contains(node); }
 };
 
+using Matrix = std::vector<std::vector<Frac>>;
+
 class Solver {
 private:
-    // QList<Island> m_map;
     QList<MachineNode*> m_nodes;
     QList<Equation> m_equations;
     QMap<MachineNode*, QList<Equation*>> m_nodeEquations;
@@ -34,6 +35,8 @@ public:
     void solve();
 
 private:
+    // Reduces mat to RREF in place. Returns pivot column index per row (-1 if no pivot).
+    std::vector<int> gaussianEliminate(Matrix& mat, int numVars);
     // // --- flattened graph ---
     // QList<AbstractNode*> m_nodes;
     //
