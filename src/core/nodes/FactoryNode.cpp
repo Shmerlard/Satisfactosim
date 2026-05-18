@@ -62,20 +62,27 @@ FactoryEdgeNode* FactoryNode::getEdgeNode(Port* port)
 
 void FactoryNode::onPortConnected(Port& port)
 {
-    // FIX: need to make sure port is under "this"
     FactoryEdgeNode* matchingEdge = m_portEdges.value(&port);
     if (!matchingEdge->port()->item) {
         if (port.item)
             matchingEdge->port()->item = port.item;
     }
+    emit portsChanged();
+    emit matchingEdge->itemChanged();
+    emit matchingEdge->portsChanged();
 }
 
 void FactoryNode::onPortDisconnected(Port& port)
 {
-    // FIX: also needs to check if the edge node is also empty
-    // FIX: needs to check that theport is actually this=parent
     if (port.connections.empty()) {
         port.item = nullptr;
-        m_portEdges.value(&port)->port()->item = nullptr;
+        port.amount = 0;
+        FactoryEdgeNode* edge = m_portEdges.value(&port);
+        edge->port()->item = nullptr;
+        edge->port()->amount = 0;
     }
+    emit portsChanged();
+    FactoryEdgeNode* matchingEdge = m_portEdges.value(&port);
+    emit matchingEdge->itemChanged();
+    emit matchingEdge->portsChanged();
 }

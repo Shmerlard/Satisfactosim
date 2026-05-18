@@ -24,20 +24,24 @@ Frac FactoryEdgeNode::portRate(const Port* port) const
 
 void FactoryEdgeNode::onPortConnected(Port& port)
 {
-    // FIX: fix when there i s more then one connection already
-    // make sure its not in root factory
-    // this->m_parentFactory->node()
+    // FIX: fix when there is more than one connection already
     this->m_mirrorPort->item = this->port()->item;
+    emit itemChanged();
+    emit portsChanged();
+    emit m_mirrorPort->owner.portsChanged();
 }
 
 void FactoryEdgeNode::onPortDisconnected(Port& port)
 {
-    // FIX: also needs to check if the edge node is also empty
-    // FIX: needs to check that theport is actually this=parent
     if (this->port()->connections.empty()) {
         this->port()->item = nullptr;
+        this->port()->amount = 0;
         this->m_mirrorPort->item = nullptr;
+        this->m_mirrorPort->amount = 0;
     }
+    emit itemChanged();
+    emit portsChanged();
+    emit m_mirrorPort->owner.portsChanged();
 }
 
 QJsonObject FactoryEdgeNode::getJsonNode() const
