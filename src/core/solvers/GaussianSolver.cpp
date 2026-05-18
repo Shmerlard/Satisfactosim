@@ -262,10 +262,11 @@ void GaussianSolver::build(Factory* root)
                 Equation eq;
                 eq.rhs = Frac(0);
                 eq.coefficients[node] = -1 * node->portRate(port);
-                for (Connection* conn : port->connections) {
+                for (Connection* conn : port->connections)
                     handleConnection(*conn, *port, eq);
-                }
-                equations.append(eq);
+
+                if (eq.coefficients.size() > 1)
+                    equations.append(eq);
             }
         }
         m_islandEquations.append(equations);
@@ -285,49 +286,50 @@ void GaussianSolver::solve()
 
         int numVars = island.size();
         int numEqs = islandEqs.size();
-        if (numEqs == 0)
-            continue;
 
-        // --- build dense matrix [A | b] ---
-        Matrix mat(numEqs, std::vector<Frac>(numVars + 1, Frac(0)));
-        for (int i = 0; i < numEqs; ++i) {
-            for (auto it = islandEqs[i].coefficients.begin(); it != islandEqs[i].coefficients.end(); ++it)
-                mat[i][island.indexOf(it.key())] = it.value();
-            mat[i][numVars] = islandEqs[i].rhs;
-        }
-
-        // --- gaussian eliminate ---
-        std::vector<int> pivotColForRow = gaussianEliminate(mat, numVars);
-
-        // --- identify pivot and free columns ---
+        // --- identify pivot columns (all free if no equations) ---
         QSet<int> pivotCols;
-        for (int r = 0; r < numEqs; ++r)
-            if (pivotColForRow[r] != -1)
-                pivotCols.insert(pivotColForRow[r]);
-
-        int numFreeVars = numVars - (int)pivotCols.size();
-        if (numFreeVars > 1)
-            qWarning() << "Island has" << numFreeVars << "free variables — may be underdetermined";
 
         // set each free variable to 1
         QMap<MachineNode*, Frac> counts;
         for (int col = 0; col < numVars; ++col)
-            if (!pivotCols.contains(col))
-                counts[island[col]] = Frac(1);
+            counts[island[col]] = Frac(1);
 
-        // back-substitute
-        for (int r = 0; r < numEqs; ++r) {
-            int pc = pivotColForRow[r];
-            if (pc == -1)
-                continue;
-            Frac val = mat[r][numVars];
-            for (int col = 0; col < numVars; ++col) {
-                if (col == pc || mat[r][col] == Frac(0))
-                    continue;
-                if (counts.contains(island[col]))
-                    val -= mat[r][col] * counts[island[col]];
+        if (numEqs > 0) {
+            // --- build dense matrix [A | b] ---
+            Matrix mat(numEqs, std::vector<Frac>(numVars + 1, Frac(0)));
+            for (int i = 0; i < numEqs; ++i) {
+                for (auto it = islandEqs[i].coefficients.begin(); it != islandEqs[i].coefficients.end(); ++it)
+                    mat[i][island.indexOf(it.key())] = it.value();
+                mat[i][numVars] = islandEqs[i].rhs;
             }
-            counts[island[pc]] = val;
+
+            // --- gaussian eliminate ---
+            std::vector<int> pivotColForRow = gaussianEliminate(mat, numVars);
+
+            for (int r = 0; r < numEqs; ++r)
+                if (pivotColForRow[r] != -1)
+                    pivotCols.insert(pivotColForRow[r]);
+
+            int numFreeVars = numVars - (int)pivotCols.size();
+            if (numFreeVars > 1)
+                qWarning() << "Island has" << numFreeVars << "free variables — may be underdetermined";
+
+            // back-substitute pivot variables
+            for (int r = 0; r < numEqs; ++r) {
+                int pc = pivotColForRow[r];
+                if (pc == -1)
+                    continue;
+                counts.remove(island[pc]);  // pivot vars start unset
+                Frac val = mat[r][numVars];
+                for (int col = 0; col < numVars; ++col) {
+                    if (col == pc || mat[r][col] == Frac(0))
+                        continue;
+                    if (counts.contains(island[col]))
+                        val -= mat[r][col] * counts[island[col]];
+                }
+                counts[island[pc]] = val;
+            }
         }
 
         // --- scale to match limits ---
@@ -357,6 +359,31 @@ void GaussianSolver::solve()
                 port->amount = boost::rational_cast<float>(count * node->portRate(port.get()));
             for (auto& port : node->outputs())
                 port->amount = boost::rational_cast<float>(count * node->portRate(port.get()));
+        }
+
+        // --- propagate amounts to boundary node ports ---
+        for (auto it = counts.begin(); it != counts.end(); ++it) {
+            MachineNode* node = it.key();
+            auto propagate = [](Port* machinePort) {
+                for (Connection* conn : machinePort->connections) {
+                    Port* peer = conn->getPeer(*machinePort);
+                    if (peer->owner.isMachineNode())
+                        continue;
+                    peer->amount = machinePort->amount;
+                    if (peer->owner.type() == NodeType::FactoryEdge) {
+                        FactoryEdgeNode* edge = static_cast<FactoryEdgeNode*>(&peer->owner);
+                        if (edge->mirrorPort())
+                            edge->mirrorPort()->amount = machinePort->amount;
+                    } else if (peer->owner.type() == NodeType::Factory) {
+                        FactoryNode* fn = static_cast<FactoryNode*>(&peer->owner);
+                        FactoryEdgeNode* edge = fn->getEdgeNode(peer);
+                        if (edge && edge->port())
+                            edge->port()->amount = machinePort->amount;
+                    }
+                }
+            };
+            for (auto& port : node->inputs())  propagate(port.get());
+            for (auto& port : node->outputs()) propagate(port.get());
         }
     }
 }

@@ -56,6 +56,7 @@ Port* FactoryEdgeNode::port() const
     return selectedList.empty() ? nullptr : selectedList[0].get();
 }
 
+
 QString FactoryEdgeNode::itemName() const
 {
     if (!port() || !port()->item)

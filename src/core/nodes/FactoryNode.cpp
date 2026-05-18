@@ -18,6 +18,7 @@ Frac FactoryNode::portRate(const Port* port) const
     return Frac(0);
 }
 
+
 QJsonObject FactoryNode::getJsonNode() const
 {
     QJsonObject obj = AbstractNode::getJsonNode();
