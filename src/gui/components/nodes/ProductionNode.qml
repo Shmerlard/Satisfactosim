@@ -51,6 +51,7 @@ Item {
                 }
             }
         }
+
         // --------------- CENTER ------------------
         Column {
             id: centerCol
@@ -87,7 +88,6 @@ Item {
                 color: "white"
             }
         }
-
 
         // --------------- OUTPUTS ------------------
         Item {

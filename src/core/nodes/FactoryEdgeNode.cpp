@@ -64,6 +64,6 @@ Port* FactoryEdgeNode::port() const
 QString FactoryEdgeNode::itemName() const
 {
     if (!port() || !port()->item)
-        return "?";
+        return "";
     return port()->item->itemName;
 }

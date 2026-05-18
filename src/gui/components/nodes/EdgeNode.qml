@@ -10,8 +10,10 @@ Item {
     property bool selected: false
     property bool hovered: false
 
-    implicitWidth: inputsCol.implicitWidth + nameText.implicitWidth + outputsCol.implicitWidth + 40
-    implicitHeight: Math.max(50, mainLayout.implicitHeight)
+    // implicitWidth: inputsCol.implicitWidth + nameText.implicitWidth + outputsCol.implicitWidth + 40
+    // implicitHeight: Math.max(50, mainLayout.implicitHeight)
+    implicitWidth: 150
+    implicitHeight: 100
 
     Rectangle {
         id: background
@@ -26,7 +28,7 @@ Item {
         anchors.fill: parent
         anchors.margins: 0
 
-        ColumnLayout {
+        Column {
             id: inputsCol
             Repeater {
                 model: root.nodeData ? root.nodeData.inputs : []

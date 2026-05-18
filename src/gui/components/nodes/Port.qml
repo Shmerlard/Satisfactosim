@@ -2,6 +2,7 @@
 
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Controls
 import FACTORY_QT
 
 Item {
@@ -25,7 +26,7 @@ Item {
     }
 
     function updateOffset() {
-        if (!nodeRoot)
+        if (!nodeRoot || !portData)
             return;
         var edgeX = isInput ? 0 : width;
         var centerY = mainLayout.y + mainLayout.height / 2;
@@ -52,7 +53,9 @@ Item {
 
     Connections {
         target: parent  // the Column
-        function onYChanged() { root.updateOffset() }
+        function onYChanged() {
+            root.updateOffset();
+        }
     }
 
     // --- signals ---
@@ -68,6 +71,11 @@ Item {
         id: background
         anchors.fill: parent
         color: root.isInput ? "#0d3349" : "#3d1a0d"
+        ToolTip.visible: hoverHandler_i.hovered
+        ToolTip.text: root.portData.itemName
+        HoverHandler {
+            id: hoverHandler_i
+        }
     }
 
     RowLayout {
@@ -75,13 +83,13 @@ Item {
         layoutDirection: root.isInput ? Qt.LeftToRight : Qt.RightToLeft
 
         Image {
-            source: root.portData.iconUrl
+            source: root.portData ? root.portData.iconUrl : ""
             Layout.preferredWidth: 15
             Layout.preferredHeight: 15
             fillMode: Image.PreserveAspectFit
         }
         Text {
-            text: root.portData.amount
+            text: root.portData ? root.portData.amount : ""
             color: "white"
         }
     }

@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Layouts
 
@@ -10,36 +12,51 @@ Item {
     property bool selected: false
     property bool hovered: false
 
-    implicitWidth: mainLayout.width + 10
-    implicitHeight: mainLayout.height + 10
+    implicitWidth: 150
+    implicitHeight: 100
 
     Rectangle {
         id: background
         anchors.fill: parent
         color: "#2d1e3d"
-        border.color: selected ? "#4fc3f7" : "#8e44ad"
-        border.width: selected ? 2 : 1
+        border.color: root.selected ? "#4fc3f7" : "#8e44ad"
+        border.width: root.selected ? 2 : 1
         radius: 10
     }
-    RowLayout {
+    Item {
         id: mainLayout
-        ColumnLayout {
+        anchors.fill: parent
+        anchors.margins: 0
+        // --------------- INPUT ------------------
+        Item {
             id: inputsCol
+
+            anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            width: childrenRect.width
             Repeater {
                 model: root.nodeData ? root.nodeData.inputs : []
                 delegate: Port {
+                    required property var modelData
+                    required property int index
                     portData: modelData
                     isInput: true
                     contentContainer: root.contentContainer
                     nodeRoot: root
+                    y: 25 * (index + 1) - height / 2
                 }
             }
         }
-        ColumnLayout {
+
+        // --------------- CENTER ------------------
+        Column {
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
             Image {
                 source: "image://assets/misc/industry.png"
-                Layout.preferredHeight: 50
-                Layout.preferredWidth: 50
+                width: 50
+                height: 50
                 Layout.alignment: Qt.AlignHCenter
             }
             Text {
@@ -47,15 +64,25 @@ Item {
                 color: "white"
             }
         }
-        ColumnLayout {
+
+        // --------------- OUTPUTS ------------------
+        Item {
             id: outputsCol
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            width: childrenRect.width
             Repeater {
                 model: root.nodeData ? root.nodeData.outputs : []
                 delegate: Port {
+                    required property var modelData
+                    required property int index
+                    anchors.right: parent.right
                     portData: modelData
                     isInput: false
                     contentContainer: root.contentContainer
                     nodeRoot: root
+                    y: 25 * (index + 1) - height / 2
                 }
             }
         }
