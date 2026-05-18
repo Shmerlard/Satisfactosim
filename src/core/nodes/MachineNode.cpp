@@ -9,8 +9,6 @@ MachineNode::MachineNode(
     float machineLimit,
     QUuid id)
     : AbstractNode(parentFactory, name, id)
-    // , m_machineCount(machineCount)
-    // , m_machineLimit(machineLimit)
 {
     m_machineLimit = Frac((int)(machineLimit * 100), 100);
     m_machineCount = Frac((int)(machineCount * 100), 100);

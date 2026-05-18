@@ -5,11 +5,14 @@
 #include <QList>
 #include <QMap>
 #include <QQueue>
+#include <QSet>
 #include <vector>
 
 class MachineNode;
 class Factory;
 class SessionManager;
+class Connection;
+class Port;
 
 struct Equation {
     QMap<MachineNode*, Frac> coefficients;
@@ -28,6 +31,8 @@ private:
     QList<Island> m_islands;
     QList<QList<Equation>> m_islandEquations;
     void collectMachineNodes(QQueue<Factory*>& FactoryQueue);
+    void handleConnection(Connection& connection, Port& port, Equation& eq);
+    void visitPort(Port* port, QSet<MachineNode*>& visited, QQueue<MachineNode*>& queue);
 
 public:
     explicit GaussianSolver(SessionManager* session);

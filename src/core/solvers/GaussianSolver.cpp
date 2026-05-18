@@ -3,6 +3,8 @@
 #include "src/core/nodes/AbstractNode.h"
 #include "src/core/nodes/Connection.h"
 #include "src/core/nodes/Factory.h"
+#include "src/core/nodes/FactoryEdgeNode.h"
+#include "src/core/nodes/FactoryNode.h"
 #include "src/core/nodes/MachineNode.h"
 #include <QDebug>
 #include <QQueue>
@@ -110,6 +112,103 @@ void GaussianSolver::collectMachineNodes(QQueue<Factory*>& factoryQueue)
     }
 }
 
+void GaussianSolver::handleConnection(Connection& conn, Port& port, Equation& eq)
+{
+    Port* cPeer = nullptr;
+    Port* cPort = &port;
+    Connection* cConn = &conn;
+    Frac t = Frac(-1);
+    bool isMachineFound = false;
+    while (!isMachineFound) {
+        cPeer = cConn->getPeer(*cPort);
+        AbstractNode* owner = &cPeer->owner;
+
+        switch (owner->type()) {
+        case NodeType::Factory: {
+            FactoryNode* f = static_cast<FactoryNode*>(owner);
+            FactoryEdgeNode* e = f->getEdgeNode(cPeer);
+            // FIX: CURRENTLY ONLY SUPPORT ONE INPUT TO THE EDGE NODE
+            Port* edgePort = e->port();
+            if (!edgePort) {
+                isMachineFound = true;
+                break;
+            }
+            if (edgePort->connections.isEmpty()) {
+                isMachineFound = true;
+                break;
+            }
+
+            cPort = edgePort;
+            cConn = edgePort->connections[0];
+            break;
+        }
+
+        case NodeType::FactoryEdge: {
+            isMachineFound = true;
+            break;
+        }
+        case NodeType::Extraction:
+        case NodeType::Production: {
+            MachineNode* m = static_cast<MachineNode*>(&cPeer->owner);
+            t = Frac(1, cPeer->connections.size());
+            eq.coefficients[m] = t * cPeer->owner.portRate(cPeer);
+            isMachineFound = true;
+            break;
+        }
+        default:
+            isMachineFound = true;
+            break;
+        }
+    }
+}
+
+void GaussianSolver::visitPort(Port* port, QSet<MachineNode*>& visited, QQueue<MachineNode*>& queue)
+{
+    for (Connection* conn : port->connections) {
+        Port* cPort = port;
+        Connection* cConn = conn;
+        bool done = false;
+
+        while (!done) {
+            Port* cPeer = cConn->getPeer(*cPort);
+            AbstractNode* owner = &cPeer->owner;
+
+            switch (owner->type()) {
+            case NodeType::Factory: {
+                FactoryNode* f = static_cast<FactoryNode*>(owner);
+                FactoryEdgeNode* e = f->getEdgeNode(cPeer);
+                Port* edgePort = e ? e->port() : nullptr;
+                if (!edgePort || edgePort->connections.isEmpty()) { done = true; break; }
+                cPort = edgePort;
+                cConn = edgePort->connections[0];
+                break;
+            }
+            case NodeType::FactoryEdge: {
+                FactoryEdgeNode* e = static_cast<FactoryEdgeNode*>(owner);
+                Port* mirror = e->mirrorPort();
+                if (!mirror || mirror->connections.isEmpty()) { done = true; break; }
+                cPort = mirror;
+                cConn = mirror->connections[0];
+                break;
+            }
+            case NodeType::Extraction:
+            case NodeType::Production: {
+                MachineNode* peer = static_cast<MachineNode*>(owner);
+                if (!visited.contains(peer) && m_nodes.contains(peer)) {
+                    visited.insert(peer);
+                    queue.enqueue(peer);
+                }
+                done = true;
+                break;
+            }
+            default:
+                done = true;
+                break;
+            }
+        }
+    }
+}
+
 void GaussianSolver::build(Factory* root)
 {
     QQueue<Factory*> factoryQueue;
@@ -131,23 +230,10 @@ void GaussianSolver::build(Factory* root)
             MachineNode* current = queue.dequeue();
             island.append(current);
 
-            auto visitPort = [&](const std::unique_ptr<Port>& uPort) {
-                for (Connection* conn : uPort->connections) {
-                    AbstractNode* peerNode = &conn->getPeer(*uPort)->owner;
-                    if (!peerNode->isMachineNode())
-                        continue;
-                    auto* peer = static_cast<MachineNode*>(peerNode);
-                    if (!visited.contains(peer) && m_nodes.contains(peer)) {
-                        visited.insert(peer);
-                        queue.enqueue(peer);
-                    }
-                }
-            };
-
             for (auto& uPort : current->inputs())
-                visitPort(uPort);
+                visitPort(uPort.get(), visited, queue);
             for (auto& uPort : current->outputs())
-                visitPort(uPort);
+                visitPort(uPort.get(), visited, queue);
         }
 
         m_islands.append(island);
@@ -163,9 +249,10 @@ void GaussianSolver::build(Factory* root)
                 eq.rhs = Frac(0);
                 eq.coefficients[node] = -1 * node->portRate(port);
                 for (Connection* conn : port->connections) {
-                    Port* peer = conn->getPeer(*port);
-                    Frac t = Frac(1, peer->connections.size()); // FIX: add override option
-                    eq.coefficients[static_cast<MachineNode*>(&peer->owner)] = t * peer->owner.portRate(peer);
+                    handleConnection(*conn, *port, eq);
+                    // Port* peer = conn->getPeer(*port);
+                    // Frac t = Frac(1, peer->connections.size()); // FIX: add override option
+                    // eq.coefficients[static_cast<MachineNode*>(&peer->owner)] = t * peer->owner.portRate(peer);
                 }
                 equations.append(eq);
             }

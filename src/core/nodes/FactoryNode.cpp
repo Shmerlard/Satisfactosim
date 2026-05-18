@@ -54,6 +54,11 @@ Port* FactoryNode::addEdgePort(FactoryEdgeNode* edge)
 //     return true;
 //     // FIX: what will happen if i connect 2 uninitialized factory nodes
 // }
+FactoryEdgeNode* FactoryNode::getEdgeNode(Port* port)
+{
+    return m_portEdges.value(port, nullptr);
+}
+
 void FactoryNode::onPortConnected(Port& port)
 {
     // FIX: need to make sure port is under "this"
@@ -61,7 +66,6 @@ void FactoryNode::onPortConnected(Port& port)
     if (!matchingEdge->port()->item) {
         if (port.item)
             matchingEdge->port()->item = port.item;
-
     }
 }
 
@@ -74,4 +78,3 @@ void FactoryNode::onPortDisconnected(Port& port)
         m_portEdges.value(&port)->port()->item = nullptr;
     }
 }
-
