@@ -596,7 +596,7 @@ void SessionManager::solve()
 
 void SessionManager::notifySolved()
 {
-    for (AbstractNode* node : m_rootFactory->nodes())
+    for (AbstractNode* node : m_activeFactory->nodes())
         node->notifySolved();
     emit solved();
 }

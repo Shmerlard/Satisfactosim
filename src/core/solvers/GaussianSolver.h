@@ -4,6 +4,7 @@
 #include "core/types/Types.h"
 #include <QList>
 #include <QMap>
+#include <QQueue>
 #include <vector>
 
 class MachineNode;
@@ -26,6 +27,7 @@ private:
     QList<MachineNode*> m_nodes;
     QList<Island> m_islands;
     QList<QList<Equation>> m_islandEquations;
+    void collectMachineNodes(QQueue<Factory*>& FactoryQueue);
 
 public:
     explicit GaussianSolver(SessionManager* session);

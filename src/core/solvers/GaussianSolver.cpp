@@ -10,7 +10,8 @@
 
 GaussianSolver::GaussianSolver(SessionManager* session)
     : AbstractSolver(session, session)
-{}
+{
+}
 
 // --- row operations ---
 
@@ -42,7 +43,10 @@ std::vector<int> GaussianSolver::gaussianEliminate(Matrix& mat, int numVars)
         // find first nonzero in this column at or below pivotRow
         int found = -1;
         for (int row = pivotRow; row < numRows; ++row) {
-            if (mat[row][col] != Frac(0)) { found = row; break; }
+            if (mat[row][col] != Frac(0)) {
+                found = row;
+                break;
+            }
         }
         if (found == -1)
             continue;
@@ -90,13 +94,27 @@ void GaussianSolver::reset()
 }
 
 // --- build ---
+void GaussianSolver::collectMachineNodes(QQueue<Factory*>& factoryQueue)
+{
+
+    while (!factoryQueue.isEmpty()) {
+        Factory* f = factoryQueue.first();
+        factoryQueue.dequeue();
+
+        for (auto* node : f->nodes())
+            if (node->isMachineNode() && !m_nodes.contains(node))
+                m_nodes.append(static_cast<MachineNode*>(node));
+
+        for (auto* sub : f->subFactories())
+            factoryQueue.enqueue(sub);
+    }
+}
 
 void GaussianSolver::build(Factory* root)
 {
-    // --- collect all machine nodes ---
-    for (auto* node : root->nodes())
-        if (node->isMachineNode() && !m_nodes.contains(node))
-            m_nodes.append(static_cast<MachineNode*>(node));
+    QQueue<Factory*> factoryQueue;
+    factoryQueue.enqueue(root);
+    collectMachineNodes(factoryQueue);
 
     // --- detect islands via BFS ---
     QSet<MachineNode*> visited;
@@ -126,8 +144,10 @@ void GaussianSolver::build(Factory* root)
                 }
             };
 
-            for (auto& uPort : current->inputs())  visitPort(uPort);
-            for (auto& uPort : current->outputs()) visitPort(uPort);
+            for (auto& uPort : current->inputs())
+                visitPort(uPort);
+            for (auto& uPort : current->outputs())
+                visitPort(uPort);
         }
 
         m_islands.append(island);
@@ -166,7 +186,7 @@ void GaussianSolver::solve()
         const QList<Equation>& islandEqs = m_islandEquations[islandIdx];
 
         int numVars = island.size();
-        int numEqs  = islandEqs.size();
+        int numEqs = islandEqs.size();
         if (numEqs == 0)
             continue;
 
