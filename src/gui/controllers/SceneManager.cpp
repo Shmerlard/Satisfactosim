@@ -5,6 +5,7 @@
 #include "core/nodes/Factory.h"
 #include "core/nodes/MachineNode.h"
 #include "core/nodes/Port.h"
+#include "core/nodes/SplitterNode.h"
 
 SceneManager::SceneManager(QObject* parent)
     : QObject(parent)
@@ -108,6 +109,15 @@ void SceneManager::createSubFactory(const QString name, double x, double y)
     FactoryNode* node = child->node();
     node->setPosX(x);
     node->setPosY(y);
+}
+
+void SceneManager::createSplitterNode(double x, double y)
+{
+    SplitterNode* node = m_session->createSplitterNode({Frac(1), Frac(1)}, m_session->activeFactory());
+    if (node) {
+        node->setPosX(x);
+        node->setPosY(y);
+    }
 }
 
 void SceneManager::createEdgeNode(bool isInput, const QString name, double x, double y)

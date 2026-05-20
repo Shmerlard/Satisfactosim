@@ -8,8 +8,16 @@ Popup {
 
     property var nodeData: null
 
-    readonly property int somersloopCount: nodeData ? nodeData.somersloopCount : 0
-    readonly property int somersloopSlotSize: nodeData ? nodeData.somersloopSlotSize : 0
+    readonly property int somersloopCount: {
+        if (!nodeData) return 0;
+        if (nodeData.nodeType !== 3 && nodeData.nodeType !== 4) return 0;
+        return nodeData.somersloopCount;
+    }
+    readonly property int somersloopSlotSize: {
+        if (!nodeData) return 0;
+        if (nodeData.nodeType !== 3 && nodeData.nodeType !== 4) return 0;
+        return nodeData.somersloopSlotSize;
+    }
 
     width: 220
     padding: 14

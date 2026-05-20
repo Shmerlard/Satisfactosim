@@ -9,6 +9,14 @@
 #include <queue>
 
 // ---------- NODE CREATION ---------------
+SplitterNode* SessionManager::createSplitterNode(QList<Frac> weights, Factory* factory, QString name)
+{
+    Factory* f = factory ? factory : m_activeFactory;
+    SplitterNode* node = f->createSplitterNode(weights, name);
+    emit nodeAdded(node);
+    return node;
+}
+
 FactoryEdgeNode* SessionManager::createFactoryEdgeNode(PortType edgeType, Factory* parentFactory, QString name)
 {
     Factory* f = parentFactory ? parentFactory : m_activeFactory;

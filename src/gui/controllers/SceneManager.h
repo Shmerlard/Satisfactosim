@@ -64,6 +64,7 @@ public slots:
     void createAndConnectMachineNode(const QString recipe, double x, double y, int srcNodeIdx, int srcPortIdx);
     void createSubFactory(const QString name, double x, double y);
     void createEdgeNode(bool isInput, const QString name, double x, double y);
+    void createSplitterNode(double x, double y);
     void deleteNode(AbstractNode* node);
     void deleteConnection(QObject* connObj);
     void setPortOffset(int nodeIndex, int portIndex, QPointF offset);

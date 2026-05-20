@@ -5,6 +5,7 @@
 #include "core/nodes/FactoryEdgeNode.h"
 #include "core/nodes/FactoryNode.h"
 #include "core/nodes/ProductionNode.h"
+#include "core/nodes/SplitterNode.h"
 #include "core/types/Types.h"
 #include "core/solvers/AbstractSolver.h"
 #include <QObject>
@@ -50,6 +51,7 @@ public:
     ExtractionNode* createExtractionNode(const ExtractionRecipe& recipe, int tier = 0, Factory* factory = nullptr, QString name = QString());
     ExtractionNode* createExtractionNodeByName(QString resourceName, int tier = 0, Factory* factory = nullptr, QString name = QString());
     // ExtractionNode* createExtractionNodeByClass(QString rClass, int tier = 1, Factory* factory = nullptr, QString name = QString());
+    SplitterNode* createSplitterNode(QList<Frac> weights = {Frac(1), Frac(1)}, Factory* factory = nullptr, QString name = QString());
     void deleteNode(AbstractNode* node);
 
     // ---------- FACTORY MANIPULATION ---------------

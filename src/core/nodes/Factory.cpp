@@ -4,6 +4,7 @@
 #include "FactoryEdgeNode.h"
 #include "FactoryNode.h"
 #include "ProductionNode.h"
+#include "SplitterNode.h"
 
 Factory::Factory(Factory* parent, QString name, QUuid id)
     : QObject(parent)
@@ -12,6 +13,13 @@ Factory::Factory(Factory* parent, QString name, QUuid id)
     , m_name(name)
     , m_node(nullptr)
 {
+}
+
+SplitterNode* Factory::createSplitterNode(QList<Frac> weights, QString name)
+{
+    SplitterNode* ptr = new SplitterNode(*this, weights, name);
+    addNode(*ptr);
+    return ptr;
 }
 
 ProductionNode* Factory::createProductionNode(const ProductionRecipe& recipe, QString name)

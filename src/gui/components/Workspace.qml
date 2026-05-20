@@ -181,6 +181,7 @@ Item {
                         case 2: return "nodes/FactoryNode.qml";
                         case 3: return "nodes/ExtractionNode.qml";
                         case 4: return "nodes/ProductionNode.qml";
+                        case 5: return "nodes/SplitterNode.qml";
                         default: return "";
                         }
                     }

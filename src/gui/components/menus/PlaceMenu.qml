@@ -102,6 +102,15 @@ Popup {
                 }
             }
 
+            Button {
+                Layout.fillWidth: true
+                text: "Splitter"
+                onClicked: {
+                    SceneManager.createSplitterNode(root.spawnX, root.spawnY);
+                    root.close();
+                }
+            }
+
             Item { Layout.fillHeight: true }
         }
 

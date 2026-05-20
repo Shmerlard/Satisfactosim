@@ -76,6 +76,7 @@ qt_add_qml_module(FactoryApp
     src/core/nodes/MachineNode.h            src/core/nodes/MachineNode.cpp
     src/core/nodes/Port.h
     src/core/nodes/ProductionNode.h         src/core/nodes/ProductionNode.cpp
+    src/core/nodes/SplitterNode.h           src/core/nodes/SplitterNode.cpp
 
     src/core/types/Types.h
 

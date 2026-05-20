@@ -12,6 +12,7 @@ class FactoryNode;
 class FactoryEdgeNode;
 class ProductionNode;
 class ExtractionNode;
+class SplitterNode;
 class Connection;
 struct Recipe;
 
@@ -39,6 +40,7 @@ private:
     ExtractionNode* createExtractionNode(const ExtractionRecipe& recipe, int tier = 0, QString name = QString());
     ProductionNode* createProductionNode(const ProductionRecipe& recipe, QString name = QString());
     FactoryNode* createFactoryNode(Factory* targetFactory, QString name = QString());
+    SplitterNode* createSplitterNode(QList<Frac> weights = {Frac(1), Frac(1)}, QString name = QString());
 
 public:
     explicit Factory(Factory* parentFactory, QString name, QUuid id = QUuid());
