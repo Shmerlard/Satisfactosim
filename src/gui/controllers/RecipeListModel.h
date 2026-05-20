@@ -21,7 +21,7 @@ public:
         InputsRole,
         OutputsRole,
         AlternateRole
-            
+
     };
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
@@ -32,7 +32,9 @@ class RecipeFilterModel : public QSortFilterProxyModel {
     Q_OBJECT;
 
 public:
-    enum FilterMode { All, Inputs, Outputs };
+    enum FilterMode { All,
+        Inputs,
+        Outputs };
 
     explicit RecipeFilterModel(QObject* parent = nullptr)
         : QSortFilterProxyModel(parent)
@@ -48,10 +50,22 @@ private:
     FilterMode m_mode = All;
     bool m_searchRecipeName = true;
 
-    void refilter() { beginFilterChange(); endFilterChange(); }
+    void refilter() { invalidateFilter(); }
 
 public slots:
-    void setFilterString(const QString& text)  { m_filterText = text;                        refilter(); }
-    void setFilterMode(int mode)               { m_mode = static_cast<FilterMode>(mode);     refilter(); }
-    void setSearchRecipeName(bool enabled)     { m_searchRecipeName = enabled;               refilter(); }
+    void setFilterString(const QString& text)
+    {
+        m_filterText = text;
+        refilter();
+    }
+    void setFilterMode(int mode)
+    {
+        m_mode = static_cast<FilterMode>(mode);
+        refilter();
+    }
+    void setSearchRecipeName(bool enabled)
+    {
+        m_searchRecipeName = enabled;
+        refilter();
+    }
 };

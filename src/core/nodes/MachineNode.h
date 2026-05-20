@@ -14,6 +14,8 @@ class MachineNode : public AbstractNode {
     Q_PROPERTY(QString machineIcon READ machineIcon NOTIFY recipeChanged)
     Q_PROPERTY(float machineCount READ machineCountFloat NOTIFY machineCountChanged)
     Q_PROPERTY(float machineLimit READ machineLimitFloat NOTIFY machineLimitChanged)
+    Q_PROPERTY(QString machineCountStr READ machineCountStr NOTIFY machineCountChanged)
+    Q_PROPERTY(QString machineLimitStr READ machineLimitStr NOTIFY machineLimitChanged)
 
     friend class GaussianSolver;
 
@@ -39,10 +41,17 @@ public:
     Frac machineLimit() const { return m_machineLimit; }
     float machineCountFloat() const { return boost::rational_cast<float>(m_machineCount); }
     float machineLimitFloat() const { return boost::rational_cast<float>(m_machineLimit); }
+    QString machineCountStr() const;
+    QString machineLimitStr() const;
     virtual QString machineIcon() const;
     void setMachineLimit(float limit);
+    void setMachineLimit(Frac limit);
     QJsonObject getJsonNode() const override;
-    void notifySolved() override { emit portsChanged(); emit machineCountChanged(); }
+    void notifySolved() override
+    {
+        emit portsChanged();
+        emit machineCountChanged();
+    }
 
 private:
     void setMachineCount(Frac count) { m_machineCount = count; } // only the solver can set the count

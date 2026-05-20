@@ -67,6 +67,7 @@ public:
     // ---------- NODE SETTERS ---------------
     void renameNode(int index, QString name);
     void setMachineLimit(AbstractNode* node, float limit);
+    void incMachineLimit(AbstractNode* node, int limit);
     void setExtractionPurity(AbstractNode* node, NodePurity purity);
     void setExtractionTier(AbstractNode* node, int tier);
     void solve();

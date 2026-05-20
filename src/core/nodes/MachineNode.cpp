@@ -36,9 +36,28 @@ QString MachineNode::machineName() const
     return m_machine->machineName;
 }
 
-void MachineNode::setMachineLimit(float limit) 
+QString MachineNode::machineCountStr() const
 {
-    // m_machineLimit = limit; 
+    QString str;
+    // str = QString::number(m_machineCount.numerator()) + "/" + QString::number(m_machineCount.denominator());
+    str = StringFromFrac(m_machineCount);
+    return str;
+}
+
+QString MachineNode::machineLimitStr() const
+{
+}
+
+void MachineNode::setMachineLimit(float limit)
+{
+    // m_machineLimit = limit;
     m_machineLimit = Frac((int)(limit * 100), 100);
+    emit machineLimitChanged();
+}
+
+void MachineNode::setMachineLimit(Frac limit)
+{
+    // m_machineLimit = limit;
+    m_machineLimit = limit;
     emit machineLimitChanged();
 }

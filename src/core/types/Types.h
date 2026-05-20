@@ -4,7 +4,7 @@
 #include <QMap>
 #include <QObject>
 #include <QString>
-#include "boost/rational.hpp"
+#include "FracUtils.h"
 
 struct Machine;
 struct Recipe;
@@ -13,7 +13,7 @@ struct ProductionRecipe;
 struct MachineFamily;
 struct Item;
 
-using Frac = boost::rational<int32_t>;
+// using Frac = boost::rational<int32_t>;
 using ItemList = std::vector<std::pair<Item*, Frac>>;
 
 enum class NodePurity { Impure, Normal, Pure };

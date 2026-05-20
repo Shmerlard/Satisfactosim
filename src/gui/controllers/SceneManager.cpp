@@ -66,7 +66,7 @@ void SceneManager::enterParentFactory()
     m_session->enterParentFactory();
 }
 
-void SceneManager::enterRootFactory() 
+void SceneManager::enterRootFactory()
 {
     m_session->enterRootFactory();
 }
@@ -175,6 +175,17 @@ void SceneManager::setMachineLimit(AbstractNode* node, float limit)
 {
     if (node->isMachineNode())
         m_session->setMachineLimit(node, limit);
+}
+
+void SceneManager::incMachineLimit(AbstractNode* node, int inc)
+{
+    m_session->incMachineLimit(node, inc);
+    // if (!node)
+    //     return;
+    // if (!node->isMachineNode())
+    //     return;
+    //
+    // float currLimit = node
 }
 
 void SceneManager::solve()

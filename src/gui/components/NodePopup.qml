@@ -14,9 +14,8 @@ Popup {
 
     onOpened: {
         // renameField.clear() // FIX: doesnt clear
-        limitField.text = nodeData && (nodeData.nodeType === 3 || nodeData.nodeType === 4)
-            ? String(nodeData.machineLimit) : ""
-        renameField.text = nodeData ? nodeData.name : ""
+        limitField.text = nodeData && (nodeData.nodeType === 3 || nodeData.nodeType === 4) ? String(nodeData.machineLimit) : "";
+        renameField.text = nodeData ? nodeData.name : "";
     }
 
     background: Rectangle {
@@ -38,19 +37,30 @@ Popup {
             font.pixelSize: 14
         }
 
-        Rectangle { Layout.fillWidth: true; height: 1; color: "#444" }
+        Rectangle {
+            Layout.fillWidth: true
+            height: 1
+            color: "#444"
+        }
 
         // --- rename ---
-        Text { text: "Rename"; color: "#aaa"; font.pixelSize: 11 }
+        Text {
+            text: "Rename"
+            color: "#aaa"
+            font.pixelSize: 11
+        }
         TextField {
             id: renameField
             Layout.fillWidth: true
             placeholderText: nodeData ? nodeData.name : ""
-            background: Rectangle { color: "#2a3a4a"; radius: 4 }
+            background: Rectangle {
+                color: "#2a3a4a"
+                radius: 4
+            }
             color: "white"
             // onTextChanged: console.log(text)
             onTextChanged: {
-                nodeData.name = text
+                nodeData.name = text;
                 // nodeData.setName(text);
             }
             // onAccepted: { /* TODO */ root.close() }
@@ -62,18 +72,67 @@ Popup {
             Layout.fillWidth: true
             spacing: 4
 
-            Text { text: "Machine Limit"; color: "#aaa"; font.pixelSize: 11 }
-            TextField {
-                id: limitField
+            Text {
+                text: "Machine Limit"
+                color: "#aaa"
+                font.pixelSize: 11
+            }
+            Item {
+                // width: 20
                 Layout.fillWidth: true
-                placeholderText: "no limit"
-                inputMethodHints: Qt.ImhFormattedNumbersOnly
-                background: Rectangle { color: "#2a3a4a"; radius: 4 }
-                color: "white"
-                onEditingFinished: {
-                    let val = parseFloat(text)
-                    if (!isNaN(val))
-                        SceneManager.setMachineLimit(nodeData, val)
+                height: 30
+                Rectangle {
+                    id: dec1
+                    anchors.left: parent.left
+                    width: limitField.height
+                    height: limitField.height
+                    radius: 4
+                    TapHandler {
+                        onTapped: {
+                            SceneManager.incMachineLimit(root.nodeData, -1)
+                        }
+                    }
+                    Text {
+                        anchors.fill: parent
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        text: "-1"
+                    }
+                }
+                TextField {
+                    id: limitField
+                    anchors.left: dec1.right
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    placeholderText: "no limit"
+                    inputMethodHints: Qt.ImhFormattedNumbersOnly
+                    background: Rectangle {
+                        color: "#2a3a4a"
+                        radius: 4
+                    }
+                    color: "white"
+                    onEditingFinished: {
+                        let val = parseFloat(text);
+                        if (!isNaN(val))
+                            SceneManager.setMachineLimit(root.nodeData, val);
+                    }
+                }
+                Rectangle {
+                    width: limitField.height
+                    height: limitField.height
+                    color: "yellow"
+                    anchors.right: parent.right
+                    radius: 4
+                    TapHandler {
+                        onTapped: {
+                            SceneManager.incMachineLimit(nodeData, 1)
+                        }
+                    }
+                    Text {
+                        anchors.fill: parent
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        text: "+1"
+                    }
                 }
             }
         }
@@ -84,16 +143,29 @@ Popup {
             Layout.fillWidth: true
             spacing: 4
 
-            Text { text: "Purity"; color: "#aaa"; font.pixelSize: 11 }
+            Text {
+                text: "Purity"
+                color: "#aaa"
+                font.pixelSize: 11
+            }
             RowLayout {
                 Layout.fillWidth: true
                 spacing: 4
 
                 Repeater {
                     model: [
-                        { label: "Impure", value: 0 },
-                        { label: "Normal", value: 1 },
-                        { label: "Pure",   value: 2 }
+                        {
+                            label: "Impure",
+                            value: 0
+                        },
+                        {
+                            label: "Normal",
+                            value: 1
+                        },
+                        {
+                            label: "Pure",
+                            value: 2
+                        }
                     ]
                     delegate: Button {
                         required property var modelData
@@ -102,7 +174,8 @@ Popup {
                         checkable: true
                         checked: nodeData && nodeData.purity === modelData.value
                         ButtonGroup.group: purityGroup
-                        onClicked: if (nodeData) nodeData.purity = modelData.value
+                        onClicked: if (nodeData)
+                            nodeData.purity = modelData.value
 
                         background: Rectangle {
                             color: parent.checked ? "#e8a020" : "#2a3a4a"
@@ -120,7 +193,9 @@ Popup {
                         }
                     }
                 }
-                ButtonGroup { id: purityGroup }
+                ButtonGroup {
+                    id: purityGroup
+                }
             }
 
             // --- tier (only if more than one tier exists) ---
@@ -144,7 +219,8 @@ Popup {
                         checkable: true
                         checked: nodeData && nodeData.tier === index
                         ButtonGroup.group: tierGroup
-                        onClicked: if (nodeData) nodeData.tier = index
+                        onClicked: if (nodeData)
+                            nodeData.tier = index
 
                         background: Rectangle {
                             color: parent.checked ? "#e8a020" : "#2a3a4a"
@@ -162,11 +238,17 @@ Popup {
                         }
                     }
                 }
-                ButtonGroup { id: tierGroup }
+                ButtonGroup {
+                    id: tierGroup
+                }
             }
         }
 
-        Rectangle { Layout.fillWidth: true; height: 1; color: "#444" }
+        Rectangle {
+            Layout.fillWidth: true
+            height: 1
+            color: "#444"
+        }
 
         // --- enter factory (factory only) ---
         Button {
@@ -181,8 +263,8 @@ Popup {
             text: "Delete"
             Layout.fillWidth: true
             onClicked: {
-                SceneManager.deleteNode(nodeData)
-                root.close()
+                SceneManager.deleteNode(nodeData);
+                root.close();
             }
             // onClicked: { /* TODO */ root.close() }
         }

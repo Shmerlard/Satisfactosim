@@ -13,8 +13,10 @@ Item {
     property Item nodeRoot: null
     property Item contentContainer: null
 
-    implicitWidth: mainLayout.width + 5
-    implicitHeight: mainLayout.height + 5
+    // implicitWidth: mainLayout.width + 5
+    // implicitHeight: mainLayout.height + 5
+    implicitWidth: 50
+    implicitHeight: 30
     z: 1
 
     // --- functions ---
@@ -78,19 +80,24 @@ Item {
         }
     }
 
-    RowLayout {
+    Row {
         id: mainLayout
         layoutDirection: root.isInput ? Qt.LeftToRight : Qt.RightToLeft
-
+        anchors.left: root.isInput ? parent.left : undefined
+        anchors.right: root.isInput ? undefined : parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        spacing: 4
         Image {
             source: root.portData ? root.portData.iconUrl : ""
-            Layout.preferredWidth: 15
-            Layout.preferredHeight: 15
+            width: 25
+            height: 25
+            anchors.verticalCenter: parent.verticalCenter
             fillMode: Image.PreserveAspectFit
         }
         Text {
             text: root.portData ? root.portData.amount : ""
             color: "white"
+            anchors.verticalCenter: parent.verticalCenter
         }
     }
 }

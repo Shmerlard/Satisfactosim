@@ -12,7 +12,10 @@ Item {
     property bool selected: false
     property bool hovered: false
 
-    readonly property string machineCount: nodeData ? nodeData.machineCount.toFixed(2) : "NAME"
+    // readonly property string machineCount: nodeData ? nodeData.machineCount.toFixed(2) : "NAME"
+    readonly property string machineCount: nodeData ? nodeData.machineCountStr : "ddd"
+    readonly property string machineLimit: nodeData ? nodeData.machineLimit.toFixed(2) : ""
+
 
     implicitWidth: 200
     implicitHeight: 150
@@ -62,6 +65,7 @@ Item {
                 height: 50
                 color: "grey"
                 radius: 10
+                anchors.horizontalCenter: parent.horizontalCenter
                 Image {
                     source: root.nodeData ? root.nodeData.machineIcon : ""
                     width: parent.width
@@ -80,7 +84,8 @@ Item {
             }
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: root.nodeData ? root.nodeData.machineLimit : "DD"
+                // text: root.nodeData ? root.nodeData.machineLimit : "DD"
+                text: root.machineLimit
                 color: "white"
             }
             Text {

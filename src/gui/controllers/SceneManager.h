@@ -69,6 +69,7 @@ public slots:
     void setPortOffset(int nodeIndex, int portIndex, QPointF offset);
     void connectNodes(int srcNodeIdx, int srcPortIdx, int dstNodeIdx, int dstPortIdx);
     void setMachineLimit(AbstractNode* node, float limit);
+    void incMachineLimit(AbstractNode* node, int inc);
     void solve();
     // QVariantMap portAtPosition(qreal x, qreal y, qreal tolerance = 15.0);
 };

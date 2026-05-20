@@ -210,6 +210,18 @@ void SessionManager::setMachineLimit(AbstractNode* node, float limit)
     }
 }
 
+void SessionManager::incMachineLimit(AbstractNode* node, int limit)
+{
+    if (!node)
+        return;
+    if (!node->isMachineNode())
+        return;
+    MachineNode* m = static_cast<MachineNode*>(node);
+    Frac currentLimit = m->machineLimit();
+    Frac newLimit = currentLimit + limit;
+    m->setMachineLimit(newLimit);
+}
+
 void SessionManager::setExtractionPurity(AbstractNode* node, NodePurity purity)
 {
     if (auto* en = dynamic_cast<ExtractionNode*>(node)) {
