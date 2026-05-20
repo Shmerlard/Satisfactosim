@@ -28,44 +28,30 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 };
 
+// ---------------- RecipeFilterModel ----------------------
 class RecipeFilterModel : public QSortFilterProxyModel {
     Q_OBJECT;
 
 public:
-    enum FilterMode { All,
+    enum FilterIO { All,
         Inputs,
         Outputs };
 
-    explicit RecipeFilterModel(QObject* parent = nullptr)
-        : QSortFilterProxyModel(parent)
-    {
-        setFilterCaseSensitivity(Qt::CaseInsensitive);
-    }
+    explicit RecipeFilterModel(QObject* parent = nullptr);
 
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const override;
 
 private:
     QString m_filterText;
-    FilterMode m_mode = All;
+    FilterIO m_mode = All;
     bool m_searchRecipeName = true;
+    Port* m_port = nullptr;
 
     void refilter() { invalidateFilter(); }
 
 public slots:
-    void setFilterString(const QString& text)
-    {
-        m_filterText = text;
-        refilter();
-    }
-    void setFilterMode(int mode)
-    {
-        m_mode = static_cast<FilterMode>(mode);
-        refilter();
-    }
-    void setSearchRecipeName(bool enabled)
-    {
-        m_searchRecipeName = enabled;
-        refilter();
-    }
+    void setFilterString(const QString& text);
+    void setFilterMode(int mode);
+    void setSearchRecipeName(bool enabled);
 };

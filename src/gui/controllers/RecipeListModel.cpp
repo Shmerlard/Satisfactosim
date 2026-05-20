@@ -60,8 +60,30 @@ QVariant RecipeListModel::data(const QModelIndex& index, int role) const
     }
 }
 
+QHash<int, QByteArray> RecipeListModel::roleNames() const
+{
+    QHash<int, QByteArray> roles;
+    roles[NameRole] = "name";
+    roles[ClassRole] = "className";
+    roles[InputsRole] = "inputs";
+    roles[OutputsRole] = "outputs";
+    roles[AlternateRole] = "isAlternate";
+    return roles;
+}
+
+// ---------------- RecipeFilterModel ----------------------
+RecipeFilterModel::RecipeFilterModel(QObject* parent)
+    : QSortFilterProxyModel(parent)
+{
+    setFilterCaseSensitivity(Qt::CaseInsensitive);
+}
+
 bool RecipeFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const
 {
+    if (m_port != nullptr) {
+
+    }
+
     if (m_filterText.isEmpty())
         return true;
 
@@ -87,13 +109,20 @@ bool RecipeFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex& sourc
     return false;
 }
 
-QHash<int, QByteArray> RecipeListModel::roleNames() const
+void RecipeFilterModel::setFilterString(const QString& text)
 {
-    QHash<int, QByteArray> roles;
-    roles[NameRole] = "name";
-    roles[ClassRole] = "className";
-    roles[InputsRole] = "inputs";
-    roles[OutputsRole] = "outputs";
-    roles[AlternateRole] = "isAlternate";
-    return roles;
+    m_filterText = text;
+    refilter();
+}
+
+void RecipeFilterModel::setFilterMode(int mode)
+{
+    m_mode = static_cast<FilterIO>(mode);
+    refilter();
+}
+
+void RecipeFilterModel::setSearchRecipeName(bool enabled)
+{
+    m_searchRecipeName = enabled;
+    refilter();
 }
