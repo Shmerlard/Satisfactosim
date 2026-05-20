@@ -188,6 +188,12 @@ void SceneManager::setSomersloopCount(AbstractNode* node, int count)
         static_cast<MachineNode*>(node)->setSomersloopCount(count);
 }
 
+void SceneManager::setOverclock(AbstractNode* node, float overclock)
+{
+    if (node->isMachineNode())
+        static_cast<MachineNode*>(node)->setOverclockFloat(overclock);
+}
+
 void SceneManager::solve()
 {
     m_session->solve();

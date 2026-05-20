@@ -58,6 +58,13 @@ void MachineNode::setSomersloopCount(int count)
     emit recipeChanged();
 }
 
+void MachineNode::setOverclock(Frac overclock)
+{
+    overclock = std::max(Frac(1, 100), std::min(Frac(5, 2), overclock));
+    m_overclock = overclock;
+    emit recipeChanged();
+}
+
 void MachineNode::setMachineLimit(float limit)
 {
     m_machineLimit = Frac((int)(limit * 100), 100);

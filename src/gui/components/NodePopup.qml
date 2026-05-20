@@ -16,8 +16,8 @@ Popup {
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
     onOpened: {
-        // renameField.clear() // FIX: doesnt clear
         limitField.text = nodeData && (nodeData.nodeType === 3 || nodeData.nodeType === 4) ? String(nodeData.machineLimit) : "";
+        overclockField.text = nodeData && (nodeData.nodeType === 3 || nodeData.nodeType === 4) ? String(Math.round(nodeData.overclock * 100)) : "";
         renameField.text = nodeData ? nodeData.name : "";
     }
 
@@ -137,6 +137,32 @@ Popup {
                         verticalAlignment: Text.AlignVCenter
                         text: "+1"
                     }
+                }
+            }
+        }
+
+        // --- overclock (production + extraction) ---
+        ColumnLayout {
+            visible: nodeData && (nodeData.nodeType === 3 || nodeData.nodeType === 4)
+            Layout.fillWidth: true
+            spacing: 4
+
+            Text {
+                text: "Overclock (%)"
+                color: "#aaa"
+                font.pixelSize: 11
+            }
+            TextField {
+                id: overclockField
+                Layout.fillWidth: true
+                placeholderText: "100"
+                inputMethodHints: Qt.ImhFormattedNumbersOnly
+                background: Rectangle { color: "#2a3a4a"; radius: 4 }
+                color: "white"
+                onEditingFinished: {
+                    let val = parseFloat(text);
+                    if (!isNaN(val))
+                        SceneManager.setOverclock(root.nodeData, val / 100.0);
                 }
             }
         }

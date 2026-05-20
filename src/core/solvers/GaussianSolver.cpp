@@ -165,7 +165,7 @@ void GaussianSolver::handleConnection(Connection& conn, Port& port, Equation& eq
             if (somersloopSlot != 0)
                 somersloopMultiplier = Frac(1) + Frac(m->somersloopCount(), somersloopSlot);
 
-            eq.coefficients[m] = somersloopMultiplier * t * cPeer->owner.portRate(cPeer);
+            eq.coefficients[m] = m->overclock() * somersloopMultiplier * t * cPeer->owner.portRate(cPeer);
             isMachineFound = true;
             break;
         }
@@ -267,7 +267,7 @@ void GaussianSolver::build(Factory* root)
                     continue;
                 Equation eq;
                 eq.rhs = Frac(0);
-                eq.coefficients[node] = -1 * node->portRate(port);
+                eq.coefficients[node] = -1 * node->overclock() * node->portRate(port);
                 for (Connection* conn : port->connections)
                     handleConnection(*conn, *port, eq);
 
@@ -366,11 +366,12 @@ void GaussianSolver::solve()
             if (somersloopSlot != 0)
                 somersloopMultiplier = Frac(1) + Frac(node->somersloopCount(), somersloopSlot);
 
+            Frac overclock = node->overclock();
             node->setMachineCount(count);
             for (auto& port : node->inputs())
-                port->amount = boost::rational_cast<float>(count * node->portRate(port.get()));
+                port->amount = boost::rational_cast<float>(overclock * count * node->portRate(port.get()));
             for (auto& port : node->outputs())
-                port->amount = boost::rational_cast<float>(somersloopMultiplier * count * node->portRate(port.get()));
+                port->amount = boost::rational_cast<float>(overclock * somersloopMultiplier * count * node->portRate(port.get()));
         }
 
         // --- propagate amounts to boundary node ports ---
