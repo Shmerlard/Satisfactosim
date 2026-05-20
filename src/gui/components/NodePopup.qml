@@ -8,6 +8,9 @@ Popup {
 
     property var nodeData: null
 
+    readonly property int somersloopCount: nodeData ? nodeData.somersloopCount : 0
+    readonly property int somersloopSlotSize: nodeData ? nodeData.somersloopSlotSize : 0
+
     width: 220
     padding: 14
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
@@ -75,6 +78,7 @@ Popup {
             Text {
                 text: "Machine Limit"
                 color: "#aaa"
+                // color: "yellow"
                 font.pixelSize: 11
             }
             Item {
@@ -89,7 +93,7 @@ Popup {
                     radius: 4
                     TapHandler {
                         onTapped: {
-                            SceneManager.incMachineLimit(root.nodeData, -1)
+                            SceneManager.incMachineLimit(root.nodeData, -1);
                         }
                     }
                     Text {
@@ -124,7 +128,7 @@ Popup {
                     radius: 4
                     TapHandler {
                         onTapped: {
-                            SceneManager.incMachineLimit(nodeData, 1)
+                            SceneManager.incMachineLimit(nodeData, 1);
                         }
                     }
                     Text {
@@ -240,6 +244,75 @@ Popup {
                 }
                 ButtonGroup {
                     id: tierGroup
+                }
+            }
+        }
+
+        ColumnLayout {
+            Layout.fillWidth: true
+            spacing: 4
+            Text {
+                text: "Somersloop"
+                color: "#aaa"
+                font.pixelSize: 11
+            }
+            Item {
+                Layout.fillWidth: true
+                height: 30
+                Rectangle {
+                    id: somersloopDec1
+                    anchors.left: parent.left
+                    width: somersloopField.height
+                    height: somersloopField.height
+                    radius: 4
+                    TapHandler {
+                        onTapped: SceneManager.setSomersloopCount(root.nodeData, root.somersloopCount - 1)
+                    }
+                    Text {
+                        anchors.fill: parent
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        text: "-1"
+                    }
+                }
+                Text {
+                    id: somersloopField
+                    anchors.left: somersloopDec1.right
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: "sl: " + root.somersloopCount + "/" + root.somersloopSlotSize
+                }
+                // TextField {
+                //     id: somersloopField
+                //     anchors.left: somersloopDec1.right
+                //     anchors.horizontalCenter: parent.horizontalCenter
+                //     placeholderText: "no limit"
+                //     inputMethodHints: Qt.ImhFormattedNumbersOnly
+                //     background: Rectangle {
+                //         color: "#2a3a4a"
+                //         radius: 4
+                //     }
+                //     color: "white"
+                //     // onEditingFinished: {
+                //     //     let val = parseFloat(text);
+                //     //     if (!isNaN(val))
+                //     //         SceneManager.setMachineLimit(root.nodeData, val);
+                //     // }
+                // }
+                Rectangle {
+                    width: somersloopField.height
+                    height: somersloopField.height
+                    color: "yellow"
+                    anchors.right: parent.right
+                    radius: 4
+                    TapHandler {
+                        onTapped: SceneManager.setSomersloopCount(root.nodeData, root.somersloopCount + 1)
+                    }
+                    Text {
+                        anchors.fill: parent
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        text: "+1"
+                    }
                 }
             }
         }

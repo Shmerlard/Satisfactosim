@@ -87,6 +87,7 @@ def process_machine(machine, machineType: str):
         "Class": machine.get("ClassName"),
         "DisplayName": machine.get("mDisplayName"),
         "PowerConsumption": machine.get("mPowerConsumption"),
+        "SomersloopSlotSize": machine.get("mProductionShardSlotSize"),
         "_MachineType:": machineType
     }
 

@@ -182,6 +182,12 @@ void SceneManager::incMachineLimit(AbstractNode* node, int inc)
     m_session->incMachineLimit(node, inc);
 }
 
+void SceneManager::setSomersloopCount(AbstractNode* node, int count)
+{
+    if (node->isMachineNode())
+        static_cast<MachineNode*>(node)->setSomersloopCount(count);
+}
+
 void SceneManager::solve()
 {
     m_session->solve();

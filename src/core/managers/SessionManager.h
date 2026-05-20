@@ -68,6 +68,7 @@ public:
     void renameNode(int index, QString name);
     void setMachineLimit(AbstractNode* node, float limit);
     void incMachineLimit(AbstractNode* node, int limit);
+    void setMachineSomersloop(MachineNode* node, int count);
     void setExtractionPurity(AbstractNode* node, NodePurity purity);
     void setExtractionTier(AbstractNode* node, int tier);
     void solve();

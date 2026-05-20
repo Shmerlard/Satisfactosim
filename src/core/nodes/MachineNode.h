@@ -16,6 +16,8 @@ class MachineNode : public AbstractNode {
     Q_PROPERTY(float machineLimit READ machineLimitFloat NOTIFY machineLimitChanged)
     Q_PROPERTY(QString machineCountStr READ machineCountStr NOTIFY machineCountChanged)
     Q_PROPERTY(QString machineLimitStr READ machineLimitStr NOTIFY machineLimitChanged)
+    Q_PROPERTY(int somersloopCount READ somersloopCount NOTIFY recipeChanged)
+    Q_PROPERTY(int somersloopSlotSize READ somersloopSlotSize NOTIFY recipeChanged)
 
     friend class GaussianSolver;
 
@@ -31,18 +33,23 @@ protected:
     const Recipe* m_recipe = nullptr;
     Frac m_machineCount = -1;
     Frac m_machineLimit = -1;
+    Frac m_overclock = Frac(1);
+    int m_somersloopCount = 0;
 
     virtual void buildPortsFromRecipe() = 0;
     virtual const Recipe* recipe() const { return m_recipe; }
 
 public:
     QString machineName() const;
+    int somersloopCount() const { return m_somersloopCount; }
+    int somersloopSlotSize() const { return m_machine->somersloopSlotSize; }
     Frac machineCount() const { return m_machineCount; }
     Frac machineLimit() const { return m_machineLimit; }
     float machineCountFloat() const { return boost::rational_cast<float>(m_machineCount); }
     float machineLimitFloat() const { return boost::rational_cast<float>(m_machineLimit); }
     QString machineCountStr() const;
     QString machineLimitStr() const;
+    void setSomersloopCount(int count);
     virtual QString machineIcon() const;
     void setMachineLimit(float limit);
     void setMachineLimit(Frac limit);

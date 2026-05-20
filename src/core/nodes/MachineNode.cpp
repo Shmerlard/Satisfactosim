@@ -39,25 +39,33 @@ QString MachineNode::machineName() const
 QString MachineNode::machineCountStr() const
 {
     QString str;
-    // str = QString::number(m_machineCount.numerator()) + "/" + QString::number(m_machineCount.denominator());
     str = StringFromFrac(m_machineCount);
     return str;
 }
 
 QString MachineNode::machineLimitStr() const
 {
+    QString str;
+    str = StringFromFrac(m_machineLimit);
+    return str;
+}
+
+void MachineNode::setSomersloopCount(int count)
+{
+    if (count < 0 || count > m_machine->somersloopSlotSize)
+        return;
+    m_somersloopCount = count;
+    emit recipeChanged();
 }
 
 void MachineNode::setMachineLimit(float limit)
 {
-    // m_machineLimit = limit;
     m_machineLimit = Frac((int)(limit * 100), 100);
     emit machineLimitChanged();
 }
 
 void MachineNode::setMachineLimit(Frac limit)
 {
-    // m_machineLimit = limit;
     m_machineLimit = limit;
     emit machineLimitChanged();
 }

@@ -58,6 +58,7 @@ struct Machine {
     QString machineName;
     float basePowerConsumption;
     QString iconPath;
+    int somersloopSlotSize;
 
     virtual ~Machine() = 0;
 };

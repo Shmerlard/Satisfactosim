@@ -57,6 +57,7 @@ ProductionMachine* productionMachineFromJsonObject(const QJsonValue& value)
     m->machineName = obj["DisplayName"].toString();
     m->basePowerConsumption = obj["PowerConsumption"].toString().toDouble();
     m->iconPath = QString("assets/icons/machines/%1.png").arg(m->machineName);
+    m->somersloopSlotSize = obj["SomersloopSlotSize"].toString().toInt();
 
     return m;
 }
@@ -71,6 +72,7 @@ ExtractionMachine* extractionMachineFromJsonObject(const QJsonValue& value, QMap
     m->machineName = obj["DisplayName"].toString();
     m->basePowerConsumption = obj["PowerConsumption"].toString().toDouble();
     m->iconPath = QString("assets/icons/machines/%1.png").arg(m->machineName);
+    m->somersloopSlotSize = obj["SomersloopSlotSize"].toString().toInt();
 
     QString extrTypeName = obj["ExtractorTypeName"].toString();
     if (!families.contains(extrTypeName)) {

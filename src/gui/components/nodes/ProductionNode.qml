@@ -15,6 +15,8 @@ Item {
     // readonly property string machineCount: nodeData ? nodeData.machineCount.toFixed(2) : "NAME"
     readonly property string machineCount: nodeData ? nodeData.machineCountStr : "ddd"
     readonly property string machineLimit: nodeData ? nodeData.machineLimit.toFixed(2) : ""
+    readonly property int somersloopCount: nodeData ? nodeData.somersloopCount : 0
+    readonly property int somersloopSlotSize: nodeData ? nodeData.somersloopSlotSize : 0
 
 
     implicitWidth: 200
@@ -74,23 +76,29 @@ Item {
             }
             Text {
                 text: root.nodeData ? root.nodeData.name : ""
-                anchors.horizontalCenter: parent.horizontalCenter
                 color: "white"
+                anchors.horizontalCenter: parent.horizontalCenter
             }
             Text {
-                anchors.horizontalCenter: parent.horizontalCenter
                 text: root.machineCount
                 color: "white"
+                anchors.horizontalCenter: parent.horizontalCenter
             }
             Text {
-                anchors.horizontalCenter: parent.horizontalCenter
-                // text: root.nodeData ? root.nodeData.machineLimit : "DD"
                 text: root.machineLimit
                 color: "white"
+                anchors.horizontalCenter: parent.horizontalCenter
             }
             Text {
                 text: root.nodeData ? root.nodeData.machineName : ""
                 color: "white"
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+            Text {
+                visible: root.somersloopSlotSize > 0
+                text: "sl: " + root.somersloopCount + "/" + root.somersloopSlotSize
+                color: "white"
+                anchors.horizontalCenter: parent.horizontalCenter
             }
         }
 

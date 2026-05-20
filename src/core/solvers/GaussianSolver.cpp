@@ -159,7 +159,13 @@ void GaussianSolver::handleConnection(Connection& conn, Port& port, Equation& eq
         case NodeType::Production: {
             MachineNode* m = static_cast<MachineNode*>(&cPeer->owner);
             t = Frac(1, cPeer->connections.size());
-            eq.coefficients[m] = t * cPeer->owner.portRate(cPeer);
+
+            int somersloopSlot = m->somersloopSlotSize();
+            Frac somersloopMultiplier = Frac(1);
+            if (somersloopSlot != 0)
+                somersloopMultiplier = Frac(1) + Frac(m->somersloopCount(), somersloopSlot);
+
+            eq.coefficients[m] = somersloopMultiplier * t * cPeer->owner.portRate(cPeer);
             isMachineFound = true;
             break;
         }
@@ -320,7 +326,7 @@ void GaussianSolver::solve()
                 int pc = pivotColForRow[r];
                 if (pc == -1)
                     continue;
-                counts.remove(island[pc]);  // pivot vars start unset
+                counts.remove(island[pc]); // pivot vars start unset
                 Frac val = mat[r][numVars];
                 for (int col = 0; col < numVars; ++col) {
                     if (col == pc || mat[r][col] == Frac(0))
@@ -354,11 +360,17 @@ void GaussianSolver::solve()
         for (auto it = counts.begin(); it != counts.end(); ++it) {
             MachineNode* node = it.key();
             Frac count = it.value();
+
+            int somersloopSlot = node->somersloopSlotSize();
+            Frac somersloopMultiplier = Frac(1);
+            if (somersloopSlot != 0)
+                somersloopMultiplier = Frac(1) + Frac(node->somersloopCount(), somersloopSlot);
+
             node->setMachineCount(count);
             for (auto& port : node->inputs())
                 port->amount = boost::rational_cast<float>(count * node->portRate(port.get()));
             for (auto& port : node->outputs())
-                port->amount = boost::rational_cast<float>(count * node->portRate(port.get()));
+                port->amount = boost::rational_cast<float>(somersloopMultiplier * count * node->portRate(port.get()));
         }
 
         // --- propagate amounts to boundary node ports ---
@@ -382,8 +394,10 @@ void GaussianSolver::solve()
                     }
                 }
             };
-            for (auto& port : node->inputs())  propagate(port.get());
-            for (auto& port : node->outputs()) propagate(port.get());
+            for (auto& port : node->inputs())
+                propagate(port.get());
+            for (auto& port : node->outputs())
+                propagate(port.get());
         }
     }
 }

@@ -222,6 +222,13 @@ void SessionManager::incMachineLimit(AbstractNode* node, int limit)
     m->setMachineLimit(newLimit);
 }
 
+void SessionManager::setMachineSomersloop(MachineNode* node, int count)
+{
+    if(!node)
+        return;
+    node->setSomersloopCount(count);
+}
+
 void SessionManager::setExtractionPurity(AbstractNode* node, NodePurity purity)
 {
     if (auto* en = dynamic_cast<ExtractionNode*>(node)) {

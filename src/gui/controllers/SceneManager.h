@@ -70,6 +70,7 @@ public slots:
     void connectNodes(int srcNodeIdx, int srcPortIdx, int dstNodeIdx, int dstPortIdx);
     void setMachineLimit(AbstractNode* node, float limit);
     void incMachineLimit(AbstractNode* node, int inc);
+    void setSomersloopCount(AbstractNode* node, int count);
     void solve();
     void save(const QString& path);
     void load(const QString& path);
