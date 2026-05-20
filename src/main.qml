@@ -15,11 +15,11 @@ ApplicationWindow {
             title: "File"
             MenuItem {
                 text: "Save..."
-                // onClicked: saveDialog.open()
+                onClicked: saveDialog.open()
             }
             MenuItem {
                 text: "Open..."
-                // onClicked: openDialog.open()
+                onClicked: openDialog.open()
             }
             MenuSeparator {}
             MenuItem {
@@ -106,5 +106,22 @@ ApplicationWindow {
             reloader.clearCache();
             uiLoader.source = "gui/components/App.qml";
         }
+    }
+
+    Platform.FileDialog {
+        id: saveDialog
+        title: "Save Factory"
+        fileMode: Platform.FileDialog.SaveFile
+        nameFilters: ["Factory files (*.json)", "All files (*)"]
+        defaultSuffix: "json"
+        onAccepted: SceneManager.save(file.toString())
+    }
+
+    Platform.FileDialog {
+        id: openDialog
+        title: "Open Factory"
+        fileMode: Platform.FileDialog.OpenFile
+        nameFilters: ["Factory files (*.json)", "All files (*)"]
+        onAccepted: SceneManager.load(file.toString())
     }
 }

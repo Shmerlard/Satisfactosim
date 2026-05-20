@@ -1,0 +1,50 @@
+{
+    "factories": [
+        {
+            "connections": [
+                {
+                    "from": [
+                        0,
+                        0
+                    ],
+                    "to": [
+                        1,
+                        0
+                    ]
+                }
+            ],
+            "edges": [
+            ],
+            "factoryNodes": [
+            ],
+            "id": "{6562a493-6ece-4784-bc99-18307eb90e85}",
+            "machines": [
+                {
+                    "id": "{e1736dfd-1d2d-47ef-bd97-3b56cbc97183}",
+                    "machineLimit": -1,
+                    "name": "",
+                    "posX": 150.1162277642253,
+                    "posY": 399.7698012780113,
+                    "purity": 1,
+                    "recipe": "Miner_Desc_Coal_C",
+                    "tier": 0,
+                    "type": 3
+                },
+                {
+                    "id": "{c47c490d-c3cb-4067-9234-ff8a6a370a62}",
+                    "machineLimit": 8,
+                    "name": "",
+                    "posX": 449.19921875,
+                    "posY": 399.80078125,
+                    "recipe": "Recipe_Gunpowder_C",
+                    "type": 4
+                }
+            ],
+            "name": "Main Factory",
+            "parentId": ""
+        }
+    ],
+    "metadata": {
+        "version": 1
+    }
+}

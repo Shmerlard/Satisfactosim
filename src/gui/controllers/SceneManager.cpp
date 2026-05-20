@@ -193,6 +193,16 @@ void SceneManager::solve()
     m_session->solve();
 }
 
+void SceneManager::save(const QString& path)
+{
+    m_session->save(QUrl(path).toLocalFile());
+}
+
+void SceneManager::load(const QString& path)
+{
+    m_session->load(QUrl(path).toLocalFile());
+}
+
 void SceneManager::deleteConnection(QObject* connObj)
 {
     Connection* conn = qobject_cast<Connection*>(connObj);

@@ -71,5 +71,7 @@ public slots:
     void setMachineLimit(AbstractNode* node, float limit);
     void incMachineLimit(AbstractNode* node, int inc);
     void solve();
+    void save(const QString& path);
+    void load(const QString& path);
     // QVariantMap portAtPosition(qreal x, qreal y, qreal tolerance = 15.0);
 };
