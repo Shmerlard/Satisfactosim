@@ -44,6 +44,7 @@ protected:
 
 private:
     QString m_filterText;
+    QString m_itemClass;
     FilterIO m_mode = All;
     bool m_searchRecipeName = true;
     Port* m_port = nullptr;
@@ -54,4 +55,5 @@ public slots:
     void setFilterString(const QString& text);
     void setFilterMode(int mode);
     void setSearchRecipeName(bool enabled);
+    void setItemClassFilter(const QString& text);
 };

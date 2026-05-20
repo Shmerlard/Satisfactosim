@@ -180,12 +180,6 @@ void SceneManager::setMachineLimit(AbstractNode* node, float limit)
 void SceneManager::incMachineLimit(AbstractNode* node, int inc)
 {
     m_session->incMachineLimit(node, inc);
-    // if (!node)
-    //     return;
-    // if (!node->isMachineNode())
-    //     return;
-    //
-    // float currLimit = node
 }
 
 void SceneManager::solve()

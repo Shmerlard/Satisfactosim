@@ -8,6 +8,8 @@ ColumnLayout {
     property int currentMode: 0
     property bool recipeNameEnabled: true
 
+    function clear() { searchBox.text = "" }
+
     TextField {
         id: searchBox
         Layout.fillWidth: true

@@ -19,7 +19,7 @@ Popup {
         // dragging from output → want recipes consuming this item (Inputs=1)
         // dragging from input  → want recipes producing this item (Outputs=2)
         var mode = isInput ? 2 : 1;
-        SceneManager.recipes.setFilterString(portData.itemName);
+        SceneManager.recipes.setItemClassFilter(portData.itemClass);
         SceneManager.recipes.setFilterMode(mode);
         SceneManager.recipes.setSearchRecipeName(false);
         searchBox.currentMode = mode;
@@ -28,9 +28,11 @@ Popup {
 
     onClosed: {
         sourcePort = null;
+        SceneManager.recipes.setItemClassFilter("");
         SceneManager.recipes.setFilterString("");
         SceneManager.recipes.setFilterMode(0);
         SceneManager.recipes.setSearchRecipeName(true);
+        searchBox.clear();
         searchBox.currentMode = 0;
         searchBox.recipeNameEnabled = true;
     }

@@ -34,6 +34,7 @@ QVariant RecipeListModel::data(const QModelIndex& index, int role) const
             for (auto it = pr->inputs.begin(); it != pr->inputs.end(); ++it) {
                 QVariantMap map;
                 map["name"] = it->first->itemName;
+                map["itemClass"] = it->first->itemClass;
                 map["iconUrl"] = "image://assets/item/" + it->first->itemClass;
                 list.append(map);
             }
@@ -45,6 +46,7 @@ QVariant RecipeListModel::data(const QModelIndex& index, int role) const
         for (auto it = entry->outputs.begin(); it != entry->outputs.end(); ++it) {
             QVariantMap map;
             map["name"] = it->first->itemName;
+            map["itemClass"] = it->first->itemClass;
             map["iconUrl"] = "image://assets/item/" + it->first->itemClass;
             list.append(map);
         }
@@ -80,16 +82,29 @@ RecipeFilterModel::RecipeFilterModel(QObject* parent)
 
 bool RecipeFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const
 {
-    if (m_port != nullptr) {
+    auto get = [&](int role) {
+        return sourceModel()->data(sourceModel()->index(sourceRow, 0, sourceParent), role);
+    };
 
+    if (!m_itemClass.isEmpty()) {
+        auto itemClassMatches = [&](const QVariant& roleData) {
+            for (const QVariant& v : roleData.toList()) {
+                if (v.toMap().value("itemClass").toString() == m_itemClass)
+                    return true;
+            }
+            return false;
+        };
+        bool classOk = false;
+        if (m_mode != Outputs && itemClassMatches(get(RecipeListModel::InputsRole)))
+            classOk = true;
+        if (m_mode != Inputs && itemClassMatches(get(RecipeListModel::OutputsRole)))
+            classOk = true;
+        if (!classOk)
+            return false;
     }
 
     if (m_filterText.isEmpty())
         return true;
-
-    auto get = [&](int role) {
-        return sourceModel()->data(sourceModel()->index(sourceRow, 0, sourceParent), role);
-    };
 
     auto itemNamesMatch = [&](const QVariant& roleData) {
         for (const QVariant& v : roleData.toList()) {
@@ -124,5 +139,11 @@ void RecipeFilterModel::setFilterMode(int mode)
 void RecipeFilterModel::setSearchRecipeName(bool enabled)
 {
     m_searchRecipeName = enabled;
+    refilter();
+}
+
+void RecipeFilterModel::setItemClassFilter(const QString& itemClass)
+{
+    m_itemClass = itemClass;
     refilter();
 }
