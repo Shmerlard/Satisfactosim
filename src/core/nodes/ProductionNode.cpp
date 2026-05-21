@@ -42,6 +42,30 @@ void ProductionNode::setRecipe(const ProductionRecipe* recipe)
     buildPortsFromRecipe();
 }
 
+QString ProductionNode::getHeaderInfo() const
+{
+    QString recipeName = "none", machineName, cycleInfo;
+    if (const ProductionRecipe* r = recipe()) {
+        recipeName = r->recipeClass;
+        if (r->producedIn)
+            machineName = r->producedIn->machineName;
+        cycleInfo = QString("  (%1s, %2MW)")
+                        .arg(boost::rational_cast<double>(r->recipeTime), 0, 'f', 1)
+                        .arg(r->producedIn ? r->producedIn->basePowerConsumption : 0.f, 0, 'f', 0);
+    }
+    QString limitStr = m_machineLimit >= 0
+        ? QString("  [limit: %1]").arg(boost::rational_cast<double>(m_machineLimit), 0, 'f', 2)
+        : QString();
+    return QString("┌─ [%1] %2  \"%3\"  x%4%5\n│  recipe : %6%7")
+               .arg(index())
+               .arg(machineName)
+               .arg(m_name)
+               .arg(boost::rational_cast<double>(m_machineCount), 0, 'f', 2)
+               .arg(limitStr)
+               .arg(recipeName)
+               .arg(cycleInfo);
+}
+
 QJsonObject ProductionNode::getJsonNode() const
 {
     QJsonObject obj = MachineNode::getJsonNode();

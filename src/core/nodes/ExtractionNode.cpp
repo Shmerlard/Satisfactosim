@@ -35,6 +35,26 @@ const Machine* ExtractionNode::extractor() const
     return m_machine;
 }
 
+QString ExtractionNode::getHeaderInfo() const
+{
+    static const QMap<NodePurity, QString> purityNames = {
+        { NodePurity::Impure, "Impure" },
+        { NodePurity::Normal, "Normal" },
+        { NodePurity::Pure, "Pure" },
+    };
+    QString limitStr = m_machineLimit >= 0
+        ? QString("  [limit: %1]").arg(boost::rational_cast<double>(m_machineLimit), 0, 'f', 2)
+        : QString();
+    return QString("┌─ [%1] %2  \"%3\"  x%4%5\n│  resource : %6  purity: %7")
+               .arg(index())
+               .arg(machineName())
+               .arg(m_name)
+               .arg(boost::rational_cast<double>(m_machineCount), 0, 'f', 2)
+               .arg(limitStr)
+               .arg(recipe() ? recipe()->resource->itemName : "none")
+               .arg(purityNames.value(m_purity));
+}
+
 QJsonObject ExtractionNode::getJsonNode() const
 {
     QJsonObject obj = MachineNode::getJsonNode();

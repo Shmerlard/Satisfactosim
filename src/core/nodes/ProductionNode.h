@@ -22,6 +22,7 @@ public:
     const ProductionRecipe* recipe() const override;
     Machine* machine() const;
     QJsonObject getJsonNode() const override;
+    QString getHeaderInfo() const override;
     void buildPortsFromRecipe() override;
 
     Frac basePortRate(const Port* port) const override;

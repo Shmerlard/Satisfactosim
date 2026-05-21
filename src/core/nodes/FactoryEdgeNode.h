@@ -27,6 +27,7 @@ public:
     void onPortDisconnected(Port& port) override;
     Frac portRate(const Port* port) const override;
     QJsonObject getJsonNode() const override;
+    QString getHeaderInfo() const override;
     void setMirrorPort(Port& port) { m_mirrorPort = &port; }
     Port* mirrorPort() const { return m_mirrorPort; }
 

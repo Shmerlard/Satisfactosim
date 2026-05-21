@@ -44,6 +44,14 @@ void FactoryEdgeNode::onPortDisconnected(Port& port)
     emit m_mirrorPort->owner.portsChanged();
 }
 
+QString FactoryEdgeNode::getHeaderInfo() const
+{
+    return QString("┌─ [%1] Edge  \"%2\"  (%3)")
+               .arg(index())
+               .arg(m_name)
+               .arg(stringFromPortType(m_edgeType));
+}
+
 QJsonObject FactoryEdgeNode::getJsonNode() const
 {
     QJsonObject obj = AbstractNode::getJsonNode();

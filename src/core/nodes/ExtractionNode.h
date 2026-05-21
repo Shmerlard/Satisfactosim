@@ -40,6 +40,7 @@ public:
     const ExtractionRecipe* recipe() const override;
     Frac basePortRate(const Port* port) const override;
     QJsonObject getJsonNode() const override;
+    QString getHeaderInfo() const override;
 
 signals:
     void purityChanged();

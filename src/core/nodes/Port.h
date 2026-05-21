@@ -1,12 +1,10 @@
 #pragma once
 
-// #include <QString>
 #include <QList>
 #include "Connection.h"
 #include <QPointF>
 
 class AbstractNode;
-// class Connection;
 class FactoryEdgeNode;
 struct Item;
 

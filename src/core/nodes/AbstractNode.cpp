@@ -38,6 +38,11 @@ QJsonObject AbstractNode::getJsonNode() const
     return obj;
 }
 
+QString AbstractNode::getHeaderInfo() const
+{
+    return QString("┌─ [%1]  \"%2\"").arg(index()).arg(m_name);
+}
+
 int AbstractNode::index() const
 {
     // FIX: may need a const_cast

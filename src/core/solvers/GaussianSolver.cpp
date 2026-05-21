@@ -122,7 +122,7 @@ void GaussianSolver::handleConnection(Connection& conn, Port& port, Equation& eq
     QSet<Port*> seen;
 
     seen.insert(&port);
-    steps.enqueue({&port, &conn, Frac(1)});
+    steps.enqueue({ &port, &conn, Frac(1) });
 
     while (!steps.isEmpty()) {
         auto [cPort, cConn, multiplier] = steps.dequeue();
@@ -137,17 +137,19 @@ void GaussianSolver::handleConnection(Connection& conn, Port& port, Equation& eq
             FactoryNode* f = static_cast<FactoryNode*>(owner);
             FactoryEdgeNode* e = f->getEdgeNode(cPeer);
             Port* edgePort = e ? e->port() : nullptr;
-            if (!edgePort) break;
+            if (!edgePort)
+                break;
             for (Connection* c : edgePort->connections)
-                steps.enqueue({edgePort, c, multiplier});
+                steps.enqueue({ edgePort, c, multiplier });
             break;
         }
         case NodeType::FactoryEdge: {
             FactoryEdgeNode* e = static_cast<FactoryEdgeNode*>(owner);
             Port* mirror = e->mirrorPort();
-            if (!mirror) break;
+            if (!mirror)
+                break;
             for (Connection* c : mirror->connections)
-                steps.enqueue({mirror, c, multiplier});
+                steps.enqueue({ mirror, c, multiplier });
             break;
         }
         case NodeType::Splitter: {
@@ -156,11 +158,11 @@ void GaussianSolver::handleConnection(Connection& conn, Port& port, Equation& eq
                 Frac newMultiplier = multiplier * s->proportion(*cPeer);
                 for (auto& p : s->inputs())
                     for (Connection* c : p->connections)
-                        steps.enqueue({p.get(), c, newMultiplier});
+                        steps.enqueue({ p.get(), c, newMultiplier });
             } else {
                 for (auto& p : s->outputs())
                     for (Connection* c : p->connections)
-                        steps.enqueue({p.get(), c, multiplier});
+                        steps.enqueue({ p.get(), c, multiplier });
             }
             break;
         }
@@ -177,60 +179,6 @@ void GaussianSolver::handleConnection(Connection& conn, Port& port, Equation& eq
     }
 }
 
-// void GaussianSolver::islandFromMachineNode(Island& island, MachineNode& start, QSet<MachineNode*>& visited)
-// {
-//     QQueue<AbstractNode*> queue;
-//     visited.insert(&start);
-//     queue.enqueue(&start);
-//
-//     while (!queue.isEmpty()) {
-//         AbstractNode* node = queue.dequeue();
-//
-//         if (node->isMachineNode()) {
-//             island.append(static_cast<MachineNode*>(node));
-//         }
-//
-//         QSet<AbstractNode*> neighbors;
-//         for (auto& uPort : node->inputs()) {
-//             for (Connection* conn : uPort->connections) {
-//                 AbstractNode* neighbor = &conn->getPeer(*uPort)->owner;
-//                 switch (neighbor->type()) {
-//                 case NodeType::Factory: {
-//                     FactoryNode* fn = static_cast<FactoryNode*>(neighbor);
-//                     FactoryEdgeNode* en = fn->getEdgeNode(uPort.get());
-//                     if (!queue.contains(en))
-//                     // queue.enqueue(fn->getEdgeNode(uPort.get()));
-//                     break;
-//                 }
-//                 case NodeType::FactoryEdge: {
-//                     break;
-//                 }
-//                 case NodeType::Splitter: {
-//                     break;
-//                 }
-//                 case NodeType::Extraction:
-//                 case NodeType::Production: {
-//                     break;
-//                 }
-//                 default:
-//                     break;
-//                 }
-//                 // neightbors.insert(&conn->getPeer(*uPort)->owner);
-//             }
-//         }
-//         // QSet<AbstractNode*> neighbors = node->getNeighbors();
-//         // for (auto* neigh : neighbors) {
-//         //     if (neigh->isMachineNode()) {
-//         //         MachineNode* mn = static_cast<MachineNode*>(neigh);
-//         //         if (visited.contains(mn))
-//         //             continue;
-//         //         visited.insert(mn);
-//         //     }
-//         //     queue.enqueue(neigh);
-//         // }
-//     }
-// }
-
 void GaussianSolver::visitPort(Port* port, QSet<MachineNode*>& visited, QQueue<MachineNode*>& queue)
 {
     using Step = std::pair<Port*, Connection*>;
@@ -239,7 +187,7 @@ void GaussianSolver::visitPort(Port* port, QSet<MachineNode*>& visited, QQueue<M
 
     seen.insert(port);
     for (Connection* conn : port->connections)
-        steps.enqueue({port, conn});
+        steps.enqueue({ port, conn });
 
     while (!steps.isEmpty()) {
         auto [cPort, cConn] = steps.dequeue();
@@ -254,26 +202,28 @@ void GaussianSolver::visitPort(Port* port, QSet<MachineNode*>& visited, QQueue<M
             FactoryNode* f = static_cast<FactoryNode*>(owner);
             FactoryEdgeNode* e = f->getEdgeNode(cPeer);
             Port* edgePort = e ? e->port() : nullptr;
-            if (!edgePort) break;
+            if (!edgePort)
+                break;
             for (Connection* c : edgePort->connections)
-                steps.enqueue({edgePort, c});
+                steps.enqueue({ edgePort, c });
             break;
         }
         case NodeType::FactoryEdge: {
             FactoryEdgeNode* e = static_cast<FactoryEdgeNode*>(owner);
             Port* mirror = e->mirrorPort();
-            if (!mirror) break;
+            if (!mirror)
+                break;
             for (Connection* c : mirror->connections)
-                steps.enqueue({mirror, c});
+                steps.enqueue({ mirror, c });
             break;
         }
         case NodeType::Splitter: {
             for (auto& p : owner->inputs())
                 for (Connection* c : p->connections)
-                    steps.enqueue({p.get(), c});
+                    steps.enqueue({ p.get(), c });
             for (auto& p : owner->outputs())
                 for (Connection* c : p->connections)
-                    steps.enqueue({p.get(), c});
+                    steps.enqueue({ p.get(), c });
             break;
         }
         case NodeType::Extraction:

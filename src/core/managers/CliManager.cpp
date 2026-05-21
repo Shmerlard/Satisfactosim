@@ -129,103 +129,19 @@ void printPort(QTextStream& out, Port* port, int portGlobalIdx)
 
 void printNode(QTextStream& out, AbstractNode* node, Factory* factory)
 {
-    int idx = 0;
-    for (const auto& n : factory->nodes()) {
-        if (n == node)
-            break;
-        idx++;
-    }
-
     QString color;
-    QString header;
-
     switch (node->type()) {
-    case NodeType::Production: {
-        auto* n = static_cast<ProductionNode*>(node);
-        color = CYAN;
-        QString recipeName = "none", machineName, cycleInfo;
-        if (const ProductionRecipe* r = n->recipe()) {
-            recipeName = r->recipeClass;
-            if (r->producedIn)
-                machineName = r->producedIn->machineName;
-            cycleInfo = QString("  (%1s, %2MW)")
-                            .arg(boost::rational_cast<double>(r->recipeTime), 0, 'f', 1)
-                            .arg(r->producedIn ? r->producedIn->basePowerConsumption : 0.f, 0, 'f', 0);
-        }
-        QString limitStr = n->machineLimit() >= 0
-            ? QString("  [limit: %1]").arg(boost::rational_cast<double>(n->machineLimit()), 0, 'f', 2)
-            : QString();
-        header = QString("┌─ [%1] %2  \"%3\"  x%4%5\n│  recipe : %6%7")
-                     .arg(idx)
-                     .arg(machineName)
-                     .arg(n->name())
-                     .arg(boost::rational_cast<double>(n->machineCount()), 0, 'f', 2)
-                     .arg(limitStr)
-                     .arg(recipeName)
-                     .arg(cycleInfo);
-        break;
-    }
-    case NodeType::Extraction: {
-        auto* n = static_cast<ExtractionNode*>(node);
-        color = GREEN;
-        static const QMap<NodePurity, QString> purityNames = {
-            { NodePurity::Impure, "Impure" },
-            { NodePurity::Normal, "Normal" },
-            { NodePurity::Pure, "Pure" },
-        };
-        QString limitStr = n->machineLimit() >= 0
-            ? QString("  [limit: %1]").arg(boost::rational_cast<double>(n->machineLimit()), 0, 'f', 2)
-            : QString();
-        header = QString("┌─ [%1] %2  \"%3\"  x%4%5\n│  resource : %6  purity: %7")
-                     .arg(idx)
-                     // .arg(n->getExtractorName())
-                     .arg(n->machineName())
-                     .arg(n->name())
-                     .arg(boost::rational_cast<double>(n->machineCount()), 0, 'f', 2)
-                     .arg(limitStr)
-                     .arg(n->recipe() ? n->recipe()->resource->itemName : "none")
-                     .arg(purityNames.value(n->purity()));
-        break;
-    }
-    case NodeType::Factory: {
-        auto* n = static_cast<FactoryNode*>(node);
-        color = YELLOW;
-        header = QString("┌─ [%1] Factory  \"%2\"  (%3 nodes inside)")
-                     .arg(idx)
-                     .arg(n->name())
-                     .arg(n->factory().nodes().size());
-        break;
-    }
-    case NodeType::FactoryEdge: {
-        auto* n = static_cast<FactoryEdgeNode*>(node);
-        color = YELLOW;
-        header = QString("┌─ [%1] Edge  \"%2\"  (%3)")
-                     .arg(idx)
-                     .arg(n->name())
-                     .arg(stringFromPortType(n->edgeType()));
-        break;
-    }
-    case NodeType::Splitter: {
-        auto* n = static_cast<SplitterNode*>(node);
-        color = YELLOW;
-        QStringList proportions;
-        for (auto& p : n->outputs()) {
-            Frac prop = n->proportion(*p);
-            proportions << QString("%1/%2").arg(prop.numerator()).arg(prop.denominator());
-        }
-        header = QString("┌─ [%1] Splitter  \"%2\"  (%3)")
-                     .arg(idx)
-                     .arg(n->name())
-                     .arg(proportions.join("  "));
-        break;
-    }
+    case NodeType::Production:  color = CYAN;   break;
+    case NodeType::Extraction:  color = GREEN;  break;
+    case NodeType::Factory:
+    case NodeType::FactoryEdge:
+    case NodeType::Splitter:    color = YELLOW; break;
     default:
         out << "WARNING: UNHANDLED PRINT\n";
         return;
     }
 
-    out << color << BOLD << header << "\n"
-        << RESET;
+    out << color << BOLD << node->getHeaderInfo() << "\n" << RESET;
 
     int portIdx = 0;
     for (auto& p : node->inputs()) {
@@ -252,15 +168,6 @@ CliManager::CliManager(QObject* parent)
 
     connect(m_session, &SessionManager::operationFailed,
         this, [this](const QString msg) { m_out << "Error: " << msg << "\n"; });
-    // connect(m_session, &SessionManager::nodeAdded,
-    //         this, [this](AbstractNode& node){
-    //         m_out << "Added node! " << node.name() << "\n"; });
-    // connect(m_session, &SessionManager::nodeDisconnected,
-    //         this, [this](){
-    //         m_out << "Disconnected!\n"; });
-    // connect(m_session, &SessionManager::nodeDisconnected,
-    //         this, [this](){
-    //         m_out << "Disconnected!\n"; });
 
     m_out << "\n=== Factory CLI Console Initialized ===" << Qt::endl;
     m_out << "Type 'help' for a list of commands." << Qt::endl;

@@ -19,10 +19,11 @@ private:
 
 public:
     void addOutput(Frac weight = Frac(1));
-    Frac proportion(Port& port);
+    Frac proportion(Port& port) const;
     void setWeight(Port& port, Frac weight);
     Frac portRate(const Port* port) const override;
     QJsonObject getJsonNode() const override;
+    QString getHeaderInfo() const override;
 
     void onPortConnected(Port& port) override;
     void onPortDisconnected(Port& port) override;

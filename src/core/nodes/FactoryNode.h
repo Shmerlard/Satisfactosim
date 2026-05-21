@@ -28,4 +28,5 @@ public:
     Frac portRate(const Port* port) const override;
 
     QJsonObject getJsonNode() const override;
+    QString getHeaderInfo() const override;
 };

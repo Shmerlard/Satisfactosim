@@ -19,6 +19,14 @@ Frac FactoryNode::portRate(const Port* port) const
 }
 
 
+QString FactoryNode::getHeaderInfo() const
+{
+    return QString("┌─ [%1] Factory  \"%2\"  (%3 nodes inside)")
+               .arg(index())
+               .arg(m_name)
+               .arg(m_factory.nodes().size());
+}
+
 QJsonObject FactoryNode::getJsonNode() const
 {
     QJsonObject obj = AbstractNode::getJsonNode();
