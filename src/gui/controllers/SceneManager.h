@@ -73,6 +73,10 @@ public slots:
     void incMachineLimit(AbstractNode* node, int inc);
     void setSomersloopCount(AbstractNode* node, int count);
     void setOverclock(AbstractNode* node, float overclock);
+
+    void setTier(ExtractionNode* node, int tier);
+    void setPurity(ExtractionNode* node, NodePurity purity);
+
     void solve();
     void save(const QString& path);
     void load(const QString& path);

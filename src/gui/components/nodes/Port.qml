@@ -13,8 +13,7 @@ Item {
     property Item nodeRoot: null
     property Item contentContainer: null
 
-    // implicitWidth: mainLayout.width + 5
-    // implicitHeight: mainLayout.height + 5
+    // FIX: limit lenth of th text, use fraction text instead
     implicitWidth: 50
     implicitHeight: 30
     z: 1

@@ -10,15 +10,15 @@ struct Recipe;
 class MachineNode : public AbstractNode {
     Q_OBJECT;
 
-    Q_PROPERTY(QString machineName READ machineName NOTIFY recipeChanged)
-    Q_PROPERTY(QString machineIcon READ machineIcon NOTIFY recipeChanged)
-    Q_PROPERTY(float machineCount READ machineCountFloat NOTIFY machineCountChanged)
-    Q_PROPERTY(float machineLimit READ machineLimitFloat NOTIFY machineLimitChanged)
-    Q_PROPERTY(QString machineCountStr READ machineCountStr NOTIFY machineCountChanged)
-    Q_PROPERTY(QString machineLimitStr READ machineLimitStr NOTIFY machineLimitChanged)
-    Q_PROPERTY(int somersloopCount READ somersloopCount NOTIFY recipeChanged)
-    Q_PROPERTY(int somersloopSlotSize READ somersloopSlotSize NOTIFY recipeChanged)
-    Q_PROPERTY(float overclock READ overclockFloat WRITE setOverclockFloat NOTIFY recipeChanged)
+    Q_PROPERTY(QString machineName READ machineName NOTIFY nodeUpdated)
+    Q_PROPERTY(QString machineIcon READ machineIcon NOTIFY nodeUpdated)
+    Q_PROPERTY(float machineCount READ machineCountFloat NOTIFY nodeUpdated)
+    Q_PROPERTY(float machineLimit READ machineLimitFloat NOTIFY nodeUpdated)
+    Q_PROPERTY(QString machineCountStr READ machineCountStr NOTIFY nodeUpdated)
+    Q_PROPERTY(QString machineLimitStr READ machineLimitStr NOTIFY nodeUpdated)
+    Q_PROPERTY(int somersloopCount READ somersloopCount NOTIFY nodeUpdated)
+    Q_PROPERTY(int somersloopSlotSize READ somersloopSlotSize NOTIFY nodeUpdated)
+    Q_PROPERTY(float overclock READ overclockFloat WRITE setOverclockFloat NOTIFY nodeUpdated)
 
     friend class GaussianSolver;
 
@@ -61,19 +61,20 @@ public:
     void setMachineLimit(float limit);
     void setMachineLimit(Frac limit);
 
-    Frac portRate(const Port* port) const override;
+    Frac portRate(const Port* port) const override; // FIX: explore, could be redundent
     QJsonObject getJsonNode() const override;
-    void notifySolved() override
+    void notifySolved() override // FIX: explore, could be redundent
     {
         emit portsChanged();
-        emit machineCountChanged();
+        // emit machineCountChanged();
+        emit nodeUpdated();
     }
 
 private:
     void setMachineCount(Frac count) { m_machineCount = count; } // only the solver can set the count
 
-signals:
-    void recipeChanged();
-    void machineLimitChanged();
-    void machineCountChanged();
+// signals:
+//     void recipeChanged();
+//     void machineLimitChanged();
+//     void machineCountChanged();
 };

@@ -60,7 +60,7 @@ void MachineNode::setSomersloopCount(int count)
     if (count < 0 || count > m_machine->somersloopSlotSize)
         return;
     m_somersloopCount = count;
-    emit recipeChanged();
+    // emit recipeChanged();
 }
 
 Frac MachineNode::somersloopFactor() const
@@ -74,17 +74,17 @@ void MachineNode::setOverclock(Frac overclock)
 {
     overclock = std::max(Frac(1, 100), std::min(Frac(5, 2), overclock));
     m_overclock = overclock;
-    emit recipeChanged();
+    // emit recipeChanged();
 }
 
 void MachineNode::setMachineLimit(float limit)
 {
     m_machineLimit = Frac((int)(limit * 100), 100);
-    emit machineLimitChanged();
+    // emit machineLimitChanged();
 }
 
 void MachineNode::setMachineLimit(Frac limit)
 {
     m_machineLimit = limit;
-    emit machineLimitChanged();
+    // emit machineLimitChanged();
 }

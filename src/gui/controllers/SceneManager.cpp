@@ -194,14 +194,25 @@ void SceneManager::incMachineLimit(AbstractNode* node, int inc)
 
 void SceneManager::setSomersloopCount(AbstractNode* node, int count)
 {
+    // FIX: use sesion manager instead
     if (node->isMachineNode())
         static_cast<MachineNode*>(node)->setSomersloopCount(count);
 }
 
 void SceneManager::setOverclock(AbstractNode* node, float overclock)
 {
+    // FIX: use sesion manager instead
     if (node->isMachineNode())
         static_cast<MachineNode*>(node)->setOverclockFloat(overclock);
+}
+
+void SceneManager::setTier(ExtractionNode* node, int tier)
+{
+    m_session->setExtractionTier(node, tier);
+}
+void SceneManager::setPurity(ExtractionNode* node, NodePurity purity)
+{
+    m_session->setExtractionPurity(node, purity);
 }
 
 void SceneManager::solve()

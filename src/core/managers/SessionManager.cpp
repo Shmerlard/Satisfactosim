@@ -234,20 +234,27 @@ void SessionManager::setMachineSomersloop(MachineNode* node, int count)
     if (!node)
         return;
     node->setSomersloopCount(count);
+    emit node->nodeUpdated();
 }
 
 void SessionManager::setExtractionPurity(AbstractNode* node, NodePurity purity)
 {
-    if (auto* en = dynamic_cast<ExtractionNode*>(node)) {
+    if (node->type() == NodeType::Extraction) {
+        ExtractionNode* en = static_cast<ExtractionNode*>(node);
         en->setPurity(purity);
-        // emit machineLimitChanged(mn);
+        emit en->nodeUpdated();
+        emit extractionPurityChanged(en);
     }
 }
 
 void SessionManager::setExtractionTier(AbstractNode* node, int tier)
 {
-    if (auto* en = dynamic_cast<ExtractionNode*>(node))
-        en->m_tier = tier;
+    if (node->type() == NodeType::Extraction) {
+        ExtractionNode* en = static_cast<ExtractionNode*>(node);
+        en->setTierInt(tier);
+        emit en->nodeUpdated();
+        emit extractionTierChanged(en);
+    }
 }
 
 // ----------------------------- SAVE AND LOAD ---------------------------------

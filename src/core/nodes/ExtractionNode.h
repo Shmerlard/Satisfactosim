@@ -5,8 +5,8 @@
 
 class ExtractionNode : public MachineNode {
     Q_OBJECT;
-    Q_PROPERTY(int purity READ purityInt WRITE setPurityInt NOTIFY purityChanged)
-    Q_PROPERTY(int tier READ tier WRITE setTierInt NOTIFY tierChanged)
+    Q_PROPERTY(int purity READ purityInt  NOTIFY nodeUpdated)
+    Q_PROPERTY(int tier READ tier NOTIFY nodeUpdated)
     Q_PROPERTY(int tierCount READ tierCount CONSTANT)
 
     friend class SessionManager;
@@ -30,7 +30,7 @@ public:
     const Machine* extractor() const;
     NodePurity purity() const { return m_purity; }
     int purityInt() const { return static_cast<int>(m_purity); }
-    void setPurity(NodePurity p) { m_purity = p; emit purityChanged(); }
+    void setPurity(NodePurity p) { m_purity = p;  }
     void setPurityInt(int p) { setPurity(static_cast<NodePurity>(p)); }
     int tier() const { return m_tier; }
     int tierCount() const { return recipe() && recipe()->family ? recipe()->family->tiers.size() : 1; }
@@ -42,7 +42,4 @@ public:
     QJsonObject getJsonNode() const override;
     QString getHeaderInfo() const override;
 
-signals:
-    void purityChanged();
-    void tierChanged();
 };

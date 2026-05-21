@@ -7,10 +7,8 @@
 #include <QUuid>
 #include <QVariantList>
 #include <QVariantMap>
-// #include "boost/rational.hpp"
 #include "core/types/Types.h"
 
-// using Frac = boost::rational<int64_t>;
 
 class Connection;
 class Factory;

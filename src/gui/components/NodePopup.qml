@@ -8,6 +8,8 @@ Popup {
 
     property var nodeData: null
 
+    // FIX: only show somersloop for available
+
     readonly property int somersloopCount: {
         if (!nodeData) return 0;
         if (nodeData.nodeType !== 3 && nodeData.nodeType !== 4) return 0;
@@ -211,9 +213,8 @@ Popup {
                         text: modelData.label
                         checkable: true
                         checked: nodeData && nodeData.purity === modelData.value
-                        ButtonGroup.group: purityGroup
                         onClicked: if (nodeData)
-                            nodeData.purity = modelData.value
+                            SceneManager.setPurity(nodeData, modelData.value)
 
                         background: Rectangle {
                             color: parent.checked ? "#e8a020" : "#2a3a4a"
@@ -230,9 +231,6 @@ Popup {
                             font.bold: parent.checked
                         }
                     }
-                }
-                ButtonGroup {
-                    id: purityGroup
                 }
             }
 
@@ -256,9 +254,9 @@ Popup {
                         text: "Mk." + (index + 1)
                         checkable: true
                         checked: nodeData && nodeData.tier === index
-                        ButtonGroup.group: tierGroup
                         onClicked: if (nodeData)
-                            nodeData.tier = index
+                            SceneManager.setTier(nodeData, index)
+                            // nodeData.tier = index
 
                         background: Rectangle {
                             color: parent.checked ? "#e8a020" : "#2a3a4a"
@@ -275,9 +273,6 @@ Popup {
                             font.bold: parent.checked
                         }
                     }
-                }
-                ButtonGroup {
-                    id: tierGroup
                 }
             }
         }

@@ -93,6 +93,8 @@ signals:
     void nodeDisconnected(AbstractNode* src, AbstractNode* dst);
     void factoryChanged(Factory* factory);
     void machineLimitChanged(MachineNode* node);
+    void extractionTierChanged(ExtractionNode* node);
+    void extractionPurityChanged(ExtractionNode* node);
     void solved();
 
 public:

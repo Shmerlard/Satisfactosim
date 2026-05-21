@@ -81,6 +81,17 @@ void GaussianSolver::onLoad()
         solve();
         m_session->notifySolved();
     });
+    connect(m_session, &SessionManager::nodeAdded, this, [this]() {
+        build(m_session->rootFactory()); // FIX: extremely inefficient, more precise option needed
+        solve();
+        m_session->notifySolved();
+    });
+    connect(m_session, &SessionManager::nodeConnected, this, [this]() {
+        build(m_session->rootFactory()); // FIX: extremely inefficient, more precise option needed
+        solve();
+        m_session->notifySolved();
+    });
+    // FIX: impelemtn more connections for updated
 }
 
 void GaussianSolver::clear()
@@ -374,9 +385,9 @@ void GaussianSolver::solve()
 
             node->setMachineCount(count);
             for (auto& port : node->inputs())
-                port->amount = boost::rational_cast<float>( count * node->basePortRate(port.get()));
+                port->amount = boost::rational_cast<float>(count * node->basePortRate(port.get()));
             for (auto& port : node->outputs())
-                port->amount = boost::rational_cast<float>( count * node->basePortRate(port.get()));
+                port->amount = boost::rational_cast<float>(count * node->basePortRate(port.get()));
         }
 
         // --- propagate amounts to boundary node ports ---

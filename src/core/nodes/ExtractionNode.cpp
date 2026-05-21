@@ -102,8 +102,8 @@ void ExtractionNode::setTierInt(int t)
         return;
     m_tier = t;
     m_machine = r->family->tiers[m_tier];
-    emit tierChanged();
-    emit recipeChanged();
+    // emit tierChanged();
+    // emit recipeChanged();
 }
 
 void ExtractionNode::setRecipe(const ExtractionRecipe* recipe)
