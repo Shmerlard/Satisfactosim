@@ -68,7 +68,7 @@ Item {
         // --------------- OUTPUTS ------------------
         Item {
             id: outputsCol
-            anchors.right: parent.right
+            anchors.right: parent ? parent.right : undefined
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             width: childrenRect.width

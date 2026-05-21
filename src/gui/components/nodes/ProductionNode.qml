@@ -17,6 +17,7 @@ Item {
     readonly property string machineLimit: nodeData ? nodeData.machineLimit.toFixed(2) : ""
     readonly property int somersloopCount: nodeData ? nodeData.somersloopCount : 0
     readonly property int somersloopSlotSize: nodeData ? nodeData.somersloopSlotSize : 0
+    readonly property string nodeName: nodeData ? nodeData.name : ""
 
 
     implicitWidth: 200
@@ -115,7 +116,7 @@ Item {
                 delegate: Port {
                     required property var modelData
                     required property int index
-                    anchors.right: parent.right
+                    anchors.right: parent ? parent.right : undefined
                     portData: modelData
                     nodeRoot: root
                     isInput: false

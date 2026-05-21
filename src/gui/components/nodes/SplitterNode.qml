@@ -10,8 +10,8 @@ Item {
     property Item contentContainer: null
     property bool selected: false
 
-    implicitWidth: 120
-    implicitHeight: 100
+    implicitWidth: 150
+    implicitHeight: 150
 
     Rectangle {
         anchors.fill: parent
@@ -60,7 +60,7 @@ Item {
             delegate: Port {
                 required property var modelData
                 required property int index
-                anchors.right: parent.right
+                anchors.right: parent ? parent.right : undefined
                 portData: modelData
                 nodeRoot: root
                 isInput: false

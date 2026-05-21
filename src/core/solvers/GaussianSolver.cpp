@@ -278,7 +278,7 @@ void GaussianSolver::build(Factory* root)
                     continue;
                 Equation eq;
                 eq.rhs = Frac(0);
-                eq.coefficients[node] = -1 * node->overclock() * node->basePortRate(port);
+                eq.coefficients[node] = -1 * node->basePortRate(port);
                 for (Connection* conn : port->connections)
                     handleConnection(*conn, *port, eq);
 
@@ -372,17 +372,11 @@ void GaussianSolver::solve()
             MachineNode* node = it.key();
             Frac count = it.value();
 
-            int somersloopSlot = node->somersloopSlotSize();
-            Frac somersloopMultiplier = Frac(1);
-            if (somersloopSlot != 0)
-                somersloopMultiplier = Frac(1) + Frac(node->somersloopCount(), somersloopSlot);
-
-            Frac overclock = node->overclock();
             node->setMachineCount(count);
             for (auto& port : node->inputs())
-                port->amount = boost::rational_cast<float>(overclock * count * node->basePortRate(port.get()));
+                port->amount = boost::rational_cast<float>( count * node->basePortRate(port.get()));
             for (auto& port : node->outputs())
-                port->amount = boost::rational_cast<float>(overclock * somersloopMultiplier * count * node->basePortRate(port.get()));
+                port->amount = boost::rational_cast<float>( count * node->basePortRate(port.get()));
         }
 
         // --- propagate amounts to boundary node ports ---
