@@ -33,7 +33,7 @@ void FactoryEdgeNode::onPortConnected(Port& port)
 
 void FactoryEdgeNode::onPortDisconnected(Port& port)
 {
-    if (this->port()->connections.empty()) {
+    if (this->port()->connections.isEmpty() && this->m_mirrorPort->connections.isEmpty()) {
         this->port()->item = nullptr;
         this->port()->amount = 0;
         this->m_mirrorPort->item = nullptr;

@@ -46,7 +46,6 @@ Frac SplitterNode::portRate(const Port* port) const
     if (port->type == PortType::Input)
         return Frac(0); // FIX: implement
 
-    
     // const auto& list = (port->type == PortType::Input) ? recipe()->inputs : recipe()->outputs;
     // auto it = std::find_if(list.begin(), list.end(), [&](const auto& p) { return p.first == port->item; });
     return Frac(0);
@@ -61,16 +60,28 @@ QJsonObject SplitterNode::getJsonNode() const
 
 void SplitterNode::onPortConnected(Port& port)
 {
-    // FIX: implement a centralized way
-    if (!port.item) {
-        emit portsChanged();
+    if (port.item) {
+        for (auto& p : m_inputs)
+            if (!p->item)
+                p->item = port.item;
+        for (auto& p : m_outputs)
+            if (!p->item)
+                p->item = port.item;
     }
+    emit portsChanged();
 }
 
 void SplitterNode::onPortDisconnected(Port& port)
 {
-    // FIX: implement a centralized way
-    if (!port.item) {
-        emit portsChanged();
+    if (this->getNeighbors().isEmpty()) {
+        for (auto& p : m_inputs) {
+            p->item = nullptr;
+            p->amount = 0.0f;
+        }
+        for (auto& p : m_outputs) {
+            p->item = nullptr;
+            p->amount = 0.0f;
+        }
     }
+    emit portsChanged();
 }
