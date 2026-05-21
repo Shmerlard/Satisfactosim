@@ -33,7 +33,6 @@ public:
     }
     ~GameLibrary();
 
-    // FIX: is it needed
     GameLibrary(const GameLibrary&) = delete;
     void operator=(const GameLibrary&) = delete;
 

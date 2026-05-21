@@ -45,8 +45,6 @@ QString AbstractNode::getHeaderInfo() const
 
 int AbstractNode::index() const
 {
-    // FIX: may need a const_cast
-    // return m_parentFactory->subNodes().indexOf(this);
     int idx = 0;
     for (auto& it : m_parentFactory->nodes()) {
         if (this == it)

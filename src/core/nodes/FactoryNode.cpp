@@ -48,21 +48,6 @@ Port* FactoryNode::addEdgePort(FactoryEdgeNode* edge)
     return newPort;
 }
 
-// bool FactoryNode::connectToPort(Port& src, Port& dst, QString* err)
-// {
-//     // FIX: need more work over edge cases
-//     AbstractNode::connectToPort(src, dst, err);
-//
-//     Port* ownedNode = (&src.owner == this) ? &src : (&dst.owner == this) ? &dst
-//                                                                          : nullptr;
-//
-//     if (!ownedNode)
-//         return false;
-//     FactoryEdgeNode* matching = m_portEdges.value(ownedNode);
-//     matching->port()->item = ownedNode->item;
-//     return true;
-//     // FIX: what will happen if i connect 2 uninitialized factory nodes
-// }
 FactoryEdgeNode* FactoryNode::getEdgeNode(Port* port)
 {
     return m_portEdges.value(port, nullptr);

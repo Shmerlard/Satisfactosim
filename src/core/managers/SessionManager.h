@@ -93,7 +93,6 @@ signals:
     void nodeDisconnected(AbstractNode* src, AbstractNode* dst);
     void factoryChanged(Factory* factory);
     void machineLimitChanged(MachineNode* node);
-    // void machineCountChanged(MachineNode* node); // FIX: not implemented yet
     void solved();
 
 public:

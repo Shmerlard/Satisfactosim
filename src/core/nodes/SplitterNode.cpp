@@ -26,9 +26,10 @@ void SplitterNode::addOutput(Frac weight)
 Frac SplitterNode::proportion(Port& port) const
 {
     Frac w = m_weightMap.value(&port, Frac(-1));
-    if (w == Frac(-1))
+    if (w == Frac(-1) || m_total == Frac(0))
         return w;
-    return w / m_total; // FIX: check that total is not 0
+
+    return w / m_total;
 }
 
 void SplitterNode::setWeight(Port& port, Frac weight)
@@ -40,16 +41,6 @@ void SplitterNode::setWeight(Port& port, Frac weight)
 // FIX: implement proper portRate for splitter (proportional weight-based flow)
 Frac SplitterNode::portRate(const Port* port) const
 {
-    if (!port || &port->owner != this)
-        return Frac(0);
-
-    // Port* input
-
-    if (port->type == PortType::Input)
-        return Frac(0); // FIX: implement
-
-    // const auto& list = (port->type == PortType::Input) ? recipe()->inputs : recipe()->outputs;
-    // auto it = std::find_if(list.begin(), list.end(), [&](const auto& p) { return p.first == port->item; });
     return Frac(0);
 }
 
@@ -77,7 +68,6 @@ QJsonObject SplitterNode::getJsonNode() const
     }
 
     obj["weights"] = weights;
-    // FIX: implement weights
     return obj;
 }
 

@@ -15,7 +15,7 @@ private:
             Factory& targetFactory,
             QString name = QString());
     Factory& m_factory;
-    QMap<Port*, FactoryEdgeNode*> m_portEdges; // FIX: replace with vector
+    QMap<Port*, FactoryEdgeNode*> m_portEdges;
 
 public:
     Factory& factory() const { return m_factory; }

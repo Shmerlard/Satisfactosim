@@ -24,11 +24,12 @@ Frac FactoryEdgeNode::portRate(const Port* port) const
 
 void FactoryEdgeNode::onPortConnected(Port& port)
 {
-    // FIX: fix when there is more than one connection already
-    this->m_mirrorPort->item = this->port()->item;
-    emit itemChanged();
-    emit portsChanged();
-    emit m_mirrorPort->owner.portsChanged();
+    if (this->m_mirrorPort->item == nullptr) {
+        this->m_mirrorPort->item = this->port()->item;
+        emit itemChanged();
+        emit portsChanged();
+        emit m_mirrorPort->owner.portsChanged();
+    }
 }
 
 void FactoryEdgeNode::onPortDisconnected(Port& port)

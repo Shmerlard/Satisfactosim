@@ -521,7 +521,6 @@ void CliManager::handleDisconnect(const QStringList& args)
 
 void CliManager::handleLimit(const QStringList& args)
 {
-    // FIX: check agian
     if (args.size() < 2) {
         m_out << "Usage: limit <nodeIndex> <value>  (use -1 to remove limit)\n";
         return;
@@ -545,7 +544,6 @@ void CliManager::handleLimit(const QStringList& args)
 
 void CliManager::handlePurity(const QStringList& args)
 {
-    // FIX: check agian
     if (args.size() < 2) {
         m_out << "Usage: purity <nodeIndex> <impure|normal|pure>\n";
         return;
@@ -579,7 +577,6 @@ void CliManager::handlePurity(const QStringList& args)
 
 void CliManager::handleTier(const QStringList& args)
 {
-    // FIX: check agian
     if (args.size() < 2) {
         m_out << "Usage: tier <nodeIndex> <tierIndex>\n";
         return;
