@@ -1,4 +1,6 @@
 #include "SplitterNode.h"
+#include <QJsonArray>
+#include <QJsonObject>
 
 SplitterNode::SplitterNode(
     Factory& parentFactory,
@@ -26,7 +28,7 @@ Frac SplitterNode::proportion(Port& port)
     Frac w = m_weightMap.value(&port, Frac(-1));
     if (w == Frac(-1))
         return w;
-    return w / m_total;
+    return w / m_total; // FIX: check that total is not 0
 }
 
 void SplitterNode::setWeight(Port& port, Frac weight)
@@ -54,6 +56,13 @@ Frac SplitterNode::portRate(const Port* port) const
 QJsonObject SplitterNode::getJsonNode() const
 {
     QJsonObject obj = AbstractNode::getJsonNode();
+    QJsonArray weights;
+    for (auto& p : outputs()) {
+        Frac w = m_weightMap.value(p.get());
+        weights.append(QJsonObject{{"n", w.numerator()}, {"d", w.denominator()}});
+    }
+
+    obj["weights"] = weights;
     // FIX: implement weights
     return obj;
 }

@@ -25,7 +25,6 @@ FactoryEdgeNode* SessionManager::createFactoryEdgeNode(PortType edgeType, Factor
     if (!node) {
         emit operationFailed(err);
         return nullptr;
-
     }
     emit nodeAdded(node);
     return node;
@@ -128,7 +127,7 @@ void SessionManager::enterParentFactory()
 void SessionManager::connectNode(Port& src, Port& dst)
 {
     QString err;
-    Connection * conn = src.owner.parentFactory()->connect(src, dst, &err);
+    Connection* conn = src.owner.parentFactory()->connect(src, dst, &err);
     if (conn)
         emit nodeConnected(&src.owner, &dst.owner);
     else
@@ -232,7 +231,7 @@ void SessionManager::incMachineLimit(AbstractNode* node, int limit)
 
 void SessionManager::setMachineSomersloop(MachineNode* node, int count)
 {
-    if(!node)
+    if (!node)
         return;
     node->setSomersloopCount(count);
 }
@@ -242,7 +241,6 @@ void SessionManager::setExtractionPurity(AbstractNode* node, NodePurity purity)
     if (auto* en = dynamic_cast<ExtractionNode*>(node)) {
         en->setPurity(purity);
         // emit machineLimitChanged(mn);
-
     }
 }
 
@@ -298,13 +296,11 @@ void SessionManager::load(const QString& path)
 
     QJsonObject root = doc.object();
     std::queue<std::pair<Factory*, QJsonObject>> pendingFactories;
-    // QMap<QUuid, AbstractNode*> uuidMap;
     QMap<QUuid, Factory*> factoryUuidMap;
     QJsonArray factoriesArray = root["factories"].toArray();
     QJsonObject rootFactoryObject = factoriesArray[0].toObject();
     Factory* newRoot = new Factory(nullptr, QString("Main"));
     newRoot->setParent(this);
-    // rootFactory->setId(QUuid(factoriesArray[0].toObject()["id"].toString()));
 
     // ---------- CREATE FACTORIES ---------------
     for (auto fArr : factoriesArray) {
@@ -351,14 +347,13 @@ void SessionManager::load(const QString& path)
 
         for (auto connArr : fObject["connections"].toArray()) {
             QJsonObject conn = connArr.toObject();
-            int fromNodeIdx       = conn["from"].toArray()[0].toInt();
-            int fromPortIdx       = conn["from"].toArray()[1].toInt();
-            int toNodeIdx         = conn["to"].toArray()[0].toInt();
-            int toPortIdx         = conn["to"].toArray()[1].toInt();
+            int fromNodeIdx = conn["from"].toArray()[0].toInt();
+            int fromPortIdx = conn["from"].toArray()[1].toInt();
+            int toNodeIdx = conn["to"].toArray()[0].toInt();
+            int toPortIdx = conn["to"].toArray()[1].toInt();
             connectNode(fromNodeIdx, fromPortIdx, toNodeIdx, toPortIdx, f);
         }
     }
-
 
     delete m_rootFactory;
     m_rootFactory = newRoot;
@@ -387,6 +382,9 @@ QJsonObject SessionManager::serializeFactory(const Factory* factory, std::queue<
             break;
         case NodeType::Factory:
             factoryNodesArray.append(node->getJsonNode());
+            break;
+        case NodeType::Splitter:
+            machinesArray.append(node->getJsonNode());
             break;
         default:
             break;
@@ -451,6 +449,18 @@ AbstractNode* SessionManager::createNodeFromJson(QJsonObject j, Factory* f, QMap
         ProductionNode* pn = f->createProductionNode(*recipe, name);
         pn->setMachineLimit(machineLimit);
         node = pn;
+        break;
+    }
+    case NodeType::Splitter: {
+        QList<Frac> weights;
+        for (auto jsonValue : j["weights"].toArray()) {
+            int n = jsonValue.toObject()["n"].toInt();
+            int d = jsonValue.toObject()["d"].toInt();
+            Frac f = Frac(n,d);
+            weights.append(f);
+        }
+        SplitterNode* sn = f->createSplitterNode(weights, name);
+        node = sn;
         break;
     }
     default:
