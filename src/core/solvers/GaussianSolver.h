@@ -30,7 +30,8 @@ private:
     QList<MachineNode*> m_nodes;
     QList<Island> m_islands;
     QList<QList<Equation>> m_islandEquations;
-    void collectMachineNodes(QQueue<Factory*>& FactoryQueue);
+    void collectMachineNodes(Factory* root);
+    // void islandFromMachineNode(Island& island, MachineNode& start, QSet<MachineNode*>& visited);
     void handleConnection(Connection& connection, Port& port, Equation& eq);
     void visitPort(Port* port, QSet<MachineNode*>& visited, QQueue<MachineNode*>& queue);
 

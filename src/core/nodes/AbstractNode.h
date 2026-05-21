@@ -48,7 +48,6 @@ protected:
     std::vector<std::unique_ptr<Port>> m_outputs;
 
 public:
-public:
     virtual ~AbstractNode() = default; // FIXME: may need improvement
 
     // ---------- GETTERS ---------------
@@ -65,6 +64,7 @@ public:
     const std::vector<std::unique_ptr<Port>>& outputs() const { return m_outputs; }
 
     // ---------- MISC ---------------
+    QSet<AbstractNode*> getNeighbors() const;
     virtual QJsonObject getJsonNode() const;
     int index() const;
     virtual Frac portRate(const Port* port) const = 0;

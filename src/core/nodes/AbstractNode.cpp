@@ -14,6 +14,18 @@ AbstractNode::AbstractNode(
 }
 
 // ---------- MISC ---------------
+QSet<AbstractNode*> AbstractNode::getNeighbors() const
+  {
+      QSet<AbstractNode*> set;
+      for (auto& uPort : m_inputs)
+          for (Connection* conn : uPort->connections)
+              set.insert(&conn->getPeer(*uPort)->owner);
+      for (auto& uPort : m_outputs)
+          for (Connection* conn : uPort->connections)
+              set.insert(&conn->getPeer(*uPort)->owner);
+      return set;
+  }
+
 QJsonObject AbstractNode::getJsonNode() const
 {
 

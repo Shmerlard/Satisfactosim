@@ -205,6 +205,20 @@ void printNode(QTextStream& out, AbstractNode* node, Factory* factory)
                      .arg(stringFromPortType(n->edgeType()));
         break;
     }
+    case NodeType::Splitter: {
+        auto* n = static_cast<SplitterNode*>(node);
+        color = YELLOW;
+        QStringList proportions;
+        for (auto& p : n->outputs()) {
+            Frac prop = n->proportion(*p);
+            proportions << QString("%1/%2").arg(prop.numerator()).arg(prop.denominator());
+        }
+        header = QString("┌─ [%1] Splitter  \"%2\"  (%3)")
+                     .arg(idx)
+                     .arg(n->name())
+                     .arg(proportions.join("  "));
+        break;
+    }
     default:
         out << "WARNING: UNHANDLED PRINT\n";
         return;
@@ -342,13 +356,13 @@ void CliManager::handleAdd(const QStringList& parts)
     if (parts.isEmpty()) {
         m_out << "Usage:\n"
                  "  add prod <RecipeClass> [--name <name>]\n"
-                 "  add fact [--name <name>]\n";
+                 "  add fact [--name <name>]\n"
+                 "  add splitter [w1 w2 ...] [--name <name>]\n";
         return;
     }
 
     QString sub = parts[0].toLower();
     QStringList rest = parts.mid(1);
-    //
     if (sub == "prod")
         handleAddProd(rest);
     else if (sub == "extractor" || sub == "extr")
@@ -357,8 +371,10 @@ void CliManager::handleAdd(const QStringList& parts)
         handleAddFact(rest);
     else if (sub == "edge")
         handleAddEdge(rest);
+    else if (sub == "splitter" || sub == "split")
+        handleAddSplitter(rest);
     else
-        m_out << "Unknown add subcommand: " << sub << ". Expected 'prod' or 'fact'.\n";
+        m_out << "Unknown add subcommand: " << sub << "\n";
 }
 
 void CliManager::handleAddProd(const QStringList& parts)
@@ -442,6 +458,33 @@ void CliManager::handleAddEdge(const QStringList& parts)
               << (name.isEmpty() ? "" : " \"" + name + "\"")
               << (" " + stringFromPortType(edgeType))
               << "\n";
+}
+
+void CliManager::handleAddSplitter(const QStringList& parts)
+{
+    QList<Frac> weights;
+    QString name;
+
+    for (int i = 0; i < parts.size(); ++i) {
+        if (parts[i] == "--name" && i + 1 < parts.size()) {
+            name = parts[++i];
+        } else {
+            bool ok;
+            int w = parts[i].toInt(&ok);
+            if (ok && w > 0)
+                weights << Frac(w);
+        }
+    }
+
+    if (weights.size() < 2)
+        weights = { Frac(1), Frac(1) };
+
+    SplitterNode* node = m_session->createSplitterNode(weights, m_session->activeFactory(), name);
+    if (!node)
+        m_out << "Failed to create splitter.\n";
+    else
+        m_out << "Added splitter" << (name.isEmpty() ? "" : " \"" + name + "\"")
+              << " (" << weights.size() << " outputs)\n";
 }
 
 void CliManager::handleRm(const QStringList& args)
