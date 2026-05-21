@@ -1,0 +1,80 @@
+{
+    "factories": [
+        {
+            "connections": [
+                {
+                    "from": [
+                        0,
+                        0
+                    ],
+                    "to": [
+                        1,
+                        0
+                    ]
+                },
+                {
+                    "from": [
+                        1,
+                        1
+                    ],
+                    "to": [
+                        2,
+                        0
+                    ]
+                },
+                {
+                    "from": [
+                        2,
+                        1
+                    ],
+                    "to": [
+                        3,
+                        1
+                    ]
+                },
+                {
+                    "from": [
+                        2,
+                        2
+                    ],
+                    "to": [
+                        3,
+                        1
+                    ]
+                }
+            ],
+            "edges": [
+            ],
+            "factoryNodes": [
+            ],
+            "id": "{64459a27-93e8-4b14-8711-d46a6f40c2a7}",
+            "machines": [
+                {
+                    "id": "{7579930a-e701-4028-8346-bf856b0607a9}",
+                    "machineLimit": 1,
+                    "name": "A",
+                    "posX": 203.1015625,
+                    "posY": 144.40234375,
+                    "purity": 1,
+                    "recipe": "Miner_Desc_Coal_C",
+                    "tier": 0,
+                    "type": 3
+                },
+                {
+                    "id": "{7804969c-0fa4-43d7-859a-6c9db7de20fc}",
+                    "machineLimit": -1,
+                    "name": "D",
+                    "posX": 850.50390625,
+                    "posY": 148.59765625,
+                    "recipe": "Recipe_Alternate_IngotSteel_1_C",
+                    "type": 4
+                }
+            ],
+            "name": "Main Factory",
+            "parentId": ""
+        }
+    ],
+    "metadata": {
+        "version": 1
+    }
+}

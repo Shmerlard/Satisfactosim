@@ -67,6 +67,7 @@ public:
     QSet<AbstractNode*> getNeighbors() const;
     virtual QJsonObject getJsonNode() const;
     int index() const;
+    // virtual Frac basePortRate(const Port* port) const = 0;
     virtual Frac portRate(const Port* port) const = 0;
 
     // ---------- PORTS ---------------
@@ -92,6 +93,7 @@ public:
 
 signals:
     void posChanged();
+    void nodeUpdated();
     void nameChanged();
     void portsChanged();
 };

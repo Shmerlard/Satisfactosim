@@ -38,6 +38,7 @@ protected:
     int m_somersloopCount = 0;
 
     virtual void buildPortsFromRecipe() = 0;
+    virtual Frac basePortRate(const Port* port) const = 0;
     virtual const Recipe* recipe() const { return m_recipe; }
 
 public:
@@ -53,11 +54,14 @@ public:
     QString machineCountStr() const;
     QString machineLimitStr() const;
     void setSomersloopCount(int count);
+    Frac somersloopFactor() const;
     void setOverclock(Frac overclock);
     void setOverclockFloat(float overclock) { setOverclock(Frac(static_cast<int>(overclock * 100), 100)); }
     virtual QString machineIcon() const;
     void setMachineLimit(float limit);
     void setMachineLimit(Frac limit);
+
+    Frac portRate(const Port* port) const override;
     QJsonObject getJsonNode() const override;
     void notifySolved() override
     {

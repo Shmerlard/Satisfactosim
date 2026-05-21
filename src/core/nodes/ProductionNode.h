@@ -24,5 +24,5 @@ public:
     QJsonObject getJsonNode() const override;
     void buildPortsFromRecipe() override;
 
-    Frac portRate(const Port* port) const override;
+    Frac basePortRate(const Port* port) const override;
 };

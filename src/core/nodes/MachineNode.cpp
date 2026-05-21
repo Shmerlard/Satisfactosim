@@ -14,6 +14,11 @@ MachineNode::MachineNode(
     m_machineCount = Frac((int)(machineCount * 100), 100);
 }
 
+Frac MachineNode::portRate(const Port* port) const
+{
+    return m_machineCount * somersloopFactor() * m_overclock;
+}
+
 QJsonObject MachineNode::getJsonNode() const
 {
     QJsonObject obj = AbstractNode::getJsonNode();
@@ -56,6 +61,13 @@ void MachineNode::setSomersloopCount(int count)
         return;
     m_somersloopCount = count;
     emit recipeChanged();
+}
+
+Frac MachineNode::somersloopFactor() const
+{
+    if (somersloopSlotSize() == 0 || m_somersloopCount == 0)
+        return Frac(1);
+    return 2 * Frac(m_somersloopCount, somersloopSlotSize());
 }
 
 void MachineNode::setOverclock(Frac overclock)

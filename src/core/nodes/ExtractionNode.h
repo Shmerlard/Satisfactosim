@@ -38,7 +38,7 @@ public:
 
     void setRecipe(const ExtractionRecipe* recipe);
     const ExtractionRecipe* recipe() const override;
-    Frac portRate(const Port* port) const override;
+    Frac basePortRate(const Port* port) const override;
     QJsonObject getJsonNode() const override;
 
 signals:

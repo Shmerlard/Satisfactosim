@@ -48,15 +48,19 @@ QJsonObject ProductionNode::getJsonNode() const
     return obj;
 }
 
-Frac ProductionNode::portRate(const Port* port) const
+Frac ProductionNode::basePortRate(const Port* port) const
 {
     if (!recipe() || recipe()->recipeTime <= 0)
         return Frac(0);
     const auto& list = (port->type == PortType::Input) ? recipe()->inputs : recipe()->outputs;
     auto it = std::find_if(list.begin(), list.end(), [&](const auto& p) { return p.first == port->item; });
+
     Frac perCycle = (it != list.end()) ? it->second : Frac(0);
-    return perCycle / recipe()->recipeTime * 60;
-    // FIX: might be better to just move it to Port and read from there
+    Frac basePerMinute = perCycle / recipe()->recipeTime * 60;
+    basePerMinute *= somersloopFactor();
+    basePerMinute *= m_overclock;
+
+    return basePerMinute;
 }
 
 Machine* ProductionNode::machine() const
