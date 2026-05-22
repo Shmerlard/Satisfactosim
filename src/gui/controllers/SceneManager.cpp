@@ -71,21 +71,8 @@ void SceneManager::enterRootFactory()
 {
     m_session->enterRootFactory();
 }
-// void SceneManager::createMachineNode(Recipe* recipe, double x, double y)
-// {
-//     AbstractNode* node = nullptr;
-//     if (auto* p = dynamic_cast<const ProductionRecipe*>(recipe)) {
-//         node = m_session->createProductionNode(*p);
-//     } else if ( auto* p = dynamic_cast<const ExtractionRecipe*>(recipe)) {
-//         node = m_session->createExtractionNode(p);
-//     } else {
-//         return;
-//     }
-//     node->setPosX(x);
-//     node->setPosY(y);
-//
-// }
-AbstractNode* SceneManager::createMachineNode(const QString recipe, double x, double y)
+
+AbstractNode* SceneManager::createMachineNode(const QString recipe, double x, double y, QPoint srcPort)
 {
     AbstractNode* node = nullptr;
     const Recipe* recipe_p = GameLibrary::get().getRecipeByClass(recipe);
@@ -98,6 +85,20 @@ AbstractNode* SceneManager::createMachineNode(const QString recipe, double x, do
     }
     node->setPosX(x);
     node->setPosY(y);
+
+    if (srcPort.x() >= 0) {
+        Port* src = m_session->activeFactory()->nodes().at(srcPort.x())->getPortFromIndex(srcPort.y());
+
+        if (src && src->item) {
+            auto& targets = src->type == PortType::Input ? node->outputs() : node->inputs();
+            for (auto& p : targets) {
+                if (p->item == src->item) {
+                    m_session->connectNode(*src, *p);
+                    break;
+                }
+            }
+        }
+    }
     return node;
 }
 
@@ -111,31 +112,53 @@ void SceneManager::createSubFactory(const QString name, double x, double y)
     node->setPosY(y);
 }
 
-void SceneManager::createSplitterNode(double x, double y)
+void SceneManager::createSplitterNode(double x, double y, QPoint srcPort)
 {
-    SplitterNode* node = m_session->createSplitterNode({Frac(1), Frac(1)}, m_session->activeFactory());
+    SplitterNode* node = m_session->createSplitterNode({ Frac(1), Frac(1) }, m_session->activeFactory());
     if (node) {
         node->setPosX(x);
         node->setPosY(y);
+
+        // FIX: maybe have the srcPort as an input to session mananger
+        // to prevent emitting too many?
+        if (srcPort.x() >= 0) {
+            Port* src = m_session->activeFactory()->nodes().at(srcPort.x())->getPortFromIndex(srcPort.y());
+            Port* target = nullptr;
+            if (src->type == PortType::Input)
+                target = node->outputs()[0].get();
+            else
+                target = node->inputs()[0].get(); // FIX: might be dangerours
+
+            if (!target)
+                return;
+
+            m_session->connectNode(*src, *target);
+        }
+
     }
 }
 
-void SceneManager::createEdgeNode(bool isInput, const QString name, double x, double y)
+void SceneManager::createEdgeNode(bool isInput, const QString name, double x, double y, QPoint srcPort)
 {
     PortType edgeType = isInput ? PortType::Input : PortType::Output;
     FactoryEdgeNode* node = m_session->createFactoryEdgeNode(edgeType, m_session->activeFactory(), name);
     if (node) {
         node->setPosX(x);
         node->setPosY(y);
+        if (srcPort.x() >= 0) {
+            Port* src = m_session->activeFactory()->nodes().at(srcPort.x())->getPortFromIndex(srcPort.y());
+
+            if (src && src->item) {
+                m_session->connectNode(*src, *node->port());
+            }
+        }
     }
 }
 
 void SceneManager::deleteNode(AbstractNode* node)
 {
-    if (node) {
+    if (node)
         m_session->deleteNode(node);
-        // emit noded
-    }
 }
 
 void SceneManager::setPortOffset(int nodeIndex, int portIndex, QPointF offset)
@@ -158,27 +181,6 @@ void SceneManager::setPortOffset(int nodeIndex, int portIndex, QPointF offset)
 void SceneManager::connectNodes(int srcNodeIdx, int srcPortIdx, int dstNodeIdx, int dstPortIdx)
 {
     m_session->connectNode(srcNodeIdx, srcPortIdx, dstNodeIdx, dstPortIdx);
-}
-
-void SceneManager::createAndConnectMachineNode(const QString recipe, double x, double y, int srcNodeIdx, int srcPortIdx)
-{
-    Factory* factory = m_session->activeFactory();
-    Port* srcPort = factory->nodes().at(srcNodeIdx)->getPortFromIndex(srcPortIdx);
-    if (!srcPort || !srcPort->item)
-        return;
-
-    AbstractNode* newNode = createMachineNode(recipe, x, y);
-    if (!newNode)
-        return;
-
-    PortType targetType = srcPort->type == PortType::Output ? PortType::Input : PortType::Output;
-    auto& targetPorts = targetType == PortType::Input ? newNode->inputs() : newNode->outputs();
-    for (auto& port : targetPorts) {
-        if (port->item == srcPort->item) {
-            m_session->connectNode(*srcPort, *port);
-            return;
-        }
-    }
 }
 
 void SceneManager::setMachineLimit(AbstractNode* node, float limit)
@@ -233,29 +235,3 @@ void SceneManager::deleteConnection(QObject* connObj)
         return;
     m_session->disconnectNode(*conn->srcPort(), *conn->dstPort());
 }
-
-// QVariantMap SceneManager::portAtPosition(qreal x, qreal y, qreal tolerance)
-// {
-//     for (AbstractNode* node : m_session->activeFactory()->nodes()) {
-//         auto check = [&](const std::vector<std::unique_ptr<Port>>& ports) -> QVariantMap {
-//             for (const auto& port : ports) {
-//                 qreal px = node->posX() + port->offset.x();
-//                 qreal py = node->posY() + port->offset.y();
-//                 if (qAbs(px - x) <= tolerance && qAbs(py - y) <= tolerance) {
-//                     QVariantMap m;
-//                     m["nodeIndex"] = node->index();
-//                     m["portIndex"] = node->getPortIndex(*port);
-//                     return m;
-//                 }
-//             }
-//             return {};
-//         };
-//         auto result = check(node->inputs());
-//         if (!result.isEmpty())
-//             return result;
-//         result = check(node->outputs());
-//         if (!result.isEmpty())
-//             return result;
-//     }
-//     return {};
-// }

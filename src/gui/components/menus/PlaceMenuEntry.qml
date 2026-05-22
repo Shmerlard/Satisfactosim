@@ -106,15 +106,9 @@ Item {
     MouseArea {
         anchors.fill: parent
         onClicked: {
-            if (root.sourcePort) {
-                SceneManager.createAndConnectMachineNode(
-                    root.recipe["className"], spawnX, spawnY,
-                    root.sourcePort.nodeIndex, root.sourcePort.portIndex
-                );
-            } else {
-                SceneManager.createMachineNode(root.recipe["className"], spawnX, spawnY);
-            }
-            placeMenu.close();
+            var src = root.sourcePort ? Qt.point(root.sourcePort.nodeIndex, root.sourcePort.portIndex) : Qt.point(-1, -1);
+            SceneManager.createMachineNode(root.recipe["className"], spawnX, spawnY, src);
+            root.spawnMenu.close();
         }
     }
 }

@@ -88,7 +88,8 @@ Popup {
                 Layout.fillWidth: true
                 text: "Input Edge"
                 onClicked: {
-                    SceneManager.createEdgeNode(true, nodeNameField.text, root.spawnX, root.spawnY);
+                    var src = root.sourcePort ? Qt.point(root.sourcePort.nodeIndex, root.sourcePort.portIndex) : Qt.point(-1, -1);
+                    SceneManager.createEdgeNode(true, nodeNameField.text, root.spawnX, root.spawnY, src);
                     nodeNameField.text = "";
                     root.close();
                 }
@@ -98,7 +99,8 @@ Popup {
                 Layout.fillWidth: true
                 text: "Output Edge"
                 onClicked: {
-                    SceneManager.createEdgeNode(false, nodeNameField.text, root.spawnX, root.spawnY);
+                    var src = root.sourcePort ? Qt.point(root.sourcePort.nodeIndex, root.sourcePort.portIndex) : Qt.point(-1, -1);
+                    SceneManager.createEdgeNode(false, nodeNameField.text, root.spawnX, root.spawnY, src);
                     nodeNameField.text = "";
                     root.close();
                 }
@@ -108,7 +110,8 @@ Popup {
                 Layout.fillWidth: true
                 text: "Splitter"
                 onClicked: {
-                    SceneManager.createSplitterNode(root.spawnX, root.spawnY);
+                    var src = root.sourcePort ? Qt.point(root.sourcePort.nodeIndex, root.sourcePort.portIndex) : Qt.point(-1, -1);
+                    SceneManager.createSplitterNode(root.spawnX, root.spawnY, src);
                     root.close();
                 }
             }

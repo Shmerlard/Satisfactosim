@@ -59,11 +59,11 @@ public slots:
     void enterFactory(AbstractNode* factoryNode);
     void enterParentFactory();
     void enterRootFactory();
-    AbstractNode* createMachineNode(const QString recipe, double x, double y);
-    void createAndConnectMachineNode(const QString recipe, double x, double y, int srcNodeIdx, int srcPortIdx);
+    // AbstractNode* createMachineNode(const QString recipe, double x, double y, int srcNodeIdx = -1, int srcPortIdx = -1);
+    AbstractNode* createMachineNode(const QString recipe, double x, double y, QPoint srcPort = {-1, -1});
     void createSubFactory(const QString name, double x, double y);
-    void createEdgeNode(bool isInput, const QString name, double x, double y);
-    void createSplitterNode(double x, double y);
+    void createEdgeNode(bool isInput, const QString name, double x, double y, QPoint srcPort = {-1, -1});
+    void createSplitterNode(double x, double y, QPoint srcPort = {-1, -1});
     void deleteNode(AbstractNode* node);
     void deleteConnection(QObject* connObj);
     void setPortOffset(int nodeIndex, int portIndex, QPointF offset);
