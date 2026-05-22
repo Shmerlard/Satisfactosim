@@ -1,8 +1,9 @@
-// pragma ComponentBehavior: Bound
+pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import FACTORY_QT
+import "../controls/"
 
 Popup {
     id: root
@@ -71,7 +72,7 @@ Popup {
                 font.pixelSize: 12
             }
 
-            Button {
+            GButton {
                 // width: 3
                 Layout.fillWidth: true
                 text: "Sub-Factory"
@@ -82,7 +83,7 @@ Popup {
                 }
             }
 
-            Button {
+            GButton {
                 Layout.fillWidth: true
                 text: "Input Edge"
                 onClicked: {
@@ -92,7 +93,7 @@ Popup {
                 }
             }
 
-            Button {
+            GButton {
                 Layout.fillWidth: true
                 text: "Output Edge"
                 onClicked: {
@@ -102,7 +103,7 @@ Popup {
                 }
             }
 
-            Button {
+            GButton {
                 Layout.fillWidth: true
                 text: "Splitter"
                 onClicked: {
@@ -144,6 +145,9 @@ Popup {
                         model: SceneManager.recipes
 
                         delegate: PlaceMenuEntry {
+                            required property var model
+                            required property var modelData
+                            required property int index
                             implicitWidth: recipeSelector.width
                             recipe: model
                             spawnX: root.spawnX

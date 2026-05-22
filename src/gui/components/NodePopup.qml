@@ -12,18 +12,23 @@ Popup {
     // FIX: only show somersloop for available
 
     readonly property int somersloopCount: {
-        if (!nodeData) return 0;
-        if (nodeData.nodeType !== 3 && nodeData.nodeType !== 4) return 0;
+        if (!nodeData)
+            return 0;
+        if (nodeData.nodeType !== 3 && nodeData.nodeType !== 4)
+            return 0;
         return nodeData.somersloopCount;
     }
     readonly property int somersloopSlotSize: {
-        if (!nodeData) return 0;
-        if (nodeData.nodeType !== 3 && nodeData.nodeType !== 4) return 0;
+        if (!nodeData)
+            return 0;
+        if (nodeData.nodeType !== 3 && nodeData.nodeType !== 4)
+            return 0;
         return nodeData.somersloopSlotSize;
     }
     readonly property bool somersloopAvailable: {
-        if (somersloopSlotSize > 0) return true;
-        return false
+        if (somersloopSlotSize > 0)
+            return true;
+        return false;
     }
 
     width: 220
@@ -170,7 +175,10 @@ Popup {
                 Layout.fillWidth: true
                 placeholderText: "100"
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
-                background: Rectangle { color: Theme.surfaceInput; radius: 4 }
+                background: Rectangle {
+                    color: Theme.surfaceInput
+                    radius: 4
+                }
                 color: Theme.textPrimary
                 onEditingFinished: {
                     let val = parseFloat(text);
@@ -197,9 +205,18 @@ Popup {
 
                 Repeater {
                     model: [
-                        { label: "Impure", value: 0 },
-                        { label: "Normal", value: 1 },
-                        { label: "Pure",   value: 2 }
+                        {
+                            label: "Impure",
+                            value: 0
+                        },
+                        {
+                            label: "Normal",
+                            value: 1
+                        },
+                        {
+                            label: "Pure",
+                            value: 2
+                        }
                     ]
                     delegate: Button {
                         required property var modelData
@@ -343,23 +360,21 @@ Popup {
         }
 
         // --- enter factory (factory only) ---
-        Button {
+        GButton {
             visible: nodeData && nodeData.nodeType === 2
             text: "Enter Factory"
+            icon: "image://assets/misc/log-in.png"
             Layout.fillWidth: true
+            onClicked: {
+                SceneManager.enterFactory(nodeData);
+                root.close();
+            }
         }
 
         // --- delete ---
-        // Button {
-        //     text: "Delete"
-        //     Layout.fillWidth: true
-        //     onClicked: {
-        //         SceneManager.deleteNode(nodeData);
-        //         root.close();
-        //     }
-        // }
         GButton {
             text: "Delete"
+            icon: "image://assets/misc/trash.png"
             onClicked: {
                 SceneManager.deleteNode(nodeData);
                 root.close();

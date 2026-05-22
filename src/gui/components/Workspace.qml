@@ -4,6 +4,7 @@ import QtQuick.Controls
 import FACTORY_QT
 import "./menus"
 import "./nodes"
+import "./controls/"
 
 Item {
     id: root
@@ -226,7 +227,7 @@ Item {
             mouseContentY: root.mouseContentY
         }
 
-        Button {
+        GButton {
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottomMargin: 16

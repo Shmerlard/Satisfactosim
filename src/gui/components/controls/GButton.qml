@@ -4,6 +4,7 @@ Item {
     id: root
 
     property string text: ""
+    property string icon: ""
     property bool checkable: false
     property bool checked: false
     property color color: Theme.surfaceButton
@@ -13,7 +14,7 @@ Item {
 
     signal clicked()
 
-    implicitWidth: label.implicitWidth + 24
+    implicitWidth: row.implicitWidth + 24
     implicitHeight: 28
 
     Rectangle {
@@ -25,13 +26,29 @@ Item {
         border.color: (root.checkable && root.checked) ? root.colorChecked : Theme.borderLight
         border.width: 1
 
-        Text {
-            id: label
+        Row {
+            id: row
             anchors.centerIn: parent
-            text: root.text
-            color: (root.checkable && root.checked) ? root.textColorChecked : root.textColor
-            font.pixelSize: 11
-            font.bold: root.checkable && root.checked
+            spacing: 6
+
+            Image {
+                visible: root.icon !== ""
+                source: root.icon
+                width: 14
+                height: 14
+                anchors.verticalCenter: parent.verticalCenter
+                fillMode: Image.PreserveAspectFit
+            }
+
+            Text {
+                id: label
+                visible: root.text !== ""
+                anchors.verticalCenter: parent.verticalCenter
+                text: root.text
+                color: (root.checkable && root.checked) ? root.textColorChecked : root.textColor
+                font.pixelSize: 11
+                font.bold: root.checkable && root.checked
+            }
         }
     }
 
