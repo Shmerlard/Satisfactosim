@@ -45,12 +45,14 @@ void SceneManager::loadConnections(Factory* f)
 
 void SceneManager::onNodeAdded(AbstractNode* node)
 {
-    m_model->addNode(node);
+    if (node->parentFactory() == m_session->activeFactory())
+        m_model->addNode(node);
 }
 
 void SceneManager::onNodeRemoved(AbstractNode* node)
 {
-    m_model->removeNode(node);
+    if (node->parentFactory() == m_session->activeFactory())
+        m_model->removeNode(node);
 }
 
 void SceneManager::enterFactory(AbstractNode* factoryNode)
@@ -102,12 +104,17 @@ AbstractNode* SceneManager::createMachineNode(const QString recipe, double x, do
     return node;
 }
 
-void SceneManager::createSubFactory(const QString name, double x, double y)
+void SceneManager::createSubFactory(const QString name, double x, double y, QPoint srcPort)
 {
-    Factory* child = m_session->createFactory(m_session->activeFactory(), name);
+    Port* srcPort_p = nullptr;
+    if (srcPort.x() >= 0)
+        srcPort_p = m_session->activeFactory()->nodes().at(srcPort.x())->getPortFromIndex(srcPort.y());
+
+    FactoryNode* node = m_session->createFactoryNode(nullptr, nullptr, name, srcPort_p);
+    // Factory* child = m_session->createFactory(m_session->activeFactory(), name);
 
     // FactoryNode* node = m_session->createFactoryNode(*m_session->activeFactory(), *child, name);
-    FactoryNode* node = child->node();
+    // FactoryNode* node = child->node();
     node->setPosX(x);
     node->setPosY(y);
 }

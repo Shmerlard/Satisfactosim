@@ -37,6 +37,29 @@ FactoryNode* SessionManager::createFactoryNode(Factory& parent, Factory& owned, 
     return node;
 }
 
+FactoryNode* SessionManager::createFactoryNode(Factory* parent, Factory* target, QString name, Port* srcPort)
+{
+    Factory* p = parent ? parent : m_activeFactory;
+    if (!p)
+        return nullptr;
+
+    // createFactory emits nodeAdded for child->node(), so use that node directly
+    Factory* t = target ? target : createFactory(p, name);
+    if (!t)
+        return nullptr;
+
+    FactoryNode* node = t->node();
+
+    if (srcPort) {
+        PortType edgeType = srcPort->type == PortType::Output ? PortType::Input : PortType::Output;
+        FactoryEdgeNode* en = createFactoryEdgeNode(edgeType, t);
+        if (en && en->mirrorPort())
+            connectNode(*srcPort, *en->mirrorPort());
+    }
+
+    return node;
+}
+
 ProductionNode* SessionManager::createProductionNode(const ProductionRecipe& recipe, Factory* factory, QString name)
 {
     Factory* f = factory ? factory : m_activeFactory;

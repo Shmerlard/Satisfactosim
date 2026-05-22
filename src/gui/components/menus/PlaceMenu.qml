@@ -78,7 +78,8 @@ Popup {
                 Layout.fillWidth: true
                 text: "Sub-Factory"
                 onClicked: {
-                    SceneManager.createSubFactory(nodeNameField.text, root.spawnX, root.spawnY);
+                    var src = root.sourcePort ? Qt.point(root.sourcePort.nodeIndex, root.sourcePort.portIndex) : Qt.point(-1, -1);
+                    SceneManager.createSubFactory(nodeNameField.text, root.spawnX, root.spawnY, src);
                     nodeNameField.text = "";
                     root.close();
                 }

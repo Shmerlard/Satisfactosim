@@ -6,8 +6,8 @@
 #include "core/nodes/FactoryNode.h"
 #include "core/nodes/ProductionNode.h"
 #include "core/nodes/SplitterNode.h"
-#include "core/types/Types.h"
 #include "core/solvers/AbstractSolver.h"
+#include "core/types/Types.h"
 #include <QObject>
 #include <QQmlEngine>
 #include <queue>
@@ -45,13 +45,14 @@ public:
 
     // ---------- NODE CREATION ---------------
     FactoryEdgeNode* createFactoryEdgeNode(PortType edgeType, Factory* factory = nullptr, QString name = QString());
-    FactoryNode* createFactoryNode(Factory& parent, Factory& owned, QString name = QString());
+    FactoryNode* createFactoryNode(Factory& parent, Factory& owned, QString name = QString()); // FIX: TO DELETE
+    FactoryNode* createFactoryNode(Factory* parent = nullptr, Factory* target = nullptr, QString name = QString(), Port* srcPort = nullptr);
     ProductionNode* createProductionNode(const ProductionRecipe& recipe, Factory* factory = nullptr, QString name = QString());
     ProductionNode* createProductionNodeByClass(const QString& rClass, Factory* factory = nullptr, QString name = QString());
     ExtractionNode* createExtractionNode(const ExtractionRecipe& recipe, int tier = 0, Factory* factory = nullptr, QString name = QString());
     ExtractionNode* createExtractionNodeByName(QString resourceName, int tier = 0, Factory* factory = nullptr, QString name = QString());
     // ExtractionNode* createExtractionNodeByClass(QString rClass, int tier = 1, Factory* factory = nullptr, QString name = QString());
-    SplitterNode* createSplitterNode(QList<Frac> weights = {Frac(1), Frac(1)}, Factory* factory = nullptr, QString name = QString());
+    SplitterNode* createSplitterNode(QList<Frac> weights = { Frac(1), Frac(1) }, Factory* factory = nullptr, QString name = QString());
     void deleteNode(AbstractNode* node);
 
     // ---------- FACTORY MANIPULATION ---------------
