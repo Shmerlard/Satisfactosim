@@ -79,7 +79,7 @@ public:
     virtual void onPortDisconnected(Port& port) { };
 
     QVariantList inputsQml() const;
-    QVariantList outputsQml() const;
+    virtual QVariantList outputsQml() const;
 
     // ---------- SETTERS ---------------
     void setId(QUuid id) { m_id = id; }

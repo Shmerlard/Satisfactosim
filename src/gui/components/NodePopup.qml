@@ -354,6 +354,48 @@ Popup {
             }
         }
 
+        // --- splitter weights ---
+        ColumnLayout {
+            visible: nodeData && nodeData.nodeType === 5
+            Layout.fillWidth: true
+            spacing: 4
+
+            Text {
+                text: "Weights"
+                color: Theme.textMuted
+                font.pixelSize: 11
+            }
+
+            Repeater {
+                model: nodeData && nodeData.nodeType === 5 ? nodeData.outputs : []
+                delegate: RowLayout {
+                    required property var modelData
+                    Layout.fillWidth: true
+                    spacing: 4
+
+                    Text {
+                        text: "Out " + (modelData.portIndex) + ":"
+                        color: Theme.textMuted
+                        font.pixelSize: 11
+                    }
+                    TextField {
+                        Layout.fillWidth: true
+                        text: modelData.weight
+                        placeholderText: "1"
+                        background: Rectangle { color: Theme.surfaceInput; radius: 4 }
+                        color: Theme.textPrimary
+                        font.pixelSize: 11
+                        onEditingFinished: SceneManager.setSplitterWeight(nodeData, modelData.portIndex, text)
+                    }
+                    Text {
+                        text: modelData.proportion
+                        color: Theme.textMuted
+                        font.pixelSize: 11
+                    }
+                }
+            }
+        }
+
         Rectangle {
             Layout.fillWidth: true
             height: 1

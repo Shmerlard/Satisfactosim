@@ -75,6 +75,7 @@ public slots:
 
     void setTier(ExtractionNode* node, int tier);
     void setPurity(ExtractionNode* node, NodePurity purity);
+    void setSplitterWeight(AbstractNode* node, int portIndex, const QString& weight);
 
     void solve();
     void save(const QString& path);

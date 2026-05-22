@@ -1,4 +1,5 @@
 #include "SplitterNode.h"
+#include "core/types/FracUtils.h"
 #include <QJsonArray>
 #include <QJsonObject>
 
@@ -14,6 +15,24 @@ SplitterNode::SplitterNode(
         addOutput(weight);
 
     m_inputs.push_back(std::make_unique<Port>(*this, nullptr, PortType::Input));
+}
+
+QVariantList SplitterNode::outputsQml() const
+{
+    QVariantList list = AbstractNode::outputsQml();
+    int i = 0;
+    for (const auto& p : m_outputs) {
+        Frac w = m_weightMap.value(p.get(), Frac(1));
+        Frac prop = m_total > Frac(0) ? w / m_total : Frac(0);
+        QVariantMap map = list[i].toMap();
+        map["weightN"] = w.numerator();
+        map["weightD"] = w.denominator();
+        map["weight"] = StringFromFrac(w);
+        map["proportion"] = StringFromFrac(prop);
+        list[i] = map;
+        ++i;
+    }
+    return list;
 }
 
 void SplitterNode::addOutput(Frac weight)
@@ -34,8 +53,11 @@ Frac SplitterNode::proportion(Port& port) const
 
 void SplitterNode::setWeight(Port& port, Frac weight)
 {
-    if (m_weightMap.contains(&port))
+    if (m_weightMap.contains(&port)) {
+        m_total -= m_weightMap[&port];
         m_weightMap[&port] = weight;
+        m_total += weight;
+    }
 }
 
 // FIX: implement proper portRate for splitter (proportional weight-based flow)

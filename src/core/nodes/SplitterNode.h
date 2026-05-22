@@ -22,6 +22,7 @@ public:
     Frac proportion(Port& port) const;
     void setWeight(Port& port, Frac weight);
     Frac portRate(const Port* port) const override;
+    QVariantList outputsQml() const override;
     QJsonObject getJsonNode() const override;
     QString getHeaderInfo() const override;
 

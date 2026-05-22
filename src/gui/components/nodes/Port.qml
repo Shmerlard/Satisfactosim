@@ -14,6 +14,9 @@ Item {
     property Item nodeRoot: null
     property Item contentContainer: null
 
+    // property string amount: portData ? portData.amount.toFixed(2) : ""
+    property string amount: portData ? String(parseFloat(portData.amount.toFixed(2))) : ""
+
     // FIX: limit lenth of th text, use fraction text instead
     implicitWidth: 50
     implicitHeight: 30
@@ -95,7 +98,7 @@ Item {
             fillMode: Image.PreserveAspectFit
         }
         Text {
-            text: root.portData ? root.portData.amount : ""
+            text: root.amount
             color: Theme.textPrimary
             anchors.verticalCenter: parent.verticalCenter
         }

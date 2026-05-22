@@ -2,6 +2,7 @@
 #include "GameLibrary.h"
 #include "core/nodes/ExtractionNode.h"
 #include "core/nodes/ProductionNode.h"
+#include "core/types/FracUtils.h"
 #include "src/core/nodes/Factory.h"
 #include <QDir>
 #include <QJsonArray>
@@ -285,6 +286,18 @@ void SessionManager::setExtractionTier(AbstractNode* node, int tier)
         emit en->nodeUpdated();
         emit extractionTierChanged(en);
     }
+}
+
+void SessionManager::setSplitterWeight(AbstractNode* node, int portIndex, const QString& weight)
+{
+    if (node->type() != NodeType::Splitter)
+        return;
+    SplitterNode* sn = static_cast<SplitterNode*>(node);
+    Port* port = sn->getPortFromIndex(portIndex);
+    if (!port)
+        return;
+    sn->setWeight(*port, FracFromString(weight));
+    emit sn->nodeUpdated();
 }
 
 void SessionManager::setMachineOverclock(AbstractNode* node, float overclock)
