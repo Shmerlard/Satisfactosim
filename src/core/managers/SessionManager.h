@@ -70,7 +70,7 @@ public:
     void renameNode(int index, QString name);
     void setMachineLimit(AbstractNode* node, float limit);
     void incMachineLimit(AbstractNode* node, int limit);
-    void setMachineSomersloop(MachineNode* node, int count);
+    void setMachineSomersloop(AbstractNode* node, int count);
     void setExtractionPurity(AbstractNode* node, NodePurity purity);
     void setExtractionTier(AbstractNode* node, int tier);
     void setMachineOverclock(AbstractNode* node, float overclock);
@@ -97,6 +97,7 @@ signals:
     void extractionTierChanged(ExtractionNode* node);
     void extractionPurityChanged(ExtractionNode* node);
     void machineOverclockChanged(MachineNode* node);
+    void machineSomersloopChanged(MachineNode* node);
     void solved();
 
 public:

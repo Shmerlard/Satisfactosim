@@ -232,12 +232,16 @@ void SessionManager::incMachineLimit(AbstractNode* node, int limit)
     emit machineLimitChanged(m);
 }
 
-void SessionManager::setMachineSomersloop(MachineNode* node, int count)
+void SessionManager::setMachineSomersloop(AbstractNode* node, int count)
 {
     if (!node)
         return;
-    node->setSomersloopCount(count);
-    emit node->nodeUpdated();
+    if (!node->isMachineNode())
+        return;
+    MachineNode* mn = static_cast<MachineNode*>(node);
+    mn->setSomersloopCount(count);
+    emit mn->nodeUpdated();
+    emit machineSomersloopChanged(mn);
 }
 
 void SessionManager::setExtractionPurity(AbstractNode* node, NodePurity purity)

@@ -194,9 +194,7 @@ void SceneManager::incMachineLimit(AbstractNode* node, int inc)
 
 void SceneManager::setSomersloopCount(AbstractNode* node, int count)
 {
-    // FIX: use sesion manager instead
-    if (node->isMachineNode())
-        static_cast<MachineNode*>(node)->setSomersloopCount(count);
+    m_session->setMachineSomersloop(node, count);
 }
 
 void SceneManager::setOverclock(AbstractNode* node, float overclock)

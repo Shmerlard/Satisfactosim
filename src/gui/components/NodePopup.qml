@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import FACTORY_QT
+import "./controls/"
 
 Popup {
     id: root
@@ -281,48 +282,57 @@ Popup {
             Item {
                 Layout.fillWidth: true
                 height: 30
-                Rectangle {
-                    id: somersloopDec1
-                    anchors.left: parent.left
-                    width: somersloopField.height
-                    height: somersloopField.height
-                    radius: 4
-                    color: Theme.surfaceButton
-                    TapHandler {
-                        onTapped: SceneManager.setSomersloopCount(root.nodeData, root.somersloopCount - 1)
-                    }
-                    Text {
-                        anchors.fill: parent
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        text: "-1"
-                        color: Theme.textPrimary
-                    }
+                GButton {
+                    text: "-1"
+                    onClicked: SceneManager.setSomersloopCount(root.nodeData, root.somersloopCount - 1)
                 }
+                // Rectangle {
+                //     id: somersloopDec1
+                //     anchors.left: parent.left
+                //     width: somersloopField.height
+                //     height: somersloopField.height
+                //     radius: 4
+                //     color: Theme.surfaceButton
+                //     TapHandler {
+                //         onTapped: SceneManager.setSomersloopCount(root.nodeData, root.somersloopCount - 1)
+                //     }
+                //     Text {
+                //         anchors.fill: parent
+                //         horizontalAlignment: Text.AlignHCenter
+                //         verticalAlignment: Text.AlignVCenter
+                //         text: "-1"
+                //         color: Theme.textPrimary
+                //     }
+                // }
                 Text {
                     id: somersloopField
-                    anchors.left: somersloopDec1.right
+                    // anchors.left: somersloopDec1.right
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: "sl: " + root.somersloopCount + "/" + root.somersloopSlotSize
                     color: Theme.textPrimary
                 }
-                Rectangle {
-                    width: somersloopField.height
-                    height: somersloopField.height
-                    color: Theme.warning
+                GButton {
+                    text: "+1"
+                    onClicked: SceneManager.setSomersloopCount(root.nodeData, root.somersloopCount + 1)
                     anchors.right: parent.right
-                    radius: 4
-                    TapHandler {
-                        onTapped: SceneManager.setSomersloopCount(root.nodeData, root.somersloopCount + 1)
-                    }
-                    Text {
-                        anchors.fill: parent
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        text: "+1"
-                        color: Theme.textOnAccent
-                    }
                 }
+                // Rectangle {
+                //     width: somersloopField.height
+                //     height: somersloopField.height
+                //     color: Theme.warning
+                //     anchors.right: parent.right
+                //     radius: 4
+                //     TapHandler {
+                //         onTapped: SceneManager.setSomersloopCount(root.nodeData, root.somersloopCount + 1)
+                //     }
+                //     Text {
+                //         anchors.fill: parent
+                //         horizontalAlignment: Text.AlignHCenter
+                //         verticalAlignment: Text.AlignVCenter
+                //         text: "+1"
+                //         color: Theme.textOnAccent
+                //     }
+                // }
             }
         }
 
@@ -340,9 +350,16 @@ Popup {
         }
 
         // --- delete ---
-        Button {
+        // Button {
+        //     text: "Delete"
+        //     Layout.fillWidth: true
+        //     onClicked: {
+        //         SceneManager.deleteNode(nodeData);
+        //         root.close();
+        //     }
+        // }
+        GButton {
             text: "Delete"
-            Layout.fillWidth: true
             onClicked: {
                 SceneManager.deleteNode(nodeData);
                 root.close();
