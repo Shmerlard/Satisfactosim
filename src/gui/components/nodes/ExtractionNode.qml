@@ -22,9 +22,8 @@ Item {
     Rectangle {
         id: background
         anchors.fill: parent
-        // color: "blue"
-        color: "#1a2e1a"
-        border.color: root.selected ? "#4fc3f7" : "#27ae60"
+        color: Theme.surfaceExtraction
+        border.color: root.selected ? Theme.selection : Theme.accentExtraction
         border.width: root.selected ? 2 : 1
         radius: 10
         HoverHandler {
@@ -47,14 +46,13 @@ Item {
 
             x: (outputsCol.x - width) / 2
             anchors.verticalCenter: parent.verticalCenter
-            // anchors.top: parent.top
             spacing: 5
 
             Text {
                 id: nodeName
                 text: root.nodeName
                 anchors.horizontalCenter: parent.horizontalCenter
-                color: "white"
+                color: Theme.textPrimary
             }
             Image {
                 source: root.nodeData ? root.nodeData.machineIcon : ""
@@ -66,7 +64,7 @@ Item {
                 id: nameText
                 text: root.nodeData ? root.nodeData.machineName : "N"
                 anchors.horizontalCenter: parent.horizontalCenter
-                color: "white"
+                color: Theme.textPrimary
                 font.pixelSize: 7
             }
             Rectangle {
@@ -74,19 +72,18 @@ Item {
                 width: overclockText.width
                 height: overclockText.height
                 radius: 5
-                color: "purple"
+                color: Theme.badge
                 Text {
                     id: overclockText
                     text: root.overclock
                     anchors.horizontalCenter: parent.horizontalCenter
-                    color: "white"
+                    color: Theme.textPrimary
                 }
                 HoverHandler {
                     id: overclockHover
                 }
                 ToolTip {
                     visible: overclockHover.hovered
-                    // text: "C/L — Count / Limit\nCount: how many machines are running\nLimit: the machine cap you set"
                     delay: 500
                 }
             }
@@ -95,12 +92,12 @@ Item {
                 height: amountText.height
                 anchors.horizontalCenter: parent.horizontalCenter
                 radius: 5
-                color: "purple"
+                color: Theme.badge
                 Text {
                     id: amountText
                     text: "C/L: " + root.machineCount + "/" + root.machineLimit
                     anchors.horizontalCenter: parent.horizontalCenter
-                    color: "white"
+                    color: Theme.textPrimary
                 }
                 HoverHandler {
                     id: amountHover

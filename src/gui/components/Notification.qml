@@ -42,15 +42,15 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: "#cc2a1a1a"
-        border.color: "#e05050"
+        color: Theme.surfaceNotification
+        border.color: Theme.error
         border.width: 1
         radius: 6
 
         Text {
             id: label
             anchors.centerIn: parent
-            color: "#f0f0f0"
+            color: Theme.textNotification
             font.pixelSize: 13
             font.family: "monospace"
         }

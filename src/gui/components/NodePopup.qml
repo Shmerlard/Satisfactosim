@@ -36,8 +36,8 @@ Popup {
     }
 
     background: Rectangle {
-        color: "#1e2838"
-        border.color: "#e8a020"
+        color: Theme.surface
+        border.color: Theme.accent
         border.width: 1
         radius: 8
     }
@@ -49,7 +49,7 @@ Popup {
         // --- header ---
         Text {
             text: nodeData ? nodeData.name : ""
-            color: "white"
+            color: Theme.textPrimary
             font.bold: true
             font.pixelSize: 14
         }
@@ -57,13 +57,13 @@ Popup {
         Rectangle {
             Layout.fillWidth: true
             height: 1
-            color: "#444"
+            color: Theme.border
         }
 
         // --- rename ---
         Text {
             text: "Rename"
-            color: "#aaa"
+            color: Theme.textMuted
             font.pixelSize: 11
         }
         TextField {
@@ -71,16 +71,13 @@ Popup {
             Layout.fillWidth: true
             placeholderText: nodeData ? nodeData.name : ""
             background: Rectangle {
-                color: "#2a3a4a"
+                color: Theme.surfaceInput
                 radius: 4
             }
-            color: "white"
-            // onTextChanged: console.log(text)
+            color: Theme.textPrimary
             onTextChanged: {
                 nodeData.name = text;
-                // nodeData.setName(text);
             }
-            // onAccepted: { /* TODO */ root.close() }
         }
 
         // --- machine limit (production + extraction) ---
@@ -91,11 +88,10 @@ Popup {
 
             Text {
                 text: "Machine Limit"
-                color: "#aaa"
+                color: Theme.textMuted
                 font.pixelSize: 11
             }
             Item {
-                // width: 20
                 Layout.fillWidth: true
                 height: 30
                 Rectangle {
@@ -104,6 +100,7 @@ Popup {
                     width: limitField.height
                     height: limitField.height
                     radius: 4
+                    color: Theme.surfaceButton
                     TapHandler {
                         onTapped: {
                             SceneManager.incMachineLimit(root.nodeData, -1);
@@ -114,6 +111,7 @@ Popup {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         text: "-1"
+                        color: Theme.textPrimary
                     }
                 }
                 TextField {
@@ -123,10 +121,10 @@ Popup {
                     placeholderText: "no limit"
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     background: Rectangle {
-                        color: "#2a3a4a"
+                        color: Theme.surfaceInput
                         radius: 4
                     }
-                    color: "white"
+                    color: Theme.textPrimary
                     onEditingFinished: {
                         let val = parseFloat(text);
                         if (!isNaN(val))
@@ -136,7 +134,7 @@ Popup {
                 Rectangle {
                     width: limitField.height
                     height: limitField.height
-                    color: "yellow"
+                    color: Theme.warning
                     anchors.right: parent.right
                     radius: 4
                     TapHandler {
@@ -149,6 +147,7 @@ Popup {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         text: "+1"
+                        color: Theme.textOnAccent
                     }
                 }
             }
@@ -162,8 +161,7 @@ Popup {
 
             Text {
                 text: "Overclock (%)"
-                color: "#aaa"
-                // color: "yellow"
+                color: Theme.textMuted
                 font.pixelSize: 11
             }
             TextField {
@@ -171,8 +169,8 @@ Popup {
                 Layout.fillWidth: true
                 placeholderText: "100"
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
-                background: Rectangle { color: "#2a3a4a"; radius: 4 }
-                color: "white"
+                background: Rectangle { color: Theme.surfaceInput; radius: 4 }
+                color: Theme.textPrimary
                 onEditingFinished: {
                     let val = parseFloat(text);
                     if (!isNaN(val))
@@ -189,7 +187,7 @@ Popup {
 
             Text {
                 text: "Purity"
-                color: "#aaa"
+                color: Theme.textMuted
                 font.pixelSize: 11
             }
             RowLayout {
@@ -198,18 +196,9 @@ Popup {
 
                 Repeater {
                     model: [
-                        {
-                            label: "Impure",
-                            value: 0
-                        },
-                        {
-                            label: "Normal",
-                            value: 1
-                        },
-                        {
-                            label: "Pure",
-                            value: 2
-                        }
+                        { label: "Impure", value: 0 },
+                        { label: "Normal", value: 1 },
+                        { label: "Pure",   value: 2 }
                     ]
                     delegate: Button {
                         required property var modelData
@@ -221,14 +210,14 @@ Popup {
                             SceneManager.setPurity(nodeData, modelData.value)
 
                         background: Rectangle {
-                            color: parent.checked ? "#e8a020" : "#2a3a4a"
-                            border.color: parent.checked ? "#e8a020" : "#555"
+                            color: parent.checked ? Theme.accent : Theme.surfaceInput
+                            border.color: parent.checked ? Theme.accent : Theme.borderLight
                             border.width: 1
                             radius: 4
                         }
                         contentItem: Text {
                             text: parent.text
-                            color: parent.checked ? "#1a1a1a" : "#aaaaaa"
+                            color: parent.checked ? Theme.textOnAccent : Theme.textMuted
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                             font.pixelSize: 11
@@ -242,7 +231,7 @@ Popup {
             Text {
                 visible: nodeData && nodeData.tierCount > 1
                 text: "Mark"
-                color: "#aaa"
+                color: Theme.textMuted
                 font.pixelSize: 11
             }
             RowLayout {
@@ -260,17 +249,16 @@ Popup {
                         checked: nodeData && nodeData.tier === index
                         onClicked: if (nodeData)
                             SceneManager.setTier(nodeData, index)
-                            // nodeData.tier = index
 
                         background: Rectangle {
-                            color: parent.checked ? "#e8a020" : "#2a3a4a"
-                            border.color: parent.checked ? "#e8a020" : "#555"
+                            color: parent.checked ? Theme.accent : Theme.surfaceInput
+                            border.color: parent.checked ? Theme.accent : Theme.borderLight
                             border.width: 1
                             radius: 4
                         }
                         contentItem: Text {
                             text: parent.text
-                            color: parent.checked ? "#1a1a1a" : "#aaaaaa"
+                            color: parent.checked ? Theme.textOnAccent : Theme.textMuted
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                             font.pixelSize: 11
@@ -287,7 +275,7 @@ Popup {
             spacing: 4
             Text {
                 text: "Somersloop"
-                color: "#aaa"
+                color: Theme.textMuted
                 font.pixelSize: 11
             }
             Item {
@@ -299,6 +287,7 @@ Popup {
                     width: somersloopField.height
                     height: somersloopField.height
                     radius: 4
+                    color: Theme.surfaceButton
                     TapHandler {
                         onTapped: SceneManager.setSomersloopCount(root.nodeData, root.somersloopCount - 1)
                     }
@@ -307,6 +296,7 @@ Popup {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         text: "-1"
+                        color: Theme.textPrimary
                     }
                 }
                 Text {
@@ -314,11 +304,12 @@ Popup {
                     anchors.left: somersloopDec1.right
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: "sl: " + root.somersloopCount + "/" + root.somersloopSlotSize
+                    color: Theme.textPrimary
                 }
                 Rectangle {
                     width: somersloopField.height
                     height: somersloopField.height
-                    color: "yellow"
+                    color: Theme.warning
                     anchors.right: parent.right
                     radius: 4
                     TapHandler {
@@ -329,6 +320,7 @@ Popup {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         text: "+1"
+                        color: Theme.textOnAccent
                     }
                 }
             }
@@ -337,7 +329,7 @@ Popup {
         Rectangle {
             Layout.fillWidth: true
             height: 1
-            color: "#444"
+            color: Theme.border
         }
 
         // --- enter factory (factory only) ---
@@ -345,7 +337,6 @@ Popup {
             visible: nodeData && nodeData.nodeType === 2
             text: "Enter Factory"
             Layout.fillWidth: true
-            // onClicked: { /* TODO */ root.close() }
         }
 
         // --- delete ---
@@ -356,7 +347,6 @@ Popup {
                 SceneManager.deleteNode(nodeData);
                 root.close();
             }
-            // onClicked: { /* TODO */ root.close() }
         }
     }
 }

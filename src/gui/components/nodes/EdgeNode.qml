@@ -10,16 +10,14 @@ Item {
     property bool selected: false
     property bool hovered: false
 
-    // implicitWidth: inputsCol.implicitWidth + nameText.implicitWidth + outputsCol.implicitWidth + 40
-    // implicitHeight: Math.max(50, mainLayout.implicitHeight)
     implicitWidth: 150
     implicitHeight: 100
 
     Rectangle {
         id: background
         anchors.fill: parent
-        color: "yellow"
-        border.color: selected ? "#4fc3f7" : "black"
+        color: Theme.warning
+        border.color: selected ? Theme.selection : Theme.border
         border.width: selected ? 2 : 1
         radius: 10
     }
@@ -52,6 +50,7 @@ Item {
             Text {
                 id: nameText
                 text: root.nodeData ? root.nodeData.itemName : ""
+                color: Theme.textOnAccent
             }
         }
         Item { Layout.fillWidth: true }

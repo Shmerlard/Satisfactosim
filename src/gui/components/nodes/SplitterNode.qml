@@ -15,8 +15,8 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: "#1e2838"
-        border.color: root.selected ? "#4fc3f7" : "#e8a020"
+        color: Theme.surface
+        border.color: root.selected ? Theme.selection : Theme.accent
         border.width: root.selected ? 2 : 1
         radius: 10
     }
@@ -24,7 +24,7 @@ Item {
     Text {
         anchors.centerIn: parent
         text: root.nodeData ? root.nodeData.name : "Splitter"
-        color: "white"
+        color: Theme.textPrimary
     }
 
     Item {

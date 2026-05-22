@@ -10,7 +10,7 @@ Item {
     implicitWidth: mainLayout.implicitWidth
     Rectangle {
         anchors.fill: parent
-        color: "white"
+        color: Theme.surface
     }
     ColumnLayout {
         id: mainLayout

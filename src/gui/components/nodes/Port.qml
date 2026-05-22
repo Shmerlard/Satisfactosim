@@ -71,7 +71,7 @@ Item {
     Rectangle {
         id: background
         anchors.fill: parent
-        color: root.isInput ? "#0d3349" : "#3d1a0d"
+        color: root.isInput ? Theme.portInput : Theme.portOutput
         ToolTip.visible: hoverHandler_i.hovered
         ToolTip.text: root.portData.itemName
         HoverHandler {
@@ -95,7 +95,7 @@ Item {
         }
         Text {
             text: root.portData ? root.portData.amount : ""
-            color: "white"
+            color: Theme.textPrimary
             anchors.verticalCenter: parent.verticalCenter
         }
     }

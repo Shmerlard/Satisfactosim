@@ -18,8 +18,8 @@ Item {
     Rectangle {
         id: background
         anchors.fill: parent
-        color: "#2d1e3d"
-        border.color: root.selected ? "#4fc3f7" : "#8e44ad"
+        color: Theme.surfaceFactory
+        border.color: root.selected ? Theme.selection : Theme.accentFactory
         border.width: root.selected ? 2 : 1
         radius: 10
     }
@@ -61,7 +61,7 @@ Item {
             }
             Text {
                 text: root.nodeData ? root.nodeData.name : ""
-                color: "white"
+                color: Theme.textPrimary
             }
         }
 

@@ -20,7 +20,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: "#1a1a1a"
+        color: Theme.background
     }
 
     Canvas {
@@ -48,7 +48,7 @@ Item {
             var startX = (-(flickable.contentX % cellSize) + cellSize) % cellSize;
             var startY = (-(flickable.contentY % cellSize) + cellSize) % cellSize;
 
-            ctx.strokeStyle = "#333333";
+            ctx.strokeStyle = Theme.gridLine.toString();
             ctx.lineWidth = 1;
 
             for (var x = startX; x <= width; x += cellSize) {
@@ -111,7 +111,7 @@ Item {
                 visible: sceneContainer.pendingConn !== null
                 z: 5
                 ShapePath {
-                    strokeColor: "white"
+                    strokeColor: Theme.textPrimary
                     strokeWidth: 2
                     fillColor: "transparent"
                     startX: sceneContainer.pendingConn ? sceneContainer.pendingConn.startX : 0
@@ -130,8 +130,8 @@ Item {
                 y: Math.min(sceneContainer.marqueeStartY, sceneContainer.marqueeEndY)
                 width: Math.abs(sceneContainer.marqueeEndX - sceneContainer.marqueeStartX)
                 height: Math.abs(sceneContainer.marqueeEndY - sceneContainer.marqueeStartY)
-                color: "#224fc3f7"
-                border.color: "#4fc3f7"
+                color: Theme.selectionFill
+                border.color: Theme.selection
                 border.width: 1
                 z: 10
             }

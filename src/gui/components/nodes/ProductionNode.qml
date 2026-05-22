@@ -26,8 +26,8 @@ Item {
     Rectangle {
         id: background
         anchors.fill: parent
-        color: "#1e2838"
-        border.color: root.selected ? "#4fc3f7" : "#e8a020"
+        color: Theme.surface
+        border.color: root.selected ? Theme.selection : Theme.accent
         border.width: root.selected ? 2 : 1
         radius: 10
     }
@@ -66,7 +66,7 @@ Item {
             Rectangle {
                 width: 50
                 height: 50
-                color: "grey"
+                color: Theme.iconBg
                 radius: 10
                 anchors.horizontalCenter: parent.horizontalCenter
                 Image {
@@ -77,28 +77,28 @@ Item {
             }
             Text {
                 text: root.nodeData ? root.nodeData.name : ""
-                color: "white"
+                color: Theme.textPrimary
                 anchors.horizontalCenter: parent.horizontalCenter
             }
             Text {
                 text: root.machineCount
-                color: "white"
+                color: Theme.textPrimary
                 anchors.horizontalCenter: parent.horizontalCenter
             }
             Text {
                 text: root.machineLimit
-                color: "white"
+                color: Theme.textPrimary
                 anchors.horizontalCenter: parent.horizontalCenter
             }
             Text {
                 text: root.nodeData ? root.nodeData.machineName : ""
-                color: "white"
+                color: Theme.textPrimary
                 anchors.horizontalCenter: parent.horizontalCenter
             }
             Text {
                 visible: root.somersloopSlotSize > 0
                 text: "sl: " + root.somersloopCount + "/" + root.somersloopSlotSize
-                color: "white"
+                color: Theme.textPrimary
                 anchors.horizontalCenter: parent.horizontalCenter
             }
         }

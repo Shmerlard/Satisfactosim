@@ -16,9 +16,9 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: "white"
+        color: Theme.surface
         border.width: 1
-        border.color: "orange"
+        border.color: Theme.accent
         radius: 10
     }
 
@@ -28,10 +28,8 @@ Item {
         spacing: 2
 
         Row {
-            // anchors.centerIn:parent
             Rectangle {
-                // anchors.centerIn: parent
-                color: "orange"
+                color: Theme.accent
                 width: 10
                 height: 10
                 radius: 4
@@ -39,8 +37,8 @@ Item {
             }
 
             Text {
-                // anchors.horizontalCenter: parent.horizontalCenter
                 text: root.recipe["name"]
+                color: Theme.textPrimary
             }
         }
     }
@@ -58,7 +56,7 @@ Item {
                 width: 32
                 height: 32
                 radius: 4
-                color: "gray"
+                color: Theme.iconBg
                 Image {
                     source: modelData["iconUrl"]
                     width: parent.width
@@ -88,12 +86,11 @@ Item {
                 width: 30
                 height: 30
                 radius: 4
-                color: "gray"
+                color: Theme.iconBg
                 Image {
                     source: modelData["iconUrl"]
                     width: parent.width
                     height: parent.height
-                    // fillMode: Image.PreserveAspectFit
                     fillMode: Image.PreserveAspectCrop
                     sourceSize.width: 128
                     sourceSize.height: 128

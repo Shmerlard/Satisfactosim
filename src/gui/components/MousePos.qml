@@ -14,14 +14,14 @@ Item {
     Rectangle {
         anchors.fill: parent
 
-        color: "#88000000"
+        color: Theme.overlayBg
         radius: 4
 
         Text {
             id: statusText
             anchors.centerIn: parent
             text: "x: " + root.mouseContentX + "  y: " + root.mouseContentY
-            color: "white"
+            color: Theme.textPrimary
             font.pixelSize: 11
             font.family: "monospace"
         }

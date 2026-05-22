@@ -42,8 +42,8 @@ Popup {
     clip: true
 
     background: Rectangle {
-        color: "#2b2b2b"
-        border.color: "#555555"
+        color: Theme.surfaceMenu
+        border.color: Theme.borderLight
         radius: 6
     }
 
@@ -60,7 +60,7 @@ Popup {
 
             Text {
                 text: "Special Nodes"
-                color: "#aaaaaa"
+                color: Theme.textMuted
                 font.pixelSize: 11
             }
 
@@ -118,7 +118,7 @@ Popup {
         Rectangle {
             Layout.preferredWidth: 1
             Layout.fillHeight: true
-            color: "#444444"
+            color: Theme.border
         }
 
         // Right panel: recipe search + list

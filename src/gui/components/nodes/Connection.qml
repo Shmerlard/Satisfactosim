@@ -15,7 +15,7 @@ Item {
     Shape {
         z: 4
         ShapePath {
-            strokeColor: root.hovered ? "#4fc3f7" : "#e8a020"
+            strokeColor: root.hovered ? Theme.selection : Theme.accent
             strokeWidth: root.hovered ? 3 : 2
             fillColor: "transparent"
             startX: src ? src.posX + conn.srcOffset.x : 0
