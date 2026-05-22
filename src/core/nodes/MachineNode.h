@@ -60,6 +60,7 @@ public:
     virtual QString machineIcon() const;
     void setMachineLimit(float limit);
     void setMachineLimit(Frac limit);
+    // void setMachine
 
     Frac portRate(const Port* port) const override; // FIX: explore, could be redundent
     QJsonObject getJsonNode() const override;

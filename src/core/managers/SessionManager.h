@@ -74,7 +74,7 @@ public:
     void setExtractionPurity(AbstractNode* node, NodePurity purity);
     void setExtractionTier(AbstractNode* node, int tier);
     void setMachineOverclock(AbstractNode* node, float overclock);
-    void solve();
+    void cleanSolve();
     void notifySolved();
 
     // ---------- SAVE AND LOAD ---------------

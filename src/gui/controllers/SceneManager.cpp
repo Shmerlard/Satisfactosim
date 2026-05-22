@@ -215,7 +215,7 @@ void SceneManager::setPurity(ExtractionNode* node, NodePurity purity)
 
 void SceneManager::solve()
 {
-    m_session->solve();
+    m_session->cleanSolve();
 }
 
 void SceneManager::save(const QString& path)

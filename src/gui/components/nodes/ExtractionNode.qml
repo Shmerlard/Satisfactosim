@@ -22,6 +22,7 @@ Item {
     Rectangle {
         id: background
         anchors.fill: parent
+        // color: "blue"
         color: "#1a2e1a"
         border.color: root.selected ? "#4fc3f7" : "#27ae60"
         border.width: root.selected ? 2 : 1

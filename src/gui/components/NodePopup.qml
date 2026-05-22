@@ -20,6 +20,10 @@ Popup {
         if (nodeData.nodeType !== 3 && nodeData.nodeType !== 4) return 0;
         return nodeData.somersloopSlotSize;
     }
+    readonly property bool somersloopAvailable: {
+        if (somersloopSlotSize > 0) return true;
+        return false
+    }
 
     width: 220
     padding: 14
@@ -88,7 +92,6 @@ Popup {
             Text {
                 text: "Machine Limit"
                 color: "#aaa"
-                // color: "yellow"
                 font.pixelSize: 11
             }
             Item {
@@ -160,6 +163,7 @@ Popup {
             Text {
                 text: "Overclock (%)"
                 color: "#aaa"
+                // color: "yellow"
                 font.pixelSize: 11
             }
             TextField {
@@ -278,6 +282,7 @@ Popup {
         }
 
         ColumnLayout {
+            visible: root.somersloopAvailable
             Layout.fillWidth: true
             spacing: 4
             Text {
@@ -310,23 +315,6 @@ Popup {
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: "sl: " + root.somersloopCount + "/" + root.somersloopSlotSize
                 }
-                // TextField {
-                //     id: somersloopField
-                //     anchors.left: somersloopDec1.right
-                //     anchors.horizontalCenter: parent.horizontalCenter
-                //     placeholderText: "no limit"
-                //     inputMethodHints: Qt.ImhFormattedNumbersOnly
-                //     background: Rectangle {
-                //         color: "#2a3a4a"
-                //         radius: 4
-                //     }
-                //     color: "white"
-                //     // onEditingFinished: {
-                //     //     let val = parseFloat(text);
-                //     //     if (!isNaN(val))
-                //     //         SceneManager.setMachineLimit(root.nodeData, val);
-                //     // }
-                // }
                 Rectangle {
                     width: somersloopField.height
                     height: somersloopField.height

@@ -80,9 +80,9 @@ ApplicationWindow {
         anchors.fill: parent
         source: "gui/components/App.qml"
         onLoaded: {
-            item.zoomScale   = appWindow.savedZoom
-            item.contentX    = appWindow.savedContentX
-            item.contentY    = appWindow.savedContentY
+            item.savedZoom     = appWindow.savedZoom
+            item.savedContentX = appWindow.savedContentX
+            item.savedContentY = appWindow.savedContentY
         }
     }
     Shortcut {
@@ -104,7 +104,7 @@ ApplicationWindow {
         repeat: false
         onTriggered: {
             reloader.clearCache();
-            uiLoader.source = "gui/components/App.qml";
+            uiLoader.source = "gui/components/App.qml?v=" + Date.now();
         }
     }
 

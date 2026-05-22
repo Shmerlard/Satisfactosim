@@ -195,10 +195,13 @@ Item {
                         acceptedButtons: Qt.RightButton
                         onTapped: (eventPoint) => {
                             var pos = mapToItem(gui, eventPoint.position.x, eventPoint.position.y)
-                            nodePopup.nodeData = nodeData
-                            nodePopup.x = pos.x
-                            nodePopup.y = pos.y
-                            nodePopup.open()
+                            var popup = nodePopup.item
+                            if (popup) {
+                                popup.nodeData = nodeData
+                                popup.x = pos.x
+                                popup.y = pos.y
+                                popup.open()
+                            }
                         }
                     }
                 }
@@ -213,7 +216,10 @@ Item {
 
         Notification { id: notification }
         BackButton { id: backButton }
-        NodePopup { id: nodePopup }
+        Loader {
+            id: nodePopup
+            source: "NodePopup.qml?v=" + Date.now()
+        }
         MousePos {
             id: mousePos
             mouseContentX: root.mouseContentX

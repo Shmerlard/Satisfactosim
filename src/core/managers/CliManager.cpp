@@ -599,7 +599,7 @@ void CliManager::handleTier(const QStringList& args)
 
 void CliManager::handleSolve()
 {
-    m_session->solve();
+    m_session->cleanSolve();
     m_out << "Solved.\n";
 }
 
