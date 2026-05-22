@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import FACTORY_QT
+import gui.theme
 
 ColumnLayout {
     spacing: 4

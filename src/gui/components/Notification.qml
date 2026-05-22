@@ -1,5 +1,6 @@
 import QtQuick
 import FACTORY_QT
+import gui.theme
 
 Item {
     id: root

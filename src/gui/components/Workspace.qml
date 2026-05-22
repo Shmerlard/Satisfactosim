@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Shapes
 import QtQuick.Controls
 import FACTORY_QT
+import gui.theme
 import "./menus"
 import "./nodes"
 import "./controls/"

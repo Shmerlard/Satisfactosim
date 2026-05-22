@@ -1,4 +1,5 @@
 import QtQuick
+import gui.theme
 
 Item {
     id: root

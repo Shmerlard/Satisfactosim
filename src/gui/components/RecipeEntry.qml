@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import FACTORY_QT
+import gui.theme
 
 Item {
     property var recipe

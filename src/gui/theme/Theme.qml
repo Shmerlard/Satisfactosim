@@ -1,9 +1,10 @@
+pragma Singleton
 import QtQuick
 
 QtObject {
     id: root
 
-    property var current: Qt.createComponent("DarkTheme.qml?v=" + Date.now()).createObject(root)
+    property var current: DarkTheme {}
 
     readonly property color background:          current.background
     readonly property color gridLine:            current.gridLine

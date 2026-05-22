@@ -47,7 +47,6 @@ int main(int argc, char* argv[])
         engine->rootContext()->setContextProperty("reloader", reloader.data());
         engine->addImportPath(projDir);
         engine->addImportPath(projDir + "/src");
-        reloader->registerContextFile("Theme", QUrl::fromLocalFile(projDir + "/src/gui/theme/Theme.qml"));
 
         auto paths = engine->importPathList();
         paths.removeAll(projDir + "/build");

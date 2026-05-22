@@ -3,11 +3,14 @@
 #include "core/types/Types.h"
 #include <QAbstractListModel>
 #include <QObject>
+#include <QQmlEngine>
 #include <QSortFilterProxyModel>
 #include <core/managers/GameLibrary.h>
 
 class RecipeListModel : public QAbstractListModel {
     Q_OBJECT;
+    QML_ELEMENT;
+    QML_UNCREATABLE("");
 
 private:
     GameLibrary* m_gameLibrary = nullptr;
@@ -31,6 +34,8 @@ public:
 // ---------------- RecipeFilterModel ----------------------
 class RecipeFilterModel : public QSortFilterProxyModel {
     Q_OBJECT;
+    QML_ELEMENT;
+    QML_UNCREATABLE("");
 
 public:
     enum FilterIO { All,
