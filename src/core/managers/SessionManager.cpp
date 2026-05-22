@@ -213,6 +213,7 @@ void SessionManager::setMachineLimit(AbstractNode* node, float limit)
 {
     if (auto* mn = dynamic_cast<MachineNode*>(node)) {
         mn->setMachineLimit(limit);
+        emit mn->nodeUpdated();
         emit machineLimitChanged(mn);
     }
 }
@@ -227,6 +228,8 @@ void SessionManager::incMachineLimit(AbstractNode* node, int limit)
     Frac currentLimit = m->machineLimit();
     Frac newLimit = currentLimit + limit;
     m->setMachineLimit(newLimit);
+    emit m->nodeUpdated();
+    emit machineLimitChanged(m);
 }
 
 void SessionManager::setMachineSomersloop(MachineNode* node, int count)
@@ -255,6 +258,17 @@ void SessionManager::setExtractionTier(AbstractNode* node, int tier)
         emit en->nodeUpdated();
         emit extractionTierChanged(en);
     }
+}
+
+void SessionManager::setMachineOverclock(AbstractNode* node, float overclock)
+{
+    if (!node->isMachineNode())
+        return;
+
+    MachineNode* mn = static_cast<MachineNode*>(node);
+    mn->setMachineLimit(overclock);
+    emit mn->nodeUpdated();
+    emit machineOverclockChanged(mn);
 }
 
 // ----------------------------- SAVE AND LOAD ---------------------------------
@@ -463,7 +477,7 @@ AbstractNode* SessionManager::createNodeFromJson(QJsonObject j, Factory* f, QMap
         for (auto jsonValue : j["weights"].toArray()) {
             int n = jsonValue.toObject()["n"].toInt();
             int d = jsonValue.toObject()["d"].toInt();
-            Frac f = Frac(n,d);
+            Frac f = Frac(n, d);
             weights.append(f);
         }
         SplitterNode* sn = f->createSplitterNode(weights, name);

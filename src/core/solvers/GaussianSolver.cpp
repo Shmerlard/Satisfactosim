@@ -77,21 +77,37 @@ std::vector<int> GaussianSolver::gaussianEliminate(Matrix& mat, int numVars)
 
 void GaussianSolver::onLoad()
 {
-    connect(m_session, &SessionManager::machineLimitChanged, this, [this]() {
-        solve();
-        m_session->notifySolved();
-    });
     connect(m_session, &SessionManager::nodeAdded, this, [this]() {
         build(m_session->rootFactory()); // FIX: extremely inefficient, more precise option needed
         solve();
         m_session->notifySolved();
     });
+    // void nodeRemoved(AbstractNode* node);
     connect(m_session, &SessionManager::nodeConnected, this, [this]() {
         build(m_session->rootFactory()); // FIX: extremely inefficient, more precise option needed
         solve();
         m_session->notifySolved();
     });
-    // FIX: impelemtn more connections for updated
+    // void nodeDisconnected(AbstractNode* src, AbstractNode* dst);
+    connect(m_session, &SessionManager::machineLimitChanged, this, [this]() {
+        solve();
+        m_session->notifySolved();
+    });
+    connect(m_session, &SessionManager::extractionTierChanged, this, [this]() {
+        // build(m_session->rootFactory()); // FIX: extremely inefficient, more precise option needed
+        solve();
+        m_session->notifySolved();
+    });
+    connect(m_session, &SessionManager::extractionPurityChanged, this, [this]() {
+        // build(m_session->rootFactory()); // FIX: extremely inefficient, more precise option needed
+        solve();
+        m_session->notifySolved();
+    });
+    connect(m_session, &SessionManager::machineLimitChanged, this, [this]() {
+        // build(m_session->rootFactory()); // FIX: extremely inefficient, more precise option needed
+        solve();
+        m_session->notifySolved();
+    });
 }
 
 void GaussianSolver::clear()

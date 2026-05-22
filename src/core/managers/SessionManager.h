@@ -73,6 +73,7 @@ public:
     void setMachineSomersloop(MachineNode* node, int count);
     void setExtractionPurity(AbstractNode* node, NodePurity purity);
     void setExtractionTier(AbstractNode* node, int tier);
+    void setMachineOverclock(AbstractNode* node, float overclock);
     void solve();
     void notifySolved();
 
@@ -95,6 +96,7 @@ signals:
     void machineLimitChanged(MachineNode* node);
     void extractionTierChanged(ExtractionNode* node);
     void extractionPurityChanged(ExtractionNode* node);
+    void machineOverclockChanged(MachineNode* node);
     void solved();
 
 public:

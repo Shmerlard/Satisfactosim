@@ -66,8 +66,7 @@ public:
     virtual QJsonObject getJsonNode() const;
     virtual QString getHeaderInfo() const;
     int index() const;
-    // virtual Frac basePortRate(const Port* port) const = 0;
-    virtual Frac portRate(const Port* port) const = 0;
+    virtual Frac portRate(const Port* port) const = 0; // FIX: up to delete
 
     // ---------- PORTS ---------------
     void deletePorts();

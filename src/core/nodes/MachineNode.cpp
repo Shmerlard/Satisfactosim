@@ -44,14 +44,16 @@ QString MachineNode::machineName() const
 QString MachineNode::machineCountStr() const
 {
     QString str;
-    str = StringFromFrac(m_machineCount);
+    // str = StringFromFrac(m_machineCount);
+    str = MixedNumberFromFrac(m_machineCount);
     return str;
 }
 
 QString MachineNode::machineLimitStr() const
 {
     QString str;
-    str = StringFromFrac(m_machineLimit);
+    // str = StringFromFrac(m_machineLimit);
+    str = MixedNumberFromFrac(m_machineLimit);
     return str;
 }
 
@@ -74,7 +76,6 @@ void MachineNode::setOverclock(Frac overclock)
 {
     overclock = std::max(Frac(1, 100), std::min(Frac(5, 2), overclock));
     m_overclock = overclock;
-    // emit recipeChanged();
 }
 
 void MachineNode::setMachineLimit(float limit)
@@ -86,5 +87,4 @@ void MachineNode::setMachineLimit(float limit)
 void MachineNode::setMachineLimit(Frac limit)
 {
     m_machineLimit = limit;
-    // emit machineLimitChanged();
 }

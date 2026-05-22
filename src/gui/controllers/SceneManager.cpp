@@ -201,9 +201,7 @@ void SceneManager::setSomersloopCount(AbstractNode* node, int count)
 
 void SceneManager::setOverclock(AbstractNode* node, float overclock)
 {
-    // FIX: use sesion manager instead
-    if (node->isMachineNode())
-        static_cast<MachineNode*>(node)->setOverclockFloat(overclock);
+    m_session->setMachineOverclock(node, overclock);
 }
 
 void SceneManager::setTier(ExtractionNode* node, int tier)
