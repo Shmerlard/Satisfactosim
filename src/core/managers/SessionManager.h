@@ -78,6 +78,7 @@ public:
     void setSplitterWeight(AbstractNode* node, int portIndex, const QString& weight);
     void cleanSolve();
     void notifySolved();
+    QString solverReport() const { return m_solver ? m_solver->report() : QString(); }
 
     // ---------- SAVE AND LOAD ---------------
     void save(const QString& path);

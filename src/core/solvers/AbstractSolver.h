@@ -20,6 +20,7 @@ public:
     virtual void reset() = 0;
     virtual void build(Factory* root) = 0;
     virtual void solve() = 0;
+    virtual QString report() const { return {}; }
 
     explicit AbstractSolver(SessionManager* session, QObject* parent = nullptr);
 };

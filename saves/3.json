@@ -1,0 +1,88 @@
+{
+    "factories": [
+        {
+            "connections": [
+                {
+                    "from": [
+                        0,
+                        0
+                    ],
+                    "to": [
+                        1,
+                        0
+                    ]
+                },
+                {
+                    "from": [
+                        2,
+                        1
+                    ],
+                    "to": [
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "from": [
+                        3,
+                        1
+                    ],
+                    "to": [
+                        2,
+                        0
+                    ]
+                }
+            ],
+            "edges": [
+            ],
+            "factoryNodes": [
+            ],
+            "id": "{6dffaaa5-9469-4dfe-8edf-194ca6b312f7}",
+            "machines": [
+                {
+                    "id": "{7c39bd3b-6547-4dd9-aa0b-ee99ddc159a5}",
+                    "machineLimit": 1,
+                    "name": "",
+                    "posX": 699.5937252767343,
+                    "posY": 350.20031316320535,
+                    "purity": 1,
+                    "recipe": "Miner_Desc_OreGold_C",
+                    "tier": 0,
+                    "type": 3
+                },
+                {
+                    "id": "{4c45fc63-d52d-4a13-9545-00cac4fad33b}",
+                    "machineLimit": -1,
+                    "name": "",
+                    "posX": 1001.6050425164719,
+                    "posY": 400.3625948324958,
+                    "recipe": "Recipe_Alternate_CateriumIngot_Tempered_C",
+                    "type": 4
+                },
+                {
+                    "id": "{ec679e35-14a7-4fa0-b842-631928023890}",
+                    "machineLimit": 1.5,
+                    "name": "",
+                    "posX": 700.2002456186872,
+                    "posY": 601.1812320110399,
+                    "recipe": "Recipe_PetroleumCoke_C",
+                    "type": 4
+                },
+                {
+                    "id": "{bbdf4c3b-708c-4ba7-ba50-b55c6796e86f}",
+                    "machineLimit": 0.1,
+                    "name": "",
+                    "posX": 427.0341639932303,
+                    "posY": 501.33697638648516,
+                    "recipe": "Recipe_Alternate_HeavyOilResidue_C",
+                    "type": 4
+                }
+            ],
+            "name": "Main Factory",
+            "parentId": ""
+        }
+    ],
+    "metadata": {
+        "version": 1
+    }
+}

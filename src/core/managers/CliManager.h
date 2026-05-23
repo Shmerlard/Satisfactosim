@@ -33,6 +33,7 @@ private:
     void handlePurity(const QStringList& args);
     void handleTier(const QStringList& args);
     void handleSolve();
+    void handleReport();
     void handleRename(const QStringList& args);
     void handleSave(const QStringList& args);
     void handleLoad(const QStringList& args);

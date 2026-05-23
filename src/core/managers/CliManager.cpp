@@ -241,6 +241,7 @@ void CliManager::processCommand(const QString& line)
         { "purity", [this](const auto& p) { handlePurity(p); } },
         { "tier", [this](const auto& p) { handleTier(p); } },
         { "solve", [this](const auto&) { handleSolve(); } },
+        { "report", [this](const auto&) { handleReport(); } },
         { "rename", [this](const auto& p) { handleRename(p); } },
         { "save", [this](const auto& p) { handleSave(p); } },
         { "load", [this](const auto& p) { handleLoad(p); } },
@@ -601,6 +602,11 @@ void CliManager::handleSolve()
 {
     m_session->cleanSolve();
     m_out << "Solved.\n";
+}
+
+void CliManager::handleReport()
+{
+    m_out << m_session->solverReport();
 }
 
 void CliManager::handleRename(const QStringList& args)

@@ -20,7 +20,6 @@ Item {
     readonly property int somersloopSlotSize: nodeData ? nodeData.somersloopSlotSize : 0
     readonly property string nodeName: nodeData ? nodeData.name : ""
 
-
     implicitWidth: 200
     implicitHeight: 150
 
@@ -66,14 +65,23 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             Rectangle {
                 width: 50
-                height: 50
+                height: 70
                 color: Theme.iconBg
                 radius: 10
                 anchors.horizontalCenter: parent.horizontalCenter
                 Image {
                     source: root.nodeData ? root.nodeData.machineIcon : ""
+                    anchors.horizontalCenter: parent.horizontalCenter
                     width: parent.width
-                    height: parent.height
+                    height: parent.width
+                }
+                Text {
+                    text: root.nodeData ? root.nodeData.machineName : ""
+                    // color: Theme.textPrimary
+                    color: "black"
+                    font.pixelSize: 10
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.bottom: parent.bottom
                 }
             }
             Text {
@@ -88,11 +96,6 @@ Item {
             }
             Text {
                 text: root.machineLimit
-                color: Theme.textPrimary
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-            Text {
-                text: root.nodeData ? root.nodeData.machineName : ""
                 color: Theme.textPrimary
                 anchors.horizontalCenter: parent.horizontalCenter
             }

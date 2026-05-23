@@ -10,6 +10,7 @@
 #include <QDebug>
 #include <QQueue>
 #include <QSet>
+#include <QTextStream>
 
 GaussianSolver::GaussianSolver(SessionManager* session)
     : AbstractSolver(session, session)
@@ -315,6 +316,66 @@ void GaussianSolver::build(Factory* root)
         }
         m_islandEquations.append(equations);
     }
+}
+
+// --- report ---
+
+QString GaussianSolver::report() const
+{
+    QString out;
+    QTextStream s(&out);
+
+    if (m_islands.isEmpty()) {
+        s << "(no islands)\n";
+        return out;
+    }
+
+    for (int i = 0; i < m_islands.size(); ++i) {
+        const Island& island = m_islands[i];
+        int numEqs = (i < m_islandEquations.size()) ? m_islandEquations[i].size() : 0;
+        int numFree = island.size() - numEqs;
+
+        s << "=== Island " << i
+          << " (" << island.size() << " nodes, "
+          << numEqs << " equations, "
+          << numFree << " free) ===\n";
+
+        QList<MachineNode*> sorted = island;
+        std::sort(sorted.begin(), sorted.end(), [](MachineNode* a, MachineNode* b) {
+            return a->name() < b->name();
+        });
+
+        for (MachineNode* node : sorted) {
+            QString limitStr = node->machineLimit() < Frac(0)
+                ? "none"
+                : StringFromFrac(node->machineLimit());
+
+            s << "  [node] " << node->name()
+              << "  count=" << StringFromFrac(node->machineCount())
+              << "  limit=" << limitStr << "\n";
+
+            auto reportPorts = [&](const std::vector<std::unique_ptr<Port>>& ports) {
+                QList<Port*> sortedPorts;
+                for (auto& p : ports)
+                    sortedPorts.append(p.get());
+                std::sort(sortedPorts.begin(), sortedPorts.end(), [](Port* a, Port* b) {
+                    QString na = a->item ? a->item->itemName : QString();
+                    QString nb = b->item ? b->item->itemName : QString();
+                    return na < nb;
+                });
+                for (Port* p : sortedPorts) {
+                    QString dir = (p->type == PortType::Input) ? "in " : "out";
+                    QString itemName = p->item ? p->item->itemName : "?";
+                    s << "    port  " << dir << "  " << itemName
+                      << "  " << p->amount << "\n";
+                }
+            };
+            reportPorts(node->inputs());
+            reportPorts(node->outputs());
+        }
+    }
+
+    return out;
 }
 
 // --- solve ---

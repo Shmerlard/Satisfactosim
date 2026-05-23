@@ -81,7 +81,8 @@ Frac ProductionNode::basePortRate(const Port* port) const
 
     Frac perCycle = (it != list.end()) ? it->second : Frac(0);
     Frac basePerMinute = perCycle / recipe()->recipeTime * 60;
-    basePerMinute *= somersloopFactor();
+    if (port->type == PortType::Output)
+        basePerMinute *= somersloopFactor();
     basePerMinute *= m_overclock;
 
     return basePerMinute;

@@ -42,6 +42,7 @@ public:
     void reset() override;
     void build(Factory* root) override;
     void solve() override;
+    QString report() const override;
 
 private:
     // Reduces mat to RREF in place. Returns pivot column index per row (-1 if no pivot).

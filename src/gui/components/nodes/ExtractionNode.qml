@@ -55,19 +55,28 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: Theme.textPrimary
             }
-            Image {
-                source: root.nodeData ? root.nodeData.machineIcon : ""
+            Rectangle {
                 width: 50
-                height: 50
+                height: 70
+                color: Theme.iconBg
+                radius: 10
                 anchors.horizontalCenter: parent.horizontalCenter
+                Image {
+                    source: root.nodeData ? root.nodeData.machineIcon : ""
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    width: parent.width
+                    height: parent.width
+                }
+                Text {
+                    text: root.nodeData ? root.nodeData.machineName : ""
+                    // color: Theme.textPrimary
+                    color: "black"
+                    font.pixelSize: 10
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.bottom: parent.bottom
+                }
             }
-            Text {
-                id: nameText
-                text: root.nodeData ? root.nodeData.machineName : "N"
-                anchors.horizontalCenter: parent.horizontalCenter
-                color: Theme.textPrimary
-                font.pixelSize: 7
-            }
+            // ---------- OVERCLOCK ------------
             Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: overclockText.width
@@ -88,6 +97,8 @@ Item {
                     delay: 500
                 }
             }
+
+            // ---------- AMOUNT/LIMIT ------------
             Rectangle {
                 width: amountText.width
                 height: amountText.height
