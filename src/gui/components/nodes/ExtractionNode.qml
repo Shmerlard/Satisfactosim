@@ -79,15 +79,27 @@ Item {
             // ---------- OVERCLOCK ------------
             Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
-                width: overclockText.width
-                height: overclockText.height
+                // width: overclockText.width
+                // height: overclockText.height
+                height: overclockRow.height
+                width: overclockRow.width
                 radius: 5
                 color: Theme.badge
-                Text {
-                    id: overclockText
-                    text: root.overclock
+                Row {
+                    id: overclockRow
                     anchors.horizontalCenter: parent.horizontalCenter
-                    color: Theme.textPrimary
+                    Image {
+                        source: "image://assets/misc/Overclock.png"
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: 10
+                        height: 10
+                    }
+                    Text {
+                        id: overclockText
+                        text: root.overclock
+                        color: Theme.textPrimary
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
                 }
                 HoverHandler {
                     id: overclockHover

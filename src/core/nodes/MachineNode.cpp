@@ -44,7 +44,6 @@ QString MachineNode::machineName() const
 QString MachineNode::machineCountStr() const
 {
     QString str;
-    // str = StringFromFrac(m_machineCount);
     str = MixedNumberFromFrac(m_machineCount);
     return str;
 }

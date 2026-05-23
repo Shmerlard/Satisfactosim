@@ -2,7 +2,9 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Controls
 import gui.theme
+import "./fields/"
 
 Item {
     id: root
@@ -63,6 +65,13 @@ Item {
             id: centerCol
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
+            // ---------- NAME ------------
+            Text {
+                text: root.nodeData ? root.nodeData.name : ""
+                color: Theme.textPrimary
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+            // ---------- IMAGE ------------
             Rectangle {
                 width: 50
                 height: 70
@@ -84,26 +93,13 @@ Item {
                     anchors.bottom: parent.bottom
                 }
             }
-            Text {
-                text: root.nodeData ? root.nodeData.name : ""
-                color: Theme.textPrimary
-                anchors.horizontalCenter: parent.horizontalCenter
+            MachineCountField {
+                count: root.machineCount
+                limit: root.machineLimit
             }
-            Text {
-                text: root.machineCount
-                color: Theme.textPrimary
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-            Text {
-                text: root.machineLimit
-                color: Theme.textPrimary
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-            Text {
-                visible: root.somersloopSlotSize > 0
-                text: "sl: " + root.somersloopCount + "/" + root.somersloopSlotSize
-                color: Theme.textPrimary
-                anchors.horizontalCenter: parent.horizontalCenter
+            SomersloopField {
+                somersloopCount: root.somersloopCount
+                somersloopSlot: root.somersloopSlotSize
             }
         }
 

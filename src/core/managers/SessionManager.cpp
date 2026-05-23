@@ -306,7 +306,7 @@ void SessionManager::setMachineOverclock(AbstractNode* node, float overclock)
         return;
 
     MachineNode* mn = static_cast<MachineNode*>(node);
-    mn->setMachineLimit(overclock);
+    mn->setOverclock(FracFromFloat(overclock));
     emit mn->nodeUpdated();
     emit machineOverclockChanged(mn);
 }

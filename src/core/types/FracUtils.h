@@ -28,7 +28,9 @@ inline QString MixedNumberFromFrac(Frac frac)
     int32_t denum = frac.denominator();
     int whole = (int)(num / denum);
     Frac f = Frac(num % denum, denum);
-    return QString::number(whole) + " " + QString::number(num % denum) + "/" + QString::number(denum);
+    QString wholePart = whole == 0 ? "" : QString::number(whole);
+    QString fracPart =  (num % denum) == 0 ? "" : QString::number(num % denum) + "/" + QString::number(denum);
+    return wholePart + " " + fracPart;
 }
 
 inline Frac FracFromString(const QString& str)

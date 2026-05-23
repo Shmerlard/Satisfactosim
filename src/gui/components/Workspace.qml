@@ -3,7 +3,8 @@ import QtQuick.Shapes
 import QtQuick.Controls
 import FACTORY_QT
 import gui.theme
-import "./menus"
+import "./menus/node_popup/"
+import "./menus/place_menu/"
 import "./nodes"
 import "./controls/"
 
@@ -220,7 +221,7 @@ Item {
         BackButton { id: backButton }
         Loader {
             id: nodePopup
-            source: "NodePopup.qml?v=" + Date.now()
+            source: "menus/node_popup/NodePopup.qml?v=" + Date.now()
         }
         MousePos {
             id: mousePos
