@@ -3,10 +3,9 @@ import QtQuick.Shapes
 import QtQuick.Controls
 import FACTORY_QT
 import gui.theme
-import "./menus/node_popup/"
-import "./menus/place_menu/"
-import "./nodes"
-import "./controls/"
+import gui.menus.place_menu
+import gui.nodes
+import gui.controls
 
 Item {
     id: root

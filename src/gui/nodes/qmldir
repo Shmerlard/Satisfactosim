@@ -1,0 +1,8 @@
+module gui.nodes
+Connection 1.0 Connection.qml
+EdgeNode 1.0 EdgeNode.qml
+ExtractionNode 1.0 ExtractionNode.qml
+FactoryNode 1.0 FactoryNode.qml
+Port 1.0 Port.qml
+ProductionNode 1.0 ProductionNode.qml
+SplitterNode 1.0 SplitterNode.qml

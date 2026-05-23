@@ -1,0 +1,3 @@
+module gui.nodes.fields
+MachineCountField 1.0 MachineCountField.qml
+SomersloopField 1.0 SomersloopField.qml

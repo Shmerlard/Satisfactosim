@@ -4,7 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import gui.theme
-import "./fields/"
+import gui.nodes.fields
 
 Item {
     id: root

@@ -55,7 +55,7 @@ ApplicationWindow {
     Loader {
         id: uiLoader
         anchors.fill: parent
-        source: "gui/components/App.qml"
+        source: "gui/App.qml"
         // qmllint disable missing-property
         readonly property real zoomScale: item ? item.zoomScale : 1.0
         readonly property real contentX: item ? item.contentX : 0
@@ -86,7 +86,7 @@ ApplicationWindow {
         repeat: false
         onTriggered: {
             reloader.clearCache();
-            uiLoader.source = "gui/components/App.qml?v=" + Date.now();
+            uiLoader.source = "gui/App.qml?v=" + Date.now();
         }
     }
 

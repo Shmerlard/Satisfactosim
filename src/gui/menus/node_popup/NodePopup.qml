@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import FACTORY_QT
 import gui.theme
-import "../../controls/"
+import gui.controls
 
 Popup {
     id: root

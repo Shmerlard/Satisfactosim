@@ -1,0 +1,4 @@
+module gui.menus.place_menu
+PlaceMenu 1.0 PlaceMenu.qml
+PlaceMenuEntry 1.0 PlaceMenuEntry.qml
+PlaceMenuSearchBox 1.0 PlaceMenuSearchBox.qml
