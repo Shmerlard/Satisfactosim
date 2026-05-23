@@ -29,6 +29,7 @@ Item {
         id: background
         anchors.fill: parent
         color: Theme.surface
+        // color: "yellow"
         border.color: root.selected ? Theme.selection : Theme.accent
         border.width: root.selected ? 2 : 1
         radius: 10

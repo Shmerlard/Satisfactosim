@@ -37,6 +37,8 @@ QVariantList SplitterNode::outputsQml() const
 
 void SplitterNode::addOutput(Frac weight)
 {
+    if (weight < 0)
+        return;
     m_outputs.push_back(std::make_unique<Port>(*this, nullptr, PortType::Output));
     m_weightMap[m_outputs.back().get()] = weight;
     m_total += weight;
@@ -75,9 +77,9 @@ QString SplitterNode::getHeaderInfo() const
         proportions << QString("%1/%2").arg(prop.numerator()).arg(prop.denominator());
     }
     return QString("┌─ [%1] Splitter  \"%2\"  (%3)")
-               .arg(index())
-               .arg(m_name)
-               .arg(proportions.join("  "));
+        .arg(index())
+        .arg(m_name)
+        .arg(proportions.join("  "));
 }
 
 QJsonObject SplitterNode::getJsonNode() const
@@ -86,7 +88,7 @@ QJsonObject SplitterNode::getJsonNode() const
     QJsonArray weights;
     for (auto& p : outputs()) {
         Frac w = m_weightMap.value(p.get());
-        weights.append(QJsonObject{{"n", w.numerator()}, {"d", w.denominator()}});
+        weights.append(QJsonObject { { "n", w.numerator() }, { "d", w.denominator() } });
     }
 
     obj["weights"] = weights;

@@ -1,2 +1,8 @@
 module gui.menus.node_popup
 NodePopup 1.0 NodePopup.qml
+OverclockSection 1.0 OverclockSection.qml
+PuritySection 1.0 PuritySection.qml
+TierSection 1.0 TierSection.qml
+SomersloopSection 1.0 SomersloopSection.qml
+WeightsSection 1.0 WeightsSection.qml
+

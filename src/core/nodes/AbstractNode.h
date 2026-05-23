@@ -30,6 +30,7 @@ class AbstractNode : public QObject {
     Q_PROPERTY(int nodeType READ nodeTypeInt CONSTANT)
     Q_PROPERTY(QVariantList inputs READ inputsQml NOTIFY portsChanged)
     Q_PROPERTY(QVariantList outputs READ outputsQml NOTIFY portsChanged)
+    Q_PROPERTY(bool isMachine READ isMachineNode CONSTANT)
 
 protected:
     explicit AbstractNode(

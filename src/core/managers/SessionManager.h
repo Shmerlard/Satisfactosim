@@ -76,6 +76,7 @@ public:
     void setExtractionTier(AbstractNode* node, int tier);
     void setMachineOverclock(AbstractNode* node, float overclock);
     void setSplitterWeight(AbstractNode* node, int portIndex, const QString& weight);
+    void addSplitterOutput(AbstractNode* node, Frac weight);
     void cleanSolve();
     void notifySolved();
     QString solverReport() const { return m_solver ? m_solver->report() : QString(); }

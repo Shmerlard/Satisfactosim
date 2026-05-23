@@ -300,6 +300,18 @@ void SessionManager::setSplitterWeight(AbstractNode* node, int portIndex, const 
     emit sn->nodeUpdated();
 }
 
+void SessionManager::addSplitterOutput(AbstractNode* node, Frac weight)
+{
+    if (!(node->type() == NodeType::Splitter))
+        return;
+
+    SplitterNode* sn = static_cast<SplitterNode*>(node);
+    sn->addOutput(weight);
+    emit sn->nodeUpdated();
+    emit sn->portsChanged();
+
+}
+
 void SessionManager::setMachineOverclock(AbstractNode* node, float overclock)
 {
     if (!node->isMachineNode())

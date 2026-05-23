@@ -211,6 +211,11 @@ void SceneManager::setOverclock(AbstractNode* node, float overclock)
     m_session->setMachineOverclock(node, overclock);
 }
 
+void SceneManager::addSplitterOutput(AbstractNode* node)
+{
+    m_session->addSplitterOutput(node, Frac(1));
+}
+
 void SceneManager::setSplitterWeight(AbstractNode* node, int portIndex, const QString& weight)
 {
     m_session->setSplitterWeight(node, portIndex, weight);
