@@ -323,6 +323,16 @@ void SessionManager::setMachineOverclock(AbstractNode* node, float overclock)
     emit machineOverclockChanged(mn);
 }
 
+void SessionManager::incMachineOverclock(AbstractNode* node, float overclock)
+{
+    if (!node->isMachineNode())
+        return;
+
+    MachineNode* mn = static_cast<MachineNode*>(node);
+    mn->setOverclock(mn->overclock() + FracFromFloat(overclock));
+    emit mn->nodeUpdated();
+    emit machineOverclockChanged(mn);
+}
 // ----------------------------- SAVE AND LOAD ---------------------------------
 void SessionManager::save(const QString& path)
 {

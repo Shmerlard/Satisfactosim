@@ -75,6 +75,7 @@ public:
     void setExtractionPurity(AbstractNode* node, NodePurity purity);
     void setExtractionTier(AbstractNode* node, int tier);
     void setMachineOverclock(AbstractNode* node, float overclock);
+    void incMachineOverclock(AbstractNode* node, float overclock);
     void setSplitterWeight(AbstractNode* node, int portIndex, const QString& weight);
     void addSplitterOutput(AbstractNode* node, Frac weight);
     void cleanSolve();

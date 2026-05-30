@@ -28,11 +28,14 @@ Item {
                 text: "-5%"
                 Layout.preferredWidth: 30
                 Layout.fillHeight: true
+                onClicked: {
+                    SceneManager.incOverclock(root.nodeData, -0.05);
+                }
             }
             TextField {
                 id: overclockField
                 Layout.fillWidth: true
-                placeholderText: "100"
+                placeholderText: root.nodeData.overclockStr
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
                 background: Rectangle {
                     color: Theme.surfaceInput
@@ -49,6 +52,17 @@ Item {
                 text: "+5%"
                 Layout.preferredWidth: 30
                 Layout.fillHeight: true
+                onClicked: {
+                    SceneManager.incOverclock(root.nodeData, 0.05);
+                }
+            }
+            GButton {
+                text: "100%"
+                Layout.preferredWidth: 30
+                Layout.fillHeight: true
+                onClicked: {
+                    SceneManager.setOverclock(root.nodeData, 1);
+                }
             }
         }
     }

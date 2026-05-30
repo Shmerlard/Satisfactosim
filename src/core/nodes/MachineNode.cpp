@@ -44,8 +44,16 @@ QString MachineNode::machineName() const
 QString MachineNode::machineCountStr() const
 {
     QString str;
-    str = MixedNumberFromFrac(m_machineCount);
+    if (m_machineCount == -1)
+        str = "no limit";
+    else
+        str = MixedNumberFromFrac(m_machineCount);
     return str;
+}
+
+QString MachineNode::overclockStr() const
+{
+    return StringFromFrac(m_overclock * 100) + "%";
 }
 
 QString MachineNode::machineLimitStr() const

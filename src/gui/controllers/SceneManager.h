@@ -72,6 +72,7 @@ public slots:
     void incMachineLimit(AbstractNode* node, int inc);
     void setSomersloopCount(AbstractNode* node, int count);
     void setOverclock(AbstractNode* node, float overclock);
+    void incOverclock(AbstractNode* node, float inc);
     void addSplitterOutput(AbstractNode* node);
 
     void setTier(ExtractionNode* node, int tier);

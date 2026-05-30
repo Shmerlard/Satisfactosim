@@ -1242,5 +1242,111 @@
             "Form": "RF_SOLID",
             "isResource": true
         }
+    ],
+    "Projectiles": [
+        {
+            "Class": "Desc_Fireworks_Projectile_01_C",
+            "DisplayName": "Sweet Fireworks",
+            "SinkPoints": "60",
+            "Icon": "Texture2D /Game/FactoryGame/Events/Christmas/Parts/UI/IconDesc_Fireworks_01_512.IconDesc_Fireworks_01_512",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Fireworks_Projectile_03_C",
+            "DisplayName": "Sparkly Fireworks",
+            "SinkPoints": "32",
+            "Icon": "Texture2D /Game/FactoryGame/Events/Christmas/Parts/UI/IconDesc_Fireworks_03_512.IconDesc_Fireworks_03_512",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Fireworks_Projectile_02_C",
+            "DisplayName": "Fancy Fireworks",
+            "SinkPoints": "40",
+            "Icon": "Texture2D /Game/FactoryGame/Events/Christmas/Parts/UI/IconDesc_Fireworks_02_512.IconDesc_Fireworks_02_512",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SnowballProjectile_C",
+            "DisplayName": "Snowball",
+            "SinkPoints": "30",
+            "Icon": "Texture2D /Game/FactoryGame/Events/Christmas/Parts/UI/IconDesc_SnowballProjectile_256.IconDesc_SnowballProjectile_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Rebar_Explosive_C",
+            "DisplayName": "Explosive Rebar",
+            "SinkPoints": "360",
+            "Icon": "Texture2D /Game/FactoryGame/Equipment/RebarGun/UI/IconDesc_ExpRebar_256.IconDesc_ExpRebar_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_Rebar_Stunshot_C",
+            "DisplayName": "Stun Rebar",
+            "SinkPoints": "186",
+            "Icon": "Texture2D /Game/FactoryGame/Equipment/RebarGun/UI/IconDesc_StunRebar_256.IconDesc_StunRebar_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_SpikedRebar_C",
+            "DisplayName": "Iron Rebar",
+            "SinkPoints": "8",
+            "Icon": "Texture2D /Game/FactoryGame/Equipment/RebarGun/UI/IconDesc_Rebar_256.IconDesc_Rebar_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_CartridgeSmartProjectile_C",
+            "DisplayName": "Homing Rifle Ammo",
+            "SinkPoints": "855",
+            "Icon": "Texture2D /Game/FactoryGame/Equipment/Rifle/UI/IconDesc_HomingRifle_256.IconDesc_HomingRifle_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_NobeliskExplosive_C",
+            "DisplayName": "Nobelisk",
+            "SinkPoints": "152",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/NobeliskExplosive/UI/IconDesc_Explosive_256.IconDesc_Explosive_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_NobeliskCluster_C",
+            "DisplayName": "Cluster Nobelisk",
+            "SinkPoints": "1376",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/NobeliskExplosive/UI/IconDesc_Cluster_256.IconDesc_Cluster_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_NobeliskGas_C",
+            "DisplayName": "Gas Nobelisk",
+            "SinkPoints": "544",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/NobeliskExplosive/UI/IconDesc_Gas_256.IconDesc_Gas_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_NobeliskNuke_C",
+            "DisplayName": "Nuke Nobelisk",
+            "SinkPoints": "19600",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/NobeliskExplosive/UI/IconDesc_Nuke_256.IconDesc_Nuke_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        },
+        {
+            "Class": "Desc_NobeliskShockwave_C",
+            "DisplayName": "Pulse Nobelisk",
+            "SinkPoints": "1533",
+            "Icon": "Texture2D /Game/FactoryGame/Resource/Parts/NobeliskExplosive/UI/IconDesc_Shock_256.IconDesc_Shock_256",
+            "Form": "RF_SOLID",
+            "isResource": false
+        }
     ]
 }

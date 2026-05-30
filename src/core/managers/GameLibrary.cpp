@@ -131,6 +131,10 @@ void GameLibrary::parseItems()
         m_items.insert(i->itemClass, i);
         m_resources.insert(i->itemClass, i);
     }
+    for (const QJsonValue& value : root["Projectiles"].toArray()) {
+        auto* i = componentFromJsonObject(value);
+        m_items.insert(i->itemClass, i);
+    }
 }
 
 void GameLibrary::parseMachines()

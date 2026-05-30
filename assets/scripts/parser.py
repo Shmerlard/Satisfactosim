@@ -43,14 +43,14 @@ def parse_enum_list(raw_string):
     return raw_string.strip("()").split(",")
 
 
-def process_item(item, is_resource=False):
+def process_item(item, category="items"):
     return {
         "Class": item.get("ClassName"),
         "DisplayName": item.get("mDisplayName"),
         "SinkPoints": item.get("mResourceSinkPoints"),
         "Icon": item.get("mSmallIcon"),
         "Form": item.get("mForm"),
-        "isResource": is_resource
+        "isResource": category == "resources"
     }
 
 
@@ -136,11 +136,15 @@ def main():
     raw_items = find_classes(data, "FGItemDescriptor")
     items = [process_item(item) for item in raw_items]
     raw_resources = find_classes(data, "FGResourceDescriptor")
-    resources = [process_item(item, is_resource=True) for item in raw_resources]
+    resources = [process_item(item, "resources") for item in raw_resources]
+
+    raw_projectiles = find_classes(data, "FGAmmoTypeProjectile")
+    projectiles = [process_item(item, "projectiles") for item in raw_projectiles]
 
     all_items = {
         "Components": items,
-        "Resources": resources
+        "Resources": resources,
+        "Projectiles": projectiles
     }
 
     with open(json_dir / "items.json", 'w', encoding="utf-8") as f:

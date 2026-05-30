@@ -170,7 +170,10 @@ void SceneManager::deleteNode(AbstractNode* node)
 
 void SceneManager::setPortOffset(int nodeIndex, int portIndex, QPointF offset)
 {
-    AbstractNode* node = m_session->activeFactory()->nodes().at(nodeIndex);
+    const auto& nodes = m_session->activeFactory()->nodes();
+    if (nodeIndex < 0 || nodeIndex >= (int)nodes.size())
+        return;
+    AbstractNode* node = nodes.at(nodeIndex);
     if (!node)
         return;
     Port* port = node->getPortFromIndex(portIndex);
@@ -209,6 +212,11 @@ void SceneManager::setSomersloopCount(AbstractNode* node, int count)
 void SceneManager::setOverclock(AbstractNode* node, float overclock)
 {
     m_session->setMachineOverclock(node, overclock);
+}
+
+void SceneManager::incOverclock(AbstractNode* node, float inc)
+{
+    m_session->incMachineOverclock(node, inc);
 }
 
 void SceneManager::addSplitterOutput(AbstractNode* node)

@@ -15,7 +15,7 @@ Item {
     readonly property string machineCount: nodeData ? nodeData.machineCount.toFixed(2) : "NAME"
     readonly property string machineLimit: nodeData ? nodeData.machineLimit : ""
     readonly property string nodeName: nodeData ? nodeData.name : ""
-    readonly property string overclock: nodeData ? nodeData.overclock : ""
+    readonly property string overclock: nodeData ? nodeData.overclockStr : ""
 
     implicitWidth: 150
     implicitHeight: 150
